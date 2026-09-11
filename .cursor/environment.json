@@ -1,0 +1,16 @@
+{
+  "name": "Daily Tech Hub",
+  "install": "npm ci",
+  "terminals": [
+    {
+      "name": "next-dev",
+      "command": "npm run dev"
+    }
+  ],
+  "ports": [
+    {
+      "name": "web",
+      "port": 3000
+    }
+  ]
+}
