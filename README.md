@@ -19,6 +19,12 @@ Open [http://localhost:3000](http://localhost:3000).
 npm run build && npm start
 ```
 
+## Production URL
+
+Live Railway app: [https://aurora-production-d146.up.railway.app/](https://aurora-production-d146.up.railway.app/)
+
+If teammates cannot open that link, it is usually **Railway deployment protection**, a corporate filter on `*.up.railway.app`, or an in-app browser (Slack/Teams). Use a **custom domain** and the checklist in [`DEPLOY_RAILWAY.md`](./DEPLOY_RAILWAY.md).
+
 ## E2E
 
 Playwright smoke tests run against a **locally started** Next app (`webServer` in `playwright.config.ts`). They do **not** hit the Fly production deploy.

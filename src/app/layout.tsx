@@ -26,13 +26,41 @@ const mono = IBM_Plex_Mono({
   weight: ["400", "500"],
 });
 
+function siteUrl(): URL {
+  for (const raw of [process.env.AUTH_URL, process.env.NEXTAUTH_URL]) {
+    if (!raw) continue;
+    try {
+      const url = new URL(raw);
+      if (url.protocol === "http:" || url.protocol === "https:") return url;
+    } catch {
+      /* skip invalid */
+    }
+  }
+  return new URL("https://aurora-production-d146.up.railway.app");
+}
+
+const description =
+  "Aurora — Daily Tech Hub for data engineers: prompt engineering, AI for DE, Snowflake, Databricks, Python, SQL, and Claude/Copilot/Grok shortcuts.";
+
 export const metadata: Metadata = {
+  metadataBase: siteUrl(),
   title: {
     default: "Daily Tech Hub",
     template: "%s · Daily Tech Hub",
   },
-  description:
-    "Aurora — Daily Tech Hub for data engineers: prompt engineering, AI for DE, Snowflake, Databricks, Python, SQL, and Claude/Copilot/Grok shortcuts.",
+  description,
+  openGraph: {
+    title: "Aurora — Daily Tech Hub",
+    description,
+    siteName: "Daily Tech Hub",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary",
+    title: "Aurora — Daily Tech Hub",
+    description,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

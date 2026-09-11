@@ -21,9 +21,9 @@ test.describe("homepage hero", () => {
 
     await page.goto("/");
 
-    await expect(
-      page.getByRole("heading", { name: /Daily Tech Hub v3/i }),
-    ).toBeVisible();
+    const headline = page.getByRole("heading", { name: /Daily Tech Hub v3/i });
+    await expect(headline).toBeVisible();
+    await expect(headline).not.toHaveCSS("opacity", "0");
     await expect(page.getByText(/Today ·/)).toBeVisible();
 
     // Hero “updated” cluster: SSR paints an absolute datetime; after mount it

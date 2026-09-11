@@ -47,11 +47,14 @@ export function Hero({ digest }: { digest: DigestMeta }) {
     return () => mq.removeEventListener("change", update);
   }, []);
 
+  // `initial: false` keeps the first (SSR / no-JS) paint visible. Starting at
+  // opacity 0 hid the headline until hydration — in-app browsers and blocked
+  // JS then look like a blank / unopenable page.
   const fade = (delay = 0) =>
     reduceMotion
       ? {}
       : {
-          initial: { opacity: 0, y: 10 },
+          initial: false as const,
           animate: { opacity: 1, y: 0 },
           transition: { duration: 0.35, delay },
         };
