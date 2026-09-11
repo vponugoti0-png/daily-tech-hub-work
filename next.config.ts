@@ -1,6 +1,70 @@
 import type { NextConfig } from "next";
 import lessonRedirects from "./lesson-redirects.json";
 
+const isDev = process.env.NODE_ENV !== "production";
+
+function originFromUrl(raw: string | undefined): string | null {
+  if (!raw) return null;
+  try {
+    return new URL(raw).origin;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Browser origins Auth.js may send the user to (see src/auth.ts).
+ * Token exchange is server-side and is not governed by CSP.
+ * Google / Microsoft Entra / X are the providers actually wired.
+ */
+const oauthBrowserOrigins = new Set<string>([
+  "https://accounts.google.com",
+  "https://login.microsoftonline.com",
+  "https://login.microsoft.com",
+  "https://login.live.com",
+  "https://twitter.com",
+  "https://x.com",
+  "https://api.twitter.com",
+  "https://api.x.com",
+]);
+
+const entraIssuerOrigin = originFromUrl(process.env.AUTH_MICROSOFT_ENTRA_ID_ISSUER);
+if (entraIssuerOrigin) oauthBrowserOrigins.add(entraIssuerOrigin);
+
+const oauthOriginList = [...oauthBrowserOrigins].join(" ");
+
+// 'unsafe-inline' stays: Next.js App Router hydration + the theme FOUC script in
+// layout.tsx. A nonce/proxy.ts CSP would force dynamic rendering of every page.
+// 'unsafe-eval' is only for next/react dev (HMR / stack reconstruction).
+const scriptSrc = isDev
+  ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
+  : "script-src 'self' 'unsafe-inline'";
+
+const connectSrc = isDev
+  ? `connect-src 'self' ${oauthOriginList} ws: wss:`
+  : `connect-src 'self' ${oauthOriginList}`;
+
+const csp = [
+  "default-src 'self'",
+  scriptSrc,
+  "style-src 'self' 'unsafe-inline'",
+  // No remote <img> / next/image hosts in this app; data:/blob: cover theme + R3F.
+  "img-src 'self' data: blob:",
+  "font-src 'self' data:",
+  connectSrc,
+  `form-action 'self' ${oauthOriginList}`,
+  // OAuth is top-level redirect (next-auth signIn → location.assign), not iframes.
+  "frame-src 'none'",
+  "frame-ancestors 'none'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "worker-src 'self' blob:",
+  "manifest-src 'self'",
+  "media-src 'none'",
+  "script-src-attr 'none'",
+  ...(isDev ? [] : ["upgrade-insecure-requests"]),
+].join("; ");
+
 const securityHeaders = [
   {
     key: "Strict-Transport-Security",
@@ -15,17 +79,7 @@ const securityHeaders = [
   },
   {
     key: "Content-Security-Policy",
-    value: [
-      "default-src 'self'",
-      "img-src 'self' data: blob: https:",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-      "style-src 'self' 'unsafe-inline'",
-      "font-src 'self' data:",
-      "connect-src 'self' https://accounts.google.com",
-      "frame-ancestors 'none'",
-      "base-uri 'self'",
-      "form-action 'self' https://accounts.google.com",
-    ].join("; "),
+    value: csp,
   },
 ];
 

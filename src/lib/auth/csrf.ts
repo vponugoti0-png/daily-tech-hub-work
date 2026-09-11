@@ -59,29 +59,49 @@ export async function ensureCsrfCookie(): Promise<string> {
   return token;
 }
 
-/**
- * Validate Origin/Referer (when available) + double-submit CSRF header.
- * Accepts any origin listed in AUTH_TRUSTED_ORIGINS (and AUTH_URL if set).
- */
-export async function assertCsrf(req: Request): Promise<
-  { ok: true } | { ok: false; status: number; error: string }
-> {
+function isSameSiteFetch(req: Request): boolean {
+  const site = req.headers.get("sec-fetch-site");
+  return site === "same-origin" || site === "same-site";
+}
+
+/** Origin / Referer / Sec-Fetch-Site gate (token check happens separately). */
+export function evaluateCsrfOrigin(
+  req: Request,
+  isProduction = process.env.NODE_ENV === "production",
+): { ok: true } | { ok: false } {
   const origin = req.headers.get("origin");
   const referer = req.headers.get("referer");
 
   if (origin) {
-    if (!isTrustedOrigin(origin)) {
-      return { ok: false, status: 403, error: "Forbidden" };
-    }
-  } else if (referer) {
+    return isTrustedOrigin(origin) ? { ok: true } : { ok: false };
+  }
+  if (referer) {
     try {
-      const r = new URL(referer).origin;
-      if (!isTrustedOrigin(r)) {
-        return { ok: false, status: 403, error: "Forbidden" };
-      }
+      return isTrustedOrigin(new URL(referer).origin) ? { ok: true } : { ok: false };
     } catch {
-      return { ok: false, status: 403, error: "Forbidden" };
+      return { ok: false };
     }
+  }
+  if (isProduction && !isSameSiteFetch(req)) {
+    return { ok: false };
+  }
+  return { ok: true };
+}
+
+/**
+ * Validate Origin/Referer + double-submit CSRF header.
+ * Accepts any origin listed in AUTH_TRUSTED_ORIGINS (and AUTH_URL if set).
+ *
+ * Production fail-closed: if both Origin and Referer are missing, require a
+ * browser Sec-Fetch-Site of same-origin/same-site. Typical same-site fetch()
+ * and form POSTs still send Origin, so this does not block legitimate UI flows.
+ */
+export async function assertCsrf(req: Request): Promise<
+  { ok: true } | { ok: false; status: number; error: string }
+> {
+  const originGate = evaluateCsrfOrigin(req);
+  if (!originGate.ok) {
+    return { ok: false, status: 403, error: "Forbidden" };
   }
 
   const jar = await cookies();

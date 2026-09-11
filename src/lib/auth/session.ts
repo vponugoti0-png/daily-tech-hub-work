@@ -1,6 +1,13 @@
+import { randomUUID } from "crypto";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { getAuthSecret } from "@/lib/auth/secret";
+import { findUserById } from "@/lib/auth/users";
+import {
+  consumeRefreshJti,
+  persistRefreshToken,
+  revokeRefreshByJti,
+} from "@/lib/auth/refresh-store";
 
 /** @deprecated legacy single-cookie name — still cleared on logout */
 export const COOKIE = "dth_session";
@@ -18,6 +25,11 @@ export type SessionUser = {
   id: number;
   email: string;
   name: string;
+};
+
+type RefreshClaims = SessionUser & {
+  jti?: string;
+  familyId?: string;
 };
 
 function cookieOpts(maxAge: number) {
@@ -42,6 +54,10 @@ function payloadToUser(payload: {
   return { id, email: payload.email, name: payload.name };
 }
 
+function refreshExpiresAtIso() {
+  return new Date(Date.now() + REFRESH_MAX_AGE * 1000).toISOString();
+}
+
 export async function createAccessToken(user: SessionUser) {
   return new SignJWT({
     sub: String(user.id),
@@ -55,17 +71,37 @@ export async function createAccessToken(user: SessionUser) {
     .sign(secret());
 }
 
-export async function createRefreshToken(user: SessionUser) {
+async function signRefreshToken(
+  user: SessionUser,
+  opts: { jti: string; familyId: string },
+) {
   return new SignJWT({
     sub: String(user.id),
     email: user.email,
     name: user.name,
     typ: "refresh",
+    fid: opts.familyId,
   })
     .setProtectedHeader({ alg: "HS256" })
+    .setJti(opts.jti)
     .setIssuedAt()
     .setExpirationTime(REFRESH_TTL)
     .sign(secret());
+}
+
+export async function createRefreshToken(
+  user: SessionUser,
+  opts?: { familyId?: string },
+) {
+  const jti = randomUUID();
+  const familyId = opts?.familyId ?? randomUUID();
+  persistRefreshToken({
+    jti,
+    userId: user.id,
+    familyId,
+    expiresAt: refreshExpiresAtIso(),
+  });
+  return signRefreshToken(user, { jti, familyId });
 }
 
 /** @deprecated use createAccessToken + createRefreshToken */
@@ -92,6 +128,85 @@ async function verifyTyped(
   }
 }
 
+async function verifyRefreshClaims(token: string): Promise<RefreshClaims | null> {
+  try {
+    const { payload } = await jwtVerify(token, secret());
+    if (payload.typ !== "refresh") return null;
+    const user = payloadToUser(payload);
+    if (!user) return null;
+    return {
+      ...user,
+      jti: typeof payload.jti === "string" ? payload.jti : undefined,
+      familyId: typeof payload.fid === "string" ? payload.fid : undefined,
+    };
+  } catch {
+    return null;
+  }
+}
+
+async function liveUser(user: SessionUser): Promise<SessionUser | null> {
+  const row = findUserById(user.id);
+  if (!row) return null;
+  return { id: row.id, email: row.email, name: row.name };
+}
+
+async function applyRefreshedCookies(
+  jar: Awaited<ReturnType<typeof cookies>>,
+  user: SessionUser,
+  nextRefresh?: string,
+) {
+  const nextAccess = await createAccessToken(user);
+  jar.set(ACCESS_COOKIE, nextAccess, cookieOpts(ACCESS_MAX_AGE));
+  if (nextRefresh) {
+    jar.set(REFRESH_COOKIE, nextRefresh, cookieOpts(REFRESH_MAX_AGE));
+  }
+}
+
+/**
+ * Silent access renew from a refresh JWT. Rotates the refresh family on use
+ * (with a short grace window) so a stolen token cannot be replayed indefinitely.
+ */
+async function sessionFromRefreshCookie(
+  jar: Awaited<ReturnType<typeof cookies>>,
+  token: string,
+): Promise<SessionUser | null> {
+  const claims = await verifyRefreshClaims(token);
+  if (!claims) return null;
+
+  const user = await liveUser(claims);
+  if (!user) {
+    if (claims.jti) revokeRefreshByJti(claims.jti);
+    return null;
+  }
+
+  if (!claims.jti) {
+    // Pre-store refresh cookies: accept once and migrate onto a tracked family.
+    const nextRefresh = await createRefreshToken(user);
+    await applyRefreshedCookies(jar, user, nextRefresh);
+    return user;
+  }
+
+  const nextJti = randomUUID();
+  const consumed = consumeRefreshJti(claims.jti, user.id, {
+    jti: nextJti,
+    expiresAt: refreshExpiresAtIso(),
+  });
+  if (consumed.status === "invalid" || consumed.status === "replay") {
+    return null;
+  }
+  if (consumed.status === "grace") {
+    await applyRefreshedCookies(jar, user);
+    return user;
+  }
+
+  const nextRefresh = await signRefreshToken(user, {
+    jti: nextJti,
+    familyId: consumed.familyId,
+  });
+  await applyRefreshedCookies(jar, user, nextRefresh);
+  return user;
+}
+
 async function readCookieSession(): Promise<SessionUser | null> {
   const jar = await cookies();
 
@@ -103,13 +218,8 @@ async function readCookieSession(): Promise<SessionUser | null> {
 
   const refresh = jar.get(REFRESH_COOKIE)?.value;
   if (refresh) {
-    const user = await verifyTyped(refresh, "refresh");
-    if (user) {
-      // Silent rotate: mint a fresh access token when refresh is still valid
-      const nextAccess = await createAccessToken(user);
-      jar.set(ACCESS_COOKIE, nextAccess, cookieOpts(ACCESS_MAX_AGE));
-      return user;
-    }
+    const user = await sessionFromRefreshCookie(jar, refresh);
+    if (user) return user;
   }
 
   // Backward compatible: accept legacy 30d dth_session until it expires
@@ -117,9 +227,12 @@ async function readCookieSession(): Promise<SessionUser | null> {
   if (legacy) {
     const user = await verifyTyped(legacy, "legacy");
     if (user) {
-      await setSessionCookies(user);
-      jar.delete(COOKIE);
-      return user;
+      const live = await liveUser(user);
+      if (live) {
+        await setSessionCookies(live);
+        jar.delete(COOKIE);
+        return live;
+      }
     }
   }
 
@@ -162,7 +275,17 @@ export async function setSessionCookie(token: string) {
   jar.set(ACCESS_COOKIE, token, cookieOpts(ACCESS_MAX_AGE));
 }
 
+/** Revoke the current refresh family in SQLite (no-op if cookie missing/legacy). */
+export async function revokeCurrentRefresh(): Promise<void> {
+  const jar = await cookies();
+  const refresh = jar.get(REFRESH_COOKIE)?.value;
+  if (!refresh) return;
+  const claims = await verifyRefreshClaims(refresh);
+  if (claims?.jti) revokeRefreshByJti(claims.jti);
+}
+
 export async function clearSessionCookie() {
+  await revokeCurrentRefresh();
   const jar = await cookies();
   // Next.js jar.delete() often fails to clear httpOnly cookies across hosts;
   // expire explicitly with the same path/sameSite attributes used when setting.
