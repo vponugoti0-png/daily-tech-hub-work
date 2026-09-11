@@ -77,4 +77,16 @@ test.describe("training catalog", () => {
       page.getByRole("link", { name: /Practice with agents & Cortex functions/i }),
     ).toBeVisible();
   });
+
+  test("search finds the lesson via agents and tools synonyms", async ({ page }) => {
+    await page.goto("/search?q=agents");
+    await expect(
+      page.getByRole("link", { name: /Practice with agents & Cortex functions/i }),
+    ).toBeVisible();
+
+    await page.goto("/search?q=tools");
+    await expect(
+      page.getByRole("link", { name: /Practice with agents & Cortex functions/i }),
+    ).toBeVisible();
+  });
 });

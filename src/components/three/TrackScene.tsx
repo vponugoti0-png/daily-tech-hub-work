@@ -30,11 +30,13 @@ function Crystal({ color }: { color: string }) {
 }
 
 const COLORS: Record<string, string> = {
-  python: "#facc15",
-  sql: "#34d399",
-  databricks: "#fb923c",
-  snowflake: "#38bdf8",
-  git: "#c084fc",
+  "prompt-engineering": "#7c5cff",
+  "ai-data-eng": "#ff6b4a",
+  python: "#e8b84a",
+  sql: "#1fba84",
+  databricks: "#ff6b4a",
+  snowflake: "#3aa8d8",
+  git: "#6b6490",
 };
 
 export function TrackScene({ track = "python" }: { track?: string }) {
@@ -43,7 +45,7 @@ export function TrackScene({ track = "python" }: { track?: string }) {
       <Canvas camera={{ position: [0, 0, 4], fov: 40 }} dpr={[1, 1.5]} gl={{ alpha: true }}>
         <ambientLight intensity={0.5} />
         <directionalLight position={[3, 2, 2]} intensity={1.1} />
-        <Crystal color={COLORS[track] ?? "#22d3ee"} />
+        <Crystal color={COLORS[track] ?? "#ff6b4a"} />
       </Canvas>
     </div>
   );
