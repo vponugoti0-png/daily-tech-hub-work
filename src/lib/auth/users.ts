@@ -116,6 +116,16 @@ export function getProgressForUser(userId: number): ProgressRow[] {
     .all(userId) as ProgressRow[];
 }
 
+/** Parse client ISO or SQLite `datetime('now')` (`YYYY-MM-DD HH:MM:SS`, UTC). */
+function parseProgressTimestamp(value: string): number | null {
+  const s = value.trim();
+  if (!s) return null;
+  const sqlite = /^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2})$/.exec(s);
+  const normalized = sqlite ? `${sqlite[1]}T${sqlite[2]}Z` : s;
+  const t = Date.parse(normalized);
+  return Number.isNaN(t) ? null : t;
+}
+
 export function upsertProgress(
   userId: number,
   patch: {
@@ -125,6 +135,7 @@ export function upsertProgress(
     quizScore?: number;
     quizTotal?: number;
     stepIndex?: number;
+    updatedAt?: string;
   },
 ) {
   const db = getDb();
@@ -135,6 +146,16 @@ export function upsertProgress(
     .get(userId, patch.track, patch.slug) as
     | (ProgressRow & { id: number; user_id: number })
     | undefined;
+
+  // Skip only when both timestamps exist and incoming is strictly older
+  // (server keeps the newer row). Missing incoming updatedAt → apply patch.
+  if (existing?.updated_at && patch.updatedAt) {
+    const incomingTs = parseProgressTimestamp(patch.updatedAt);
+    const storedTs = parseProgressTimestamp(existing.updated_at);
+    if (incomingTs !== null && storedTs !== null && incomingTs < storedTs) {
+      return;
+    }
+  }
 
   const completed =
     patch.completed !== undefined
@@ -192,6 +213,7 @@ export function mergeLocalProgress(
         quizScore: val.quizScore,
         quizTotal: val.quizTotal,
         stepIndex: val.stepIndex,
+        updatedAt: val.updatedAt,
       });
     }
   });

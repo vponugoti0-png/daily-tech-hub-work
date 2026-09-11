@@ -11,6 +11,7 @@ fly secrets set \
   AUTH_SECRET="$(openssl rand -base64 32)" \
   AUTH_GOOGLE_ID="..." \
   AUTH_GOOGLE_SECRET="..." \
+  AUTH_URL="https://aurora-daily-tech-hub.fly.dev" \
   AUTH_TRUSTED_ORIGINS="https://aurora-daily-tech-hub.fly.dev"
 ```
 
