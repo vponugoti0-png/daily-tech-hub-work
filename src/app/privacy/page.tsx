@@ -29,7 +29,7 @@ export default function PrivacyPage() {
           <li>Account email, display name, and password hash (if you sign up with email).</li>
           <li>
             If you use Google, Microsoft, or X sign-in: name, email when the provider shares it, and
-            that provider’s account id (we do not receive your social-login password).
+            that provider's account id (we do not receive your social-login password).
           </li>
           <li>Learning progress (lessons completed, quiz scores) tied to your account.</li>
           <li>Basic technical logs needed to run and secure the service (e.g. rate limits).</li>
