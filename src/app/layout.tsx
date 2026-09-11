@@ -3,6 +3,7 @@ import { IBM_Plex_Mono, Space_Grotesk, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { SkipLink } from "@/components/SkipLink";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { getDigest } from "@/lib/content";
 import { formatDateTime } from "@/lib/dates";
@@ -50,9 +51,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       <body className="flex min-h-full flex-col">
+        <SkipLink />
         <AuthProvider>
           <Header />
-          <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-10">
+          <main
+            id="main-content"
+            tabIndex={-1}
+            className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-10"
+          >
             {children}
           </main>
           <Footer lastUpdated={formatDateTime(digest.lastUpdated)} />
