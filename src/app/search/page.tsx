@@ -30,7 +30,7 @@ function SearchResults({ q }: { q: string }) {
             <li key={`${r.kind}-${r.slug}`}>
               <Link
                 href={r.href}
-                className="block rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition hover:border-cyan-500/30"
+                className="group glass glass-hover block rounded-2xl p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sky)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--canvas)]"
               >
                 <div className="mb-2 flex flex-wrap items-center gap-2">
                   <SoftBadge className="capitalize">{r.kind}</SoftBadge>
@@ -38,8 +38,10 @@ function SearchResults({ q }: { q: string }) {
                     <TopicBadge key={t} topic={t} />
                   ))}
                 </div>
-                <h3 className="font-semibold text-white">{r.title}</h3>
-                <p className="mt-1 line-clamp-2 text-sm text-zinc-400">{r.summary}</p>
+                <h3 className="font-display font-semibold text-[var(--ink-fg)] group-hover:text-[var(--coral)] group-focus-visible:text-[var(--violet)]">
+                  {r.title}
+                </h3>
+                <p className="mt-1 line-clamp-2 text-sm text-[var(--muted)]">{r.summary}</p>
               </Link>
             </li>
           ))}
@@ -76,7 +78,7 @@ export default function SearchPage({
   return (
     <Suspense
       fallback={
-        <div className="text-sm text-zinc-500">Loading search…</div>
+        <div className="text-sm text-[var(--muted)]">Loading search…</div>
       }
     >
       <SearchInner searchParams={searchParams} />
