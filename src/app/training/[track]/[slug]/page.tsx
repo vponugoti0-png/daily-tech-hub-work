@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllLessons, getLesson, getLessonsByTrack } from "@/lib/content";
+import { getTrackMeta } from "@/lib/tracks";
 import { Markdown } from "@/components/Markdown";
 import { SoftBadge, TopicBadge } from "@/components/Badge";
 import { formatDate } from "@/lib/dates";
@@ -42,21 +43,25 @@ export default async function LessonPage({
   const next = idx >= 0 && idx < siblings.length - 1 ? siblings[idx + 1] : undefined;
   const isAiTrack =
     lesson.track === "prompt-engineering" || lesson.track === "ai-data-eng";
+  const trackTitle = getTrackMeta(lesson.track)?.title ?? lesson.track;
+  const tryItEntries = isAiTrack
+    ? (lesson.cheatSheet ?? []).filter((e) => e.code).slice(0, 4)
+    : [];
 
   return (
     <div className="flex flex-col gap-4 lg:flex-row lg:gap-8">
       <CourseOutline lessons={siblings} currentSlug={lesson.slug} track={lesson.track} />
 
       <article className="lesson-column min-w-0 flex-1">
-<Link
+        <Link
           href={`/training/${lesson.track}`}
           className="mb-5 mt-3 inline-flex min-h-[40px] items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--coral)]"
         >
-          <ArrowLeft className="h-4 w-4" /> Back to {lesson.track}
+          <ArrowLeft className="h-4 w-4" /> Back to {trackTitle}
         </Link>
 
         <div className="mb-4 flex flex-wrap items-center gap-2">
-          <SoftBadge className="capitalize">{lesson.track}</SoftBadge>
+          <SoftBadge>{trackTitle}</SoftBadge>
           <SoftBadge className="capitalize">{lesson.level}</SoftBadge>
           <span className="inline-flex items-center gap-1 text-xs text-[var(--muted)]">
             <Clock className="h-3.5 w-3.5" /> {lesson.durationMinutes} min
@@ -126,14 +131,24 @@ export default async function LessonPage({
           </div>
         ) : null}
 
-        {isAiTrack && lesson.cheatSheet?.[0]?.code ? (
-          <TryItBox
-            title="Try this prompt"
-            code={lesson.cheatSheet[0].code.replace(/\\n/g, "\n")}
-            dialect="AI chat"
-            hint="Paste into Claude, Copilot Chat, or Grok — then iterate."
-          />
-        ) : null}
+        {tryItEntries.map((entry, i) => {
+          const code = entry.code.replace(/\\n/g, "\n");
+          const isSql = /SNOWFLAKE\.CORTEX/i.test(code);
+          return (
+            <TryItBox
+              key={`${entry.label}-${i}`}
+              title={i === 0 ? "Try this prompt" : entry.label}
+              code={code}
+              dialect={isSql ? "Snowflake SQL" : "AI chat"}
+              hint={
+                entry.note ??
+                (isSql
+                  ? "Copy into a Snowflake worksheet. Treat model output as untrusted."
+                  : "Paste into Claude, Copilot Chat, or Grok — then iterate.")
+              }
+            />
+          );
+        })}
 
         <div className="mt-10">
           <Markdown source={lesson.content} />

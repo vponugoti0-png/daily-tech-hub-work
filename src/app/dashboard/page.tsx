@@ -22,6 +22,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "ai-de-docs-and-tests",
     "ai-de-tools-workflow",
     "ai-de-review-changes",
+    "ai-de-practice-agents",
   ],
   python: [
     "python-dataframe-contracts",
