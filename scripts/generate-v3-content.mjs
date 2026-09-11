@@ -844,15 +844,15 @@ Open **Shortcuts** for Claude, Copilot, and Grok packs (keyboard, prompts, featu
       ],
       quiz: [
         {
-          question: "When does SNOWFLAKE.CORTEX.COMPLETE shine versus a browser chat?",
+          question: "When should you use a Cortex function or a named tool instead of plain chat?",
           options: [
             "When you want to skip all review",
-            "When the prompt should run next to warehouse rows in SQL",
+            "When you need named args next to warehouse evidence (SQL function or tool call)",
             "When you need to disable RBAC",
             "When you paste production passwords",
           ],
           answer: 1,
-          explanation: "COMPLETE is a SQL function — useful when text already lives in the warehouse.",
+          explanation: "Functions and tool calls beat free-form chat when the work is argument-shaped and you will verify the result.",
         },
         {
           question: "What should you do with Cortex or agent output?",
