@@ -793,7 +793,7 @@ Open **Shortcuts** for Claude, Copilot, and Grok packs (keyboard, prompts, featu
       track: "ai-data-eng",
       title: "Practice with agents & Cortex functions",
       description:
-        "Treat agents as tool-users, then copy real Snowflake Cortex functions and structured chat prompts you can run today.",
+        "Practice function calling and tools vs plain chat: copy Cortex functions and agent prompts you can run today.",
       level: "beginner",
       order: 7,
       durationMinutes: 25,
@@ -894,9 +894,19 @@ Free-form “fix my pipeline” chat skips step 2. Function-as-example practice 
 
 ## Function-as-example cards
 
-The **Try it** boxes and cheat sheet above are the practice cards. Start with **COMPLETE** (chat-style from SQL), then an agent prompt that calls \\\`inspect_query_profile\\\`. After that, copy SUMMARIZE, SENTIMENT, TRANSLATE, and EXTRACT_ANSWER.
+Each practice card is a **function example**: name, arguments, when to use, and a copyable snippet. The **Try it** boxes (honest: no live Run yet) and cheat sheet above are those cards.
 
-Do **not** invent extra Cortex APIs. The full tip catalog already lives in Shortcuts.
+| Name | Args | When to use |
+|------|------|-------------|
+| \\\`COMPLETE\\\` | model, prompt | Function calling from SQL when text already sits next to warehouse rows |
+| \\\`SUMMARIZE\\\` | text | Collapse tickets/docs in-warehouse |
+| \\\`SENTIMENT\\\` | text | Score feedback; treat as a hint |
+| \\\`TRANSLATE\\\` | text, from, to | Normalize notes before checks |
+| \\\`EXTRACT_ANSWER\\\` | passage, question | QA over stored text — still review |
+| \\\`inspect_query_profile\\\` | query_id | Agent tools when you need evidence, not an essay |
+| \\\`warehouse_query\\\` | \\\`{ sql }\\\` | Read-only SELECT the human still runs |
+
+Start with **COMPLETE**, then the \\\`inspect_query_profile\\\` agent prompt. Do **not** invent extra Cortex APIs. The full tip catalog already lives in Shortcuts.
 
 ## Shortcuts packs (do not duplicate)
 

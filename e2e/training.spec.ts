@@ -70,4 +70,11 @@ test.describe("training catalog", () => {
       page.getByRole("link", { name: /Practice with agents & Cortex functions/i }),
     ).toBeVisible();
   });
+
+  test("search finds the lesson via function-calling synonym", async ({ page }) => {
+    await page.goto("/search?q=function+calling");
+    await expect(
+      page.getByRole("link", { name: /Practice with agents & Cortex functions/i }),
+    ).toBeVisible();
+  });
 });
