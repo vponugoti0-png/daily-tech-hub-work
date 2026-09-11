@@ -73,8 +73,14 @@ export function Quiz({
           <>
             <button
               type="button"
-              className="btn-primary disabled:opacity-40"
+              className="btn-primary disabled:cursor-not-allowed disabled:opacity-40"
               disabled={Object.keys(answers).length < questions.length}
+              aria-disabled={Object.keys(answers).length < questions.length}
+              title={
+                Object.keys(answers).length < questions.length
+                  ? `Answer all questions first (${Object.keys(answers).length}/${questions.length})`
+                  : "Submit answers"
+              }
               onClick={() => {
                 setSubmitted(true);
                 const s = questions.reduce(
@@ -90,7 +96,7 @@ export function Quiz({
               Submit answers
             </button>
             {Object.keys(answers).length < questions.length ? (
-              <p className="text-sm text-[var(--muted)]">
+              <p className="text-sm font-medium text-[var(--sun)]" role="status">
                 Answer all questions to enable submit ({Object.keys(answers).length}/
                 {questions.length}).
               </p>
