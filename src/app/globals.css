@@ -205,7 +205,14 @@ html.dark .glass {
   outline: none;
   min-height: 44px;
 }
+.field::placeholder {
+  color: var(--muted);
+}
+.field.has-leading-icon {
+  padding-left: 2.75rem;
+}
 .field:focus {
+  border-color: color-mix(in oklab, var(--sky) 55%, var(--ink-border));
   box-shadow: 0 0 0 3px color-mix(in oklab, var(--sky) 45%, transparent);
 }
 
