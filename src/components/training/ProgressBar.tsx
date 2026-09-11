@@ -24,15 +24,15 @@ export function TrackProgressBar({ track, slugs }: { track: string; slugs: strin
 
   return (
     <div className="w-full">
-      <div className="mb-1.5 flex justify-between text-xs text-zinc-400">
+      <div className="mb-1.5 flex justify-between text-xs text-[var(--muted)]">
         <span>Progress</span>
         <span>
           {done}/{slugs.length} · {pct}%
         </span>
       </div>
-      <div className="h-2 overflow-hidden rounded-full bg-white/10">
+      <div className="progress-track">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-indigo-500 transition-all duration-500"
+          className={`progress-fill ${pct === 100 ? "done" : ""}`}
           style={{ width: `${pct}%` }}
         />
       </div>

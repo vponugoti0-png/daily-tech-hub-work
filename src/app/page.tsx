@@ -14,7 +14,7 @@ import { ArrowRight } from "lucide-react";
 
 const FRIENDLY_BLURB: Record<string, string> = {
   "prompt-engineering": "Practice asking AI clear questions.",
-  "ai-data-eng": "Use AI to help with data work — safely.",
+  "ai-data-eng": "Use AI to help with data work — then practice Cortex and agent prompts.",
   python: "Write small Python tools for data jobs.",
   sql: "Ask databases questions with SQL.",
   databricks: "Learn Databricks (DBX) lakehouse basics.",

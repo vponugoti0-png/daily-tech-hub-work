@@ -5,12 +5,18 @@ import type { TrainingLesson } from "@/lib/types";
 import { LessonCard } from "@/components/LessonCard";
 import { EmptyState } from "@/components/EmptyState";
 import { cn } from "@/lib/utils";
+import { TRACKS as TRACK_METAS } from "@/lib/tracks";
 
 const LEVELS = ["all", "beginner", "intermediate", "advanced"] as const;
-const TRACKS = ["all", "python", "sql", "databricks", "snowflake", "git"] as const;
+const TRACK_FILTERS = ["all", ...TRACK_METAS.map((t) => t.id)] as const;
+
+function trackChipLabel(id: string) {
+  if (id === "all") return "All";
+  return TRACK_METAS.find((t) => t.id === id)?.title ?? id;
+}
 
 export function TrainingFilters({ lessons }: { lessons: TrainingLesson[] }) {
-  const [track, setTrack] = useState<(typeof TRACKS)[number]>("all");
+  const [track, setTrack] = useState<(typeof TRACK_FILTERS)[number]>("all");
   const [level, setLevel] = useState<(typeof LEVELS)[number]>("all");
   const [q, setQ] = useState("");
 
@@ -26,26 +32,28 @@ export function TrainingFilters({ lessons }: { lessons: TrainingLesson[] }) {
 
   return (
     <section className="space-y-5">
-      <div className="glass rounded-2xl p-4">
+      <div className="panel rounded-2xl p-4">
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Filter lessons…"
-          className="mb-3 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white outline-none ring-cyan-400/30 placeholder:text-zinc-500 focus:ring-2"
+          className="field mb-3 w-full"
           aria-label="Filter lessons"
         />
         <div className="flex flex-wrap gap-2">
-          {TRACKS.map((t) => (
+          {TRACK_FILTERS.map((t) => (
             <button
               key={t}
               type="button"
               onClick={() => setTrack(t)}
               className={cn(
-                "rounded-full px-3 py-1 text-xs font-medium capitalize",
-                track === t ? "bg-cyan-400 text-zinc-950" : "bg-white/5 text-zinc-300 ring-1 ring-white/10",
+                "rounded-full px-3 py-1 text-xs font-medium",
+                track === t
+                  ? "bg-[var(--coral)] font-bold text-white"
+                  : "bg-[var(--panel-2)] text-[var(--ink-fg)] ring-1 ring-[var(--ink-border)]",
               )}
             >
-              {t}
+              {trackChipLabel(t)}
             </button>
           ))}
         </div>
@@ -58,8 +66,8 @@ export function TrainingFilters({ lessons }: { lessons: TrainingLesson[] }) {
               className={cn(
                 "rounded-full px-3 py-1 text-xs font-medium capitalize",
                 level === lv
-                  ? "bg-indigo-500/40 text-indigo-100 ring-1 ring-indigo-400/40"
-                  : "text-zinc-400 hover:bg-white/5",
+                  ? "bg-[var(--violet)]/20 font-bold text-[var(--violet)] ring-1 ring-[var(--violet)]/40"
+                  : "text-[var(--muted)] hover:bg-[var(--panel-2)]",
               )}
             >
               {lv}

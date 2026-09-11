@@ -38,28 +38,27 @@ export default async function TrackPage({
     <div className="space-y-8">
       <Link
         href="/training"
-        className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-cyan-300"
+        className="inline-flex min-h-[40px] items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--coral)]"
       >
         <ArrowLeft className="h-4 w-4" /> All tracks
       </Link>
 
-      <div className="glass grid gap-6 overflow-hidden rounded-3xl p-6 sm:grid-cols-[1.2fr_0.8fr] sm:p-8">
+      <div className="panel grid gap-6 overflow-hidden rounded-3xl p-6 sm:grid-cols-[1.2fr_0.8fr] sm:p-8">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-400/90">
+          <p className="font-display text-xs font-bold uppercase tracking-[0.18em] text-[var(--coral)]">
             Course track
           </p>
-          <h1 className="mt-2 text-3xl font-semibold text-white sm:text-4xl">{meta.title}</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400">{meta.blurb}</p>
-          <p className="mt-4 text-xs text-zinc-500">
+          <h1 className="mt-2 font-display text-3xl font-bold text-[var(--ink-fg)] sm:text-4xl">
+            {meta.title}
+          </h1>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--muted)]">{meta.blurb}</p>
+          <p className="mt-4 text-xs text-[var(--muted)]">
             {lessons.length} lessons · ~{meta.estimatedHours}h · {meta.difficulty}
           </p>
           <div className="mt-6 max-w-md">
             <TrackProgressBar track={track} slugs={slugs} />
           </div>
-          <Link
-            href={`/training/${track}/${lessons[0].slug}`}
-            className="mt-6 inline-flex rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-zinc-900 hover:bg-cyan-100"
-          >
+          <Link href={`/training/${track}/${lessons[0].slug}`} className="btn-primary mt-6">
             Start / continue →
           </Link>
         </div>
