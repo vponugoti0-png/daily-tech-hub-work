@@ -37,6 +37,15 @@ export default function TermsPage() {
           is for learning; do not treat it as professional advice for production systems without
           your own verification.
         </p>
+        <h2 className="font-display text-base font-bold text-[var(--ink-fg)]">Closing an account</h2>
+        <p>
+          Email{" "}
+          <a className="text-[var(--signal)] underline-offset-2 hover:underline" href="mailto:vponugoti0@gmail.com">
+            vponugoti0@gmail.com
+          </a>{" "}
+          from the address on the account to ask us to delete it. Details are in the Privacy
+          Policy. We may also close accounts that abuse the service.
+        </p>
         <h2 className="font-display text-base font-bold text-[var(--ink-fg)]">Disclaimer</h2>
         <p>
           The site is provided “as is” without warranties. We are not liable for damages arising

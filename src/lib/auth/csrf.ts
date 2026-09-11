@@ -59,9 +59,18 @@ export async function ensureCsrfCookie(): Promise<string> {
   return token;
 }
 
+function isSameSiteFetch(req: Request): boolean {
+  const site = req.headers.get("sec-fetch-site");
+  return site === "same-origin" || site === "same-site";
+}
+
 /**
- * Validate Origin/Referer (when available) + double-submit CSRF header.
+ * Validate Origin/Referer + double-submit CSRF header.
  * Accepts any origin listed in AUTH_TRUSTED_ORIGINS (and AUTH_URL if set).
+ *
+ * Production fail-closed: if both Origin and Referer are missing, require a
+ * browser Sec-Fetch-Site of same-origin/same-site. Typical same-site fetch()
+ * and form POSTs still send Origin, so this does not block legitimate UI flows.
  */
 export async function assertCsrf(req: Request): Promise<
   { ok: true } | { ok: false; status: number; error: string }
@@ -82,6 +91,8 @@ export async function assertCsrf(req: Request): Promise<
     } catch {
       return { ok: false, status: 403, error: "Forbidden" };
     }
+  } else if (process.env.NODE_ENV === "production" && !isSameSiteFetch(req)) {
+    return { ok: false, status: 403, error: "Forbidden" };
   }
 
   const jar = await cookies();

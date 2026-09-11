@@ -11,7 +11,9 @@ function prune(now: number) {
 
 /**
  * Fixed-window rate limiter (in-memory). Fine for single-node SQLite deploys.
- * Returns { ok, retryAfterSec }.
+ * Counts are per process and reset on restart; they are not shared across
+ * multiple Fly/Railway instances. Do not treat this as a cluster-wide control.
+ * Login/signup routes call this by IP and email. Returns { ok, retryAfterSec }.
  */
 export function rateLimit(
   key: string,

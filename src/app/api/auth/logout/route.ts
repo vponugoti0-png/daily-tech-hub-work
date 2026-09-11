@@ -24,6 +24,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: csrf.error }, { status: csrf.status });
   }
 
+  // clearSessionCookie revokes the refresh family in SQLite, then expires cookies.
   await clearSessionCookie();
   try {
     await signOut({ redirect: false });

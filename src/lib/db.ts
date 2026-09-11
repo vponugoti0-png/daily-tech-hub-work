@@ -89,6 +89,17 @@ function migrate(db: Database.Database) {
     CREATE UNIQUE INDEX IF NOT EXISTS users_oauth_unique
       ON users(oauth_provider, oauth_subject)
       WHERE oauth_provider IS NOT NULL AND oauth_subject IS NOT NULL;
+
+    CREATE TABLE IF NOT EXISTS refresh_tokens (
+      jti TEXT PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      family_id TEXT NOT NULL,
+      expires_at TEXT NOT NULL,
+      revoked_at TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+    CREATE INDEX IF NOT EXISTS refresh_tokens_user_idx ON refresh_tokens(user_id);
+    CREATE INDEX IF NOT EXISTS refresh_tokens_family_idx ON refresh_tokens(family_id);
   `);
 }
 

@@ -72,8 +72,8 @@ Lessons include objectives, try-it shells (sandbox later), quizzes, outlines (mo
 - SQLite DB: `data/dth.sqlite` (gitignored)
 - Email/password APIs: `POST /api/auth/signup|login|logout`, `GET /api/auth/me`, `GET|POST /api/progress`
 - OAuth: Auth.js / NextAuth v5 at `/api/auth/*` (App Router)
-- Sessions: email/password uses short-lived httpOnly access JWT (`dth_access`, 15m) + longer refresh JWT (`dth_refresh`, 30d). Access is silently rotated from refresh on `readSession`. Legacy `dth_session` is accepted once then migrated. OAuth uses Auth.js JWT. `GET /api/auth/me` accepts either and issues a CSRF cookie (`dth_csrf`) for mutating clients.
-- Mutating email/password + progress routes require double-submit CSRF (`x-csrf-token`) and login/signup are rate-limited by IP + email. Passwords use bcrypt cost 12 and min length 8 (`src/lib/auth/password.ts`).
+- Sessions: email/password uses short-lived httpOnly access JWT (`dth_access`, 15m) + longer refresh JWT (`dth_refresh`, 30d) with a server-side `jti` row in SQLite. Access is silently rotated from refresh on `readSession`; the refresh family rotates on use (short grace window for concurrent requests). Logout revokes the family, not only cookies. Legacy `dth_session` / refresh JWTs without `jti` are accepted once then migrated. OAuth uses Auth.js JWT. `GET /api/auth/me` accepts either and issues a CSRF cookie (`dth_csrf`) for mutating clients.
+- Mutating email/password + progress routes require double-submit CSRF (`x-csrf-token`) plus a trusted Origin/Referer (`AUTH_TRUSTED_ORIGINS` + `AUTH_URL`). Login/signup are rate-limited in-memory by IP + email (single-node). Passwords use bcrypt cost 12 and min length 8 (`src/lib/auth/password.ts`).
 - Guest progress stays in `localStorage` (`dth-progress-v3`); login merges/syncs
 - OAuth users are upserted into `users` (link by email when the provider returns one; otherwise a synthetic `@oauth.local` email). `password_hash` is nullable / unusable for OAuth-only accounts. Columns: `oauth_provider`, `oauth_subject`.
 
@@ -85,6 +85,7 @@ Copy `.env.example` → `.env.local` (never commit secrets):
 |----------|---------|
 | `AUTH_SECRET` | Shared secret for Auth.js + email JWT (required in production) |
 | `AUTH_URL` / `NEXTAUTH_URL` | App origin, e.g. `http://localhost:3000` |
+| `AUTH_TRUSTED_ORIGINS` | Extra comma-separated origins allowed to POST login/signup/logout/progress (local + production hosts). `AUTH_URL` is always included. |
 | `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | Google OAuth client |
 | `AUTH_MICROSOFT_ENTRA_ID_ID` / `AUTH_MICROSOFT_ENTRA_ID_SECRET` / `AUTH_MICROSOFT_ENTRA_ID_ISSUER` | Entra ID (Azure AD) app |
 | `AUTH_TWITTER_ID` / `AUTH_TWITTER_SECRET` | X OAuth 2.0 client |

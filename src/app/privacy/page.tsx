@@ -28,8 +28,8 @@ export default function PrivacyPage() {
         <ul className="list-disc space-y-1 pl-5">
           <li>Account email, display name, and password hash (if you sign up with email).</li>
           <li>
-            If you use Google sign-in: name, email, and Google account id from Google (we do not
-            receive your Google password).
+            If you use Google, Microsoft, or X sign-in: name, email when the provider shares it, and
+            that provider’s account id (we do not receive your social-login password).
           </li>
           <li>Learning progress (lessons completed, quiz scores) tied to your account.</li>
           <li>Basic technical logs needed to run and secure the service (e.g. rate limits).</li>
@@ -47,17 +47,29 @@ export default function PrivacyPage() {
         </p>
         <h2 className="font-display text-base font-bold text-[var(--ink-fg)]">Third parties</h2>
         <p>
-          Hosting (Railway) and Google (only if you choose Google sign-in). Content you study stays
-          on our servers with your progress database.
+          We run the app on a cloud hosting provider (the project can be deployed on Fly.io or
+          Railway) and store account plus progress data in SQLite on that host. If you choose
+          social sign-in, that provider (Google, Microsoft, or X) also processes your login. Lesson
+          content and your progress stay on our servers.
+        </p>
+        <h2 className="font-display text-base font-bold text-[var(--ink-fg)]">How long we keep data</h2>
+        <p>
+          We keep your account and learning progress while the account is active. In-memory rate
+          limits and similar operational logs are short-lived and not a long-term profile. Session
+          cookies expire on their own (short-lived access, longer refresh) or when you sign out.
+          We do not publish a formal archival schedule beyond that.
         </p>
         <h2 className="font-display text-base font-bold text-[var(--ink-fg)]">Your choices</h2>
         <p>
-          You can sign out anytime. To request access, export, or deletion of your account data,
-          email{" "}
+          You can sign out anytime. To request access, an export, or deletion of your account and
+          progress, email{" "}
           <a className="text-[var(--signal)] underline-offset-2 hover:underline" href="mailto:vponugoti0@gmail.com">
             vponugoti0@gmail.com
-          </a>
-          .
+          </a>{" "}
+          from the address on the account. Say that you want the account deleted. We will remove
+          the user row and tied learning progress from our database. Social-login accounts at
+          Google, Microsoft, or X are separate — revoke access there if you also want those
+          connections closed.
         </p>
         <p>
           See also our{" "}
