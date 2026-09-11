@@ -12,7 +12,9 @@
     "generate:courses": "node scripts/generate-courses.mjs",
     "generate:shortcuts": "node scripts/generate-shortcuts.mjs",
     "seed:demo": "node -e \"require('./src/lib/db.ts')\" 2>/dev/null || node scripts/seed-demo.mjs",
-    "generate:v3": "node scripts/generate-v3-content.mjs"
+    "generate:v3": "node scripts/generate-v3-content.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
@@ -35,6 +37,7 @@
     "three": "^0.186.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/bcryptjs": "^3.0.0",
     "@types/better-sqlite3": "^9.6.0",

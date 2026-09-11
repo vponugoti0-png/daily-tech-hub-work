@@ -19,6 +19,23 @@ Open [http://localhost:3000](http://localhost:3000).
 npm run build && npm start
 ```
 
+## E2E
+
+Playwright smoke tests run against a **locally started** Next app (`webServer` in `playwright.config.ts`). They do **not** hit the Fly production deploy.
+
+The config uses `npm run dev` (not `build && start`) because a full production compile is heavy here, and `next start` sets `Secure` CSRF cookies that browsers drop on `http://127.0.0.1`. `AUTH_SECRET` is generated for the webServer process if unset.
+
+```bash
+npx playwright install chromium
+npm run test:e2e
+# optional headed inspector
+npm run test:e2e:ui
+```
+
+Coverage: native search GET form, homepage relative-time hydration, quiz submit gating, login/signup labels + failed-login `role=alert`. OAuth is skipped.
+
+Without JavaScript, `/search` stays on the App Router Suspense fallback (`Loading search…`). The no-JS smoke still asserts `method` / `action` / `name=q` and a native `form.submit()` to `/search?q=…`. Hydrated Enter covers the visible results UI.
+
 ## Demo users (free)
 
 Auto-seeded into `data/dth.sqlite` on first auth/progress API hit:
