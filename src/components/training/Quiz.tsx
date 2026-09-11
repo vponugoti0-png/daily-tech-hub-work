@@ -98,14 +98,20 @@ export function Quiz({
           <>
             <button
               type="button"
-              className="btn-primary disabled:opacity-40"
+              className="btn-primary disabled:cursor-not-allowed disabled:opacity-40"
               disabled={!allAnswered}
+              aria-disabled={!allAnswered}
+              title={
+                !allAnswered
+                  ? `Answer all questions first (${answeredCount}/${questions.length})`
+                  : "Submit answers"
+              }
               onClick={handleSubmit}
             >
               Submit answers
             </button>
             {!allAnswered ? (
-              <p className="text-sm text-[var(--muted)]">
+              <p className="text-sm font-medium text-[var(--sun)]" role="status">
                 Answer all questions to enable submit ({answeredCount}/{questions.length}).
               </p>
             ) : null}

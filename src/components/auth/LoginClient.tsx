@@ -7,6 +7,7 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { pushLocalProgressToServer } from "@/lib/progress";
 import { authedFetch } from "@/lib/auth/client";
+import { safeCallbackPath, signupHref } from "@/lib/safe-path";
 
 function LoginForm({ oauthConfigured }: { oauthConfigured: import("@/lib/auth/oauth-providers").OAuthProviderId[] }) {
   const router = useRouter();
@@ -16,6 +17,7 @@ function LoginForm({ oauthConfigured }: { oauthConfigured: import("@/lib/auth/oa
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const afterAuth = safeCallbackPath(searchParams.get("callbackUrl"));
 
   useEffect(() => {
     const err = searchParams.get("error");
@@ -44,7 +46,7 @@ function LoginForm({ oauthConfigured }: { oauthConfigured: import("@/lib/auth/oa
       }
       await pushLocalProgressToServer();
       await refresh();
-      router.push("/dashboard");
+      router.push(afterAuth);
     } catch {
       setError("Network error");
     } finally {
@@ -68,7 +70,7 @@ function LoginForm({ oauthConfigured }: { oauthConfigured: import("@/lib/auth/oa
       </div>
 
       <div className="panel space-y-4 rounded-2xl p-6">
-        <OAuthButtons initialConfigured={oauthConfigured} />
+        <OAuthButtons initialConfigured={oauthConfigured} callbackUrl={afterAuth} />
         <div className="relative py-1 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
           <span className="relative z-10 bg-[var(--panel)] px-3">or email</span>
           <span className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-[var(--ink-border)]" />
@@ -112,7 +114,7 @@ function LoginForm({ oauthConfigured }: { oauthConfigured: import("@/lib/auth/oa
       </div>
       <p className="text-sm text-[var(--muted)]">
         New here?{" "}
-        <Link href="/signup" className="text-[var(--signal)] underline-offset-2 hover:underline">
+        <Link href={signupHref(afterAuth)} className="text-[var(--signal)] underline-offset-2 hover:underline">
           Create a free account
         </Link>
       </p>
