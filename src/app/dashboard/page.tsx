@@ -118,25 +118,81 @@ export default function DashboardPage() {
             Free learning progress · 100% free
           </p>
           <h1 className="mt-2 font-display text-3xl font-bold text-[var(--ink-fg)]">
-            Sign in to sync progress
+            Your progress
           </h1>
           <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
-            Training progress on this device stays local until you sign in. There are no paid plans —
-            a free account only syncs your lessons across devices.
+            Lessons you complete are saved on this device. There are no paid plans — a free
+            account only syncs your training across devices.
           </p>
+        </div>
+
+        <div className="panel rounded-3xl p-6">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="font-display text-xs font-bold uppercase tracking-[0.16em] text-[var(--sun)]">
+                On this device
+              </p>
+              <p className="mt-1 font-display text-3xl font-bold text-[var(--ink-fg)]">
+                {overall.pct}%
+              </p>
+              <p className="text-sm text-[var(--muted)]">
+                {hasLocalProgress
+                  ? `${overall.done}/${overall.total} lessons complete locally`
+                  : `0/${overall.total} lessons complete locally — pick a free track to start`}
+              </p>
+            </div>
+            <Link href="/training" className="btn-primary">
+              {hasLocalProgress ? "Continue training" : "Start free training"}
+            </Link>
+          </div>
+          <div className="progress-track mt-4">
+            <div
+              className={`progress-fill ${overall.pct === 100 ? "done" : ""}`}
+              style={{ width: `${overall.pct}%` }}
+            />
+          </div>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          {rows.map(({ meta, done, total, pct }) => (
+            <Link
+              key={meta.id}
+              href={`/training/${meta.id}`}
+              className="panel glass-hover rounded-2xl p-5"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <h2 className="font-display text-lg font-bold text-[var(--ink-fg)]">
+                  {meta.title}
+                </h2>
+                <span className="text-sm font-bold" style={{ color: TRACK_HUE[meta.id] }}>
+                  {pct}%
+                </span>
+              </div>
+              <p className="mt-1 line-clamp-2 text-sm text-[var(--muted)]">{meta.blurb}</p>
+              <div className="progress-track mt-4">
+                <div
+                  className={`progress-fill ${pct === 100 ? "done" : ""}`}
+                  style={{ width: `${pct}%` }}
+                />
+              </div>
+              <p className="mt-2 text-xs text-[var(--muted)]">
+                {done}/{total} lessons · free track
+              </p>
+            </Link>
+          ))}
         </div>
 
         <div className="panel flex flex-col gap-4 rounded-3xl p-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="font-display text-lg font-bold text-[var(--ink-fg)]">
-              You&apos;re browsing as a guest
+              Save this progress across devices
             </p>
             <p className="mt-1 text-sm text-[var(--muted)]">
-              Sign in or create a free account to sync progress. No premium tiers — ever.
+              Sign in or create a free account to sync. Still 100% free — no premium tiers.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link href="/login" className="btn-primary">
+            <Link href="/login" className="btn-ghost">
               Sign in
             </Link>
             <Link href="/signup" className="btn-ghost">
@@ -144,61 +200,6 @@ export default function DashboardPage() {
             </Link>
           </div>
         </div>
-
-        {hasLocalProgress ? (
-          <div className="space-y-4">
-            <div>
-              <p className="font-display text-xs font-bold uppercase tracking-[0.16em] text-[var(--sun)]">
-                On this device (not synced)
-              </p>
-              <p className="mt-1 text-sm text-[var(--muted)]">
-                {overall.done}/{overall.total} lessons complete locally · {overall.pct}%
-              </p>
-            </div>
-            <div className="progress-track">
-              <div
-                className={`progress-fill ${overall.pct === 100 ? "done" : ""}`}
-                style={{ width: `${overall.pct}%` }}
-              />
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {rows.map(({ meta, done, total, pct }) => (
-                <Link
-                  key={meta.id}
-                  href={`/training/${meta.id}`}
-                  className="panel glass-hover rounded-2xl p-5"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <h2 className="font-display text-lg font-bold text-[var(--ink-fg)]">
-                      {meta.title}
-                    </h2>
-                    <span className="text-sm font-bold" style={{ color: TRACK_HUE[meta.id] }}>
-                      {pct}%
-                    </span>
-                  </div>
-                  <p className="mt-1 line-clamp-2 text-sm text-[var(--muted)]">{meta.blurb}</p>
-                  <div className="progress-track mt-4">
-                    <div
-                      className={`progress-fill ${pct === 100 ? "done" : ""}`}
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                  <p className="mt-2 text-xs text-[var(--muted)]">
-                    {done}/{total} lessons · free track
-                  </p>
-                </Link>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <p className="text-sm text-[var(--muted)]">
-            No local progress yet.{" "}
-            <Link href="/training" className="font-semibold text-[var(--coral)] hover:underline">
-              Start free training
-            </Link>
-            .
-          </p>
-        )}
       </div>
     );
   }
