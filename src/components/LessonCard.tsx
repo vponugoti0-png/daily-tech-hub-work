@@ -6,9 +6,11 @@ import type { TrainingLesson } from "@/lib/types";
 import { SoftBadge } from "./Badge";
 import { BookOpen, CheckCircle2, Clock } from "lucide-react";
 import { getLessonProgress } from "@/lib/progress";
+import { getTrackMeta } from "@/lib/tracks";
 
 export function LessonCard({ lesson }: { lesson: TrainingLesson }) {
   const [done, setDone] = useState(false);
+  const trackTitle = getTrackMeta(lesson.track)?.title ?? lesson.track.replace(/-/g, " ");
   useEffect(() => {
     setDone(Boolean(getLessonProgress(lesson.track, lesson.slug)?.completed));
   }, [lesson.track, lesson.slug]);
@@ -19,7 +21,7 @@ export function LessonCard({ lesson }: { lesson: TrainingLesson }) {
       className="group glass glass-hover flex h-full flex-col rounded-2xl p-4"
     >
       <div className="mb-2 flex flex-wrap items-center gap-1.5">
-        <SoftBadge className="capitalize">{lesson.track.replace(/-/g, " ")}</SoftBadge>
+        <SoftBadge>{trackTitle}</SoftBadge>
         <span className="inline-flex items-center gap-1 text-[11px] text-[var(--muted)]">
           <Clock className="h-3 w-3" /> {lesson.durationMinutes} min
         </span>
