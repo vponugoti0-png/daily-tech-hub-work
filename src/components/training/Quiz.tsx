@@ -5,6 +5,10 @@ import type { QuizQuestion } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { upsertLessonProgress } from "@/lib/progress";
 
+function tallyScore(questions: QuizQuestion[], answers: Record<number, number>) {
+  return questions.reduce((acc, q, i) => acc + (answers[i] === q.answer ? 1 : 0), 0);
+}
+
 export function Quiz({
   questions,
   track,
@@ -17,21 +21,39 @@ export function Quiz({
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [submitted, setSubmitted] = useState(false);
 
+  const answeredCount = Object.keys(answers).length;
+  const allAnswered = answeredCount >= questions.length;
+
   const score = useMemo(() => {
     if (!submitted) return 0;
-    return questions.reduce((acc, q, i) => acc + (answers[i] === q.answer ? 1 : 0), 0);
+    return tallyScore(questions, answers);
   }, [submitted, answers, questions]);
+
+  function handleSubmit() {
+    if (!allAnswered) return;
+    const nextScore = tallyScore(questions, answers);
+    setSubmitted(true);
+    upsertLessonProgress(track, slug, {
+      quizScore: nextScore,
+      quizTotal: questions.length,
+    });
+  }
+
+  function handleTryAgain() {
+    setAnswers({});
+    setSubmitted(false);
+  }
 
   if (!questions.length) return null;
 
   return (
     <section id="quiz" className="panel mt-10 scroll-mt-24 rounded-2xl p-5 sm:p-6">
       <h2 className="font-display text-lg font-bold text-[var(--ink-fg)]">Check your understanding</h2>
-      <p className="mt-1 text-sm text-zinc-400">Pick an answer for each question.</p>
+      <p className="mt-1 text-sm text-[var(--muted)]">Pick an answer for each question.</p>
       <div className="mt-5 space-y-6">
         {questions.map((q, qi) => (
           <fieldset key={qi} className="space-y-2">
-            <legend className="text-sm font-medium text-zinc-100">
+            <legend className="text-sm font-medium text-[var(--ink-fg)]">
               {qi + 1}. {q.question}
             </legend>
             <div className="space-y-2">
@@ -43,10 +65,13 @@ export function Quiz({
                   <label
                     key={oi}
                     className={cn(
-                      "flex cursor-pointer items-start gap-3 rounded-xl border px-3 py-2.5 text-sm transition",
-                      selected ? "border-cyan-500/40 bg-cyan-500/10" : "border-white/10 bg-white/[0.02]",
-                      correct && "border-emerald-500/50 bg-emerald-500/10",
-                      wrong && "border-rose-500/50 bg-rose-500/10",
+                      "flex items-start gap-3 rounded-xl border px-3 py-2.5 text-sm transition",
+                      submitted ? "cursor-default" : "cursor-pointer",
+                      selected
+                        ? "border-[var(--sky)]/45 bg-[var(--sky)]/12"
+                        : "border-[var(--ink-border)] bg-[var(--panel)]/70",
+                      correct && "border-[var(--mint)]/50 bg-[var(--mint)]/10",
+                      wrong && "border-[var(--coral)]/50 bg-[var(--coral)]/10",
                     )}
                   >
                     <input
@@ -57,13 +82,13 @@ export function Quiz({
                       disabled={submitted}
                       onChange={() => setAnswers((a) => ({ ...a, [qi]: oi }))}
                     />
-                    <span className="text-zinc-300">{opt}</span>
+                    <span className="text-[var(--ink-fg)]">{opt}</span>
                   </label>
                 );
               })}
             </div>
             {submitted && q.explanation ? (
-              <p className="text-xs text-zinc-400">{q.explanation}</p>
+              <p className="text-xs text-[var(--muted)]">{q.explanation}</p>
             ) : null}
           </fieldset>
         ))}
@@ -74,32 +99,26 @@ export function Quiz({
             <button
               type="button"
               className="btn-primary disabled:opacity-40"
-              disabled={Object.keys(answers).length < questions.length}
-              onClick={() => {
-                setSubmitted(true);
-                const s = questions.reduce(
-                  (acc, q, i) => acc + (answers[i] === q.answer ? 1 : 0),
-                  0,
-                );
-                upsertLessonProgress(track, slug, {
-                  quizScore: s,
-                  quizTotal: questions.length,
-                });
-              }}
+              disabled={!allAnswered}
+              onClick={handleSubmit}
             >
               Submit answers
             </button>
-            {Object.keys(answers).length < questions.length ? (
+            {!allAnswered ? (
               <p className="text-sm text-[var(--muted)]">
-                Answer all questions to enable submit ({Object.keys(answers).length}/
-                {questions.length}).
+                Answer all questions to enable submit ({answeredCount}/{questions.length}).
               </p>
             ) : null}
           </>
         ) : (
-          <p className="text-sm font-bold text-[var(--mint)]">
-            Score: {score}/{questions.length}
-          </p>
+          <>
+            <p className="text-sm font-bold text-[var(--mint)]" role="status" aria-live="polite">
+              Score: {score}/{questions.length}
+            </p>
+            <button type="button" className="btn-ghost" onClick={handleTryAgain}>
+              Try again
+            </button>
+          </>
         )}
       </div>
     </section>
