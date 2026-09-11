@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { CERT_PATH, TRACKS } from "@/lib/tracks";
 import { loadProgress, trackCompletion } from "@/lib/progress";
+import { loginHref, signupHref } from "@/lib/safe-path";
 
 const TRACK_SLUGS: Record<string, string[]> = {
   "prompt-engineering": [
@@ -111,6 +112,8 @@ export default function DashboardPage() {
     );
   }
 
+  // Guests may browse /dashboard (local progress only). Sign-in is optional
+  // sync — not a hard gate. Login/signup keep callbackUrl=/dashboard.
   if (!user) {
     return (
       <div className="space-y-8">
@@ -193,10 +196,10 @@ export default function DashboardPage() {
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link href="/login" className="btn-ghost">
+            <Link href={loginHref("/dashboard")} className="btn-ghost">
               Sign in
             </Link>
-            <Link href="/signup" className="btn-ghost">
+            <Link href={signupHref("/dashboard")} className="btn-ghost">
               Create account
             </Link>
           </div>
