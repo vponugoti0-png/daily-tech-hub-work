@@ -31,6 +31,17 @@ function pruneExpired(now = nowIso()) {
   ).run(now);
 }
 
+function familyHasLiveToken(familyId: string, now = nowIso()): boolean {
+  const row = getDb()
+    .prepare(
+      `SELECT 1 AS ok FROM refresh_tokens
+       WHERE family_id = ? AND revoked_at IS NULL AND expires_at >= ?
+       LIMIT 1`,
+    )
+    .get(familyId, now) as { ok: number } | undefined;
+  return Boolean(row);
+}
+
 export function persistRefreshToken(input: {
   jti: string;
   userId: number;
@@ -79,38 +90,58 @@ export function revokeRefreshForUser(userId: number) {
     .run(nowIso(), userId);
 }
 
+function decideRevokedRow(row: RefreshTokenRow): ConsumeRefreshResult {
+  const revokedMs = Date.parse(row.revoked_at || "");
+  const withinGrace =
+    Number.isFinite(revokedMs) && Date.now() - revokedMs < REFRESH_ROTATE_GRACE_MS;
+  // Grace is only for rotation (a live sibling exists). Logout revokes the
+  // whole family, so a stolen refresh must fail immediately.
+  if (withinGrace && familyHasLiveToken(row.family_id)) {
+    return { status: "grace", familyId: row.family_id, userId: row.user_id };
+  }
+  if (familyHasLiveToken(row.family_id)) {
+    revokeRefreshFamily(row.family_id);
+    return { status: "replay" };
+  }
+  return { status: "invalid" };
+}
+
 /**
- * Validate a presented refresh jti.
- * Active → mark revoked (caller mints a replacement in the same family).
- * Recently revoked → grace (concurrent silent-refresh).
- * Older revoked reuse → revoke the whole family (replay).
+ * Validate a presented refresh jti and, when still active, persist the
+ * replacement in the same family atomically so concurrent requests see a live
+ * sibling (grace) instead of a replay.
  */
 export function consumeRefreshJti(
   jti: string,
   expectedUserId: number,
+  next?: { jti: string; expiresAt: string },
 ): ConsumeRefreshResult {
   pruneExpired();
-  const row = getRefreshToken(jti);
-  if (!row) return { status: "invalid" };
-  if (row.user_id !== expectedUserId) return { status: "invalid" };
-  if (row.expires_at < nowIso()) return { status: "invalid" };
+  const db = getDb();
 
-  if (row.revoked_at) {
-    const revokedMs = Date.parse(row.revoked_at);
-    const withinGrace =
-      Number.isFinite(revokedMs) &&
-      Date.now() - revokedMs < REFRESH_ROTATE_GRACE_MS;
-    if (withinGrace) {
-      return { status: "grace", familyId: row.family_id, userId: row.user_id };
+  return db.transaction((): ConsumeRefreshResult => {
+    const row = getRefreshToken(jti);
+    if (!row) return { status: "invalid" };
+    if (row.user_id !== expectedUserId) return { status: "invalid" };
+    if (row.expires_at < nowIso()) return { status: "invalid" };
+
+    if (row.revoked_at) {
+      return decideRevokedRow(row);
     }
-    revokeRefreshFamily(row.family_id);
-    return { status: "replay" };
-  }
 
-  getDb()
-    .prepare(
+    if (next) {
+      persistRefreshToken({
+        jti: next.jti,
+        userId: row.user_id,
+        familyId: row.family_id,
+        expiresAt: next.expiresAt,
+      });
+    }
+
+    db.prepare(
       `UPDATE refresh_tokens SET revoked_at = ? WHERE jti = ? AND revoked_at IS NULL`,
-    )
-    .run(nowIso(), jti);
-  return { status: "active", familyId: row.family_id, userId: row.user_id };
+    ).run(nowIso(), jti);
+
+    return { status: "active", familyId: row.family_id, userId: row.user_id };
+  })();
 }

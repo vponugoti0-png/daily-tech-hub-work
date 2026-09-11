@@ -71,6 +71,24 @@ export async function createAccessToken(user: SessionUser) {
     .sign(secret());
 }
 
+async function signRefreshToken(
+  user: SessionUser,
+  opts: { jti: string; familyId: string },
+) {
+  return new SignJWT({
+    sub: String(user.id),
+    email: user.email,
+    name: user.name,
+    typ: "refresh",
+    fid: opts.familyId,
+  })
+    .setProtectedHeader({ alg: "HS256" })
+    .setJti(opts.jti)
+    .setIssuedAt()
+    .setExpirationTime(REFRESH_TTL)
+    .sign(secret());
+}
+
 export async function createRefreshToken(
   user: SessionUser,
   opts?: { familyId?: string },
@@ -83,18 +101,7 @@ export async function createRefreshToken(
     familyId,
     expiresAt: refreshExpiresAtIso(),
   });
-  return new SignJWT({
-    sub: String(user.id),
-    email: user.email,
-    name: user.name,
-    typ: "refresh",
-    fid: familyId,
-  })
-    .setProtectedHeader({ alg: "HS256" })
-    .setJti(jti)
-    .setIssuedAt()
-    .setExpirationTime(REFRESH_TTL)
-    .sign(secret());
+  return signRefreshToken(user, { jti, familyId });
 }
 
 /** @deprecated use createAccessToken + createRefreshToken */
@@ -179,7 +186,11 @@ async function sessionFromRefreshCookie(
     return user;
   }
 
-  const consumed = consumeRefreshJti(claims.jti, user.id);
+  const nextJti = randomUUID();
+  const consumed = consumeRefreshJti(claims.jti, user.id, {
+    jti: nextJti,
+    expiresAt: refreshExpiresAtIso(),
+  });
   if (consumed.status === "invalid" || consumed.status === "replay") {
     return null;
   }
@@ -188,7 +199,8 @@ async function sessionFromRefreshCookie(
     return user;
   }
 
-  const nextRefresh = await createRefreshToken(user, {
+  const nextRefresh = await signRefreshToken(user, {
+    jti: nextJti,
     familyId: consumed.familyId,
   });
   await applyRefreshedCookies(jar, user, nextRefresh);
