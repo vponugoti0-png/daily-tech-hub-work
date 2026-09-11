@@ -878,9 +878,7 @@ Open **Shortcuts** for Claude, Copilot, and Grok packs (keyboard, prompts, featu
         },
       ],
     },
-    body: `# Practice with agents & Cortex functions
-
-Agents are useful when they **name a tool and arguments**. Warehouse functions are useful when the text **already lives next to your tables**. This lesson is practice — copy a function, run a structured prompt, then verify.
+    body: `Agents are useful when they **name a tool and arguments**. Warehouse functions are useful when the text **already lives next to your tables**. This lesson is practice — copy a function, run a structured prompt, then verify.
 
 You do not need a paid account. Progress uses the same guest/local model as every other lesson.
 

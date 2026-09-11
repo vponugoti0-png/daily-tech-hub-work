@@ -27,9 +27,7 @@ test.describe("training catalog", () => {
   test("practice lesson shows TryIt, quiz, Shortcuts, and back-to-track", async ({ page }) => {
     await page.goto(PRACTICE);
 
-    await expect(
-      page.getByRole("heading", { name: /Practice with agents & Cortex functions/i }),
-    ).toBeVisible();
+    await expect(page.locator("#learn")).toHaveText(/Practice with agents & Cortex functions/i);
     await expect(page.locator(".tryit").first()).toBeVisible();
     await expect(page.getByText("SNOWFLAKE.CORTEX.COMPLETE").first()).toBeVisible();
     await expect(page.getByText("SNOWFLAKE.CORTEX.SUMMARIZE").first()).toBeVisible();
@@ -56,7 +54,7 @@ test.describe("training catalog", () => {
     await expect(prev).toBeVisible();
     await prev.click();
     await expect(page).toHaveURL(/\/training\/ai-data-eng\/ai-de-review-changes/);
-    await expect(page.getByRole("heading", { name: /Review AI-assisted changes/i })).toBeVisible();
+    await expect(page.locator("#learn")).toHaveText(/Review AI-assisted changes/i);
   });
 
   test("search indexes the new practice lesson", async ({ page }) => {
