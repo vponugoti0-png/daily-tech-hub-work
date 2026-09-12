@@ -926,6 +926,13 @@ Prefer projecting needed fields into typed columns for marts. Keep raw VARIANT i
         "Choose Jobs over ad-hoc notebooks for prod",
         "Locate Unity Catalog objects",
       ],
+      cheatSheet: [
+        {
+          label: "Medallion counts",
+          code: "SELECT layer, COUNT(*) AS row_count\nFROM (\n  SELECT 'bronze' AS layer FROM bronze_orders\n  UNION ALL\n  SELECT 'silver' FROM silver_orders\n  UNION ALL\n  SELECT 'gold' FROM gold_daily_orders\n) t\nGROUP BY layer\nORDER BY layer;",
+          note: "Run this in the local practice lab on this page — not a live workspace.",
+        },
+      ],
       quiz: [
         {
           question: "Bronze layers typically store…",
@@ -1012,6 +1019,13 @@ WHEN NOT MATCHED THEN INSERT *;
         "Target healthy file sizes",
         "Use predicate pushdown and partition filters",
         "Read Spark UI for skew/spill",
+      ],
+      cheatSheet: [
+        {
+          label: "Filter early",
+          code: "SELECT region, COUNT(*) AS n\nFROM silver_orders\nWHERE order_date >= DATE '2026-09-02'\nGROUP BY region\nORDER BY n DESC;",
+          note: "Partition-style filter you can run in the local practice lab.",
+        },
       ],
       quiz: [
         {
@@ -1173,6 +1187,13 @@ Use job clusters or serverless SQL/warehouses appropriately; pin library version
         "Pick warehouse sizes thoughtfully",
         "Use query history for tuning",
         "Separate ETL compute from BI serving",
+      ],
+      cheatSheet: [
+        {
+          label: "Serve gold",
+          code: "SELECT order_date, region, orders, revenue\nFROM gold_daily_orders\nORDER BY order_date, region;",
+          note: "BI-shaped read against gold — run it in the local practice lab.",
+        },
       ],
       quiz: [
         {

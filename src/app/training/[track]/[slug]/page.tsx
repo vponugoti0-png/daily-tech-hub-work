@@ -13,6 +13,8 @@ import { CompleteButton } from "@/components/training/CompleteButton";
 import { CopyButton } from "@/components/CopyButton";
 import { TryItBox } from "@/components/training/TryItBox";
 import { StepCards } from "@/components/training/StepCards";
+import { LocalPracticeLab } from "@/components/training/LocalPracticeLab";
+import { isDatabricksLabLesson } from "@/lib/lab/samples";
 
 export function generateStaticParams() {
   return getAllLessons().map((l) => ({ track: l.track, slug: l.slug }));
@@ -44,6 +46,7 @@ export default async function LessonPage({
   const isAiTrack =
     lesson.track === "prompt-engineering" || lesson.track === "ai-data-eng";
   const trackTitle = getTrackMeta(lesson.track)?.title ?? lesson.track;
+  const showLab = isDatabricksLabLesson(lesson.track, lesson.slug);
   const tryItLimit = isAiTrack ? 4 : 3;
   const tryItEntries = (lesson.cheatSheet ?? []).filter((e) => e.code).slice(0, tryItLimit);
   const tryItDialect =
@@ -118,6 +121,14 @@ export default async function LessonPage({
               { title: "Quiz", body: "Check understanding, then mark the checkpoint." },
             ]}
           />
+        ) : showLab ? (
+          <StepCards
+            steps={[
+              { title: "Learn", body: "Read the short lesson — the lab does not gate reading." },
+              { title: "Practice lab", body: "Run a SQL sample in the local (DuckDB) lab." },
+              { title: "Quiz", body: "Check understanding, then mark the checkpoint." },
+            ]}
+          />
         ) : null}
 
         {lesson.cheatSheet?.length ? (
@@ -158,9 +169,12 @@ export default async function LessonPage({
               code={code}
               dialect={dialect}
               hint={entry.note ?? defaultHint}
+              labHref={showLab ? "#lab" : undefined}
             />
           );
         })}
+
+        {showLab ? <LocalPracticeLab track={lesson.track} slug={lesson.slug} /> : null}
 
         <div className="mt-10">
           <Markdown source={lesson.content} />

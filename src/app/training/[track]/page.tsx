@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getLessonsByTrack } from "@/lib/content";
 import { getTrackMeta, TRACK_IDS } from "@/lib/tracks";
+import { DATABRICKS_LAB_ENTRY_SLUG } from "@/lib/lab/samples";
 import { LessonCard } from "@/components/LessonCard";
 import { TrackProgressBar } from "@/components/training/ProgressBar";
 import { ArrowLeft } from "lucide-react";
@@ -66,9 +67,19 @@ export default async function TrackPage({
           <div className="mt-6 max-w-md">
             <TrackProgressBar track={track} slugs={slugs} />
           </div>
-          <Link href={`/training/${track}/${lessons[0].slug}`} className="btn-primary mt-6">
-            Start / continue →
-          </Link>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link href={`/training/${track}/${lessons[0].slug}`} className="btn-primary">
+              Start / continue →
+            </Link>
+            {track === "databricks" ? (
+              <Link
+                href={`/training/databricks/${DATABRICKS_LAB_ENTRY_SLUG}#lab`}
+                className="btn-ghost"
+              >
+                Practice · local lab →
+              </Link>
+            ) : null}
+          </div>
         </div>
         <TrackSceneClient track={track} />
       </div>

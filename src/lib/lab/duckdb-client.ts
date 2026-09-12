@@ -1,0 +1,89 @@
+import { LAB_SEED_SQL } from "./samples";
+import { assertSafeLabSql, LAB_RESULT_ROW_LIMIT } from "./sql-guard";
+import { cellText, headerText } from "./render";
+
+export interface LabQueryResult {
+  columns: string[];
+  rows: string[][];
+  rowCount: number;
+  truncated: boolean;
+}
+
+type DuckDbModule = typeof import("@duckdb/duckdb-wasm");
+
+let dbPromise: Promise<InstanceType<DuckDbModule["AsyncDuckDB"]>> | null = null;
+
+function publicUrl(file: string): string {
+  return new URL(`/duckdb/${file}`, window.location.origin).toString();
+}
+
+async function initDb() {
+  const duckdb = await import("@duckdb/duckdb-wasm");
+  const bundles: import("@duckdb/duckdb-wasm").DuckDBBundles = {
+    mvp: {
+      mainModule: publicUrl("duckdb-mvp.wasm"),
+      mainWorker: publicUrl("duckdb-browser-mvp.worker.js"),
+    },
+    eh: {
+      mainModule: publicUrl("duckdb-eh.wasm"),
+      mainWorker: publicUrl("duckdb-browser-eh.worker.js"),
+    },
+  };
+  const bundle = await duckdb.selectBundle(bundles);
+  if (!bundle.mainWorker || !bundle.mainModule) {
+    throw new Error("Local SQL engine assets are missing. Refresh and try again.");
+  }
+  const worker = new Worker(bundle.mainWorker);
+  const logger = new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING);
+  const db = new duckdb.AsyncDuckDB(logger, worker);
+  await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+  const conn = await db.connect();
+  try {
+    await conn.query(LAB_SEED_SQL);
+  } finally {
+    await conn.close();
+  }
+  return db;
+}
+
+async function getDb() {
+  if (typeof window === "undefined") {
+    throw new Error("The local practice lab only runs in the browser.");
+  }
+  if (!dbPromise) {
+    dbPromise = initDb().catch((err) => {
+      dbPromise = null;
+      throw err;
+    });
+  }
+  return dbPromise;
+}
+
+export async function runLabSql(sql: string): Promise<LabQueryResult> {
+  const safe = assertSafeLabSql(sql);
+  const wrapped = `SELECT * FROM (${safe}) AS lab_q LIMIT ${LAB_RESULT_ROW_LIMIT + 1}`;
+  const db = await getDb();
+  const conn = await db.connect();
+  try {
+    const table = await Promise.race([
+      conn.query(wrapped),
+      new Promise<never>((_, reject) => {
+        window.setTimeout(() => reject(new Error("Query timed out (10s).")), 10_000);
+      }),
+    ]);
+    const rawNames = table.schema.fields.map((f) => f.name);
+    const columns = rawNames.map((name) => headerText(name));
+    const objects = table.toArray().map((row) => row.toJSON() as Record<string, unknown>);
+    const truncated = objects.length > LAB_RESULT_ROW_LIMIT;
+    const sliced = truncated ? objects.slice(0, LAB_RESULT_ROW_LIMIT) : objects;
+    const rows = sliced.map((obj) => rawNames.map((name) => cellText(obj[name])));
+    return {
+      columns,
+      rows,
+      rowCount: sliced.length,
+      truncated,
+    };
+  } finally {
+    await conn.close();
+  }
+}

@@ -62,6 +62,7 @@ export function CourseOutline({
   track: string;
 }) {
   const [done, setDone] = useState<Record<string, boolean>>({});
+  const [labDone, setLabDone] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -71,11 +72,12 @@ export function CourseOutline({
         m[l.slug] = Boolean(getLessonProgress(track, l.slug)?.completed);
       }
       setDone(m);
+      setLabDone((getLessonProgress(track, currentSlug)?.stepIndex ?? 0) >= 1);
     };
     refresh();
     window.addEventListener("dth-progress", refresh);
     return () => window.removeEventListener("dth-progress", refresh);
-  }, [lessons, track]);
+  }, [lessons, track, currentSlug]);
 
   const current = lessons.find((l) => l.slug === currentSlug);
   const currentDone = Boolean(done[currentSlug]);
@@ -112,7 +114,8 @@ export function CourseOutline({
             </p>
             <ul className="space-y-1">
               {current.steps.map((s) => {
-                const stepDone = s.id === "complete" && currentDone;
+                const stepDone =
+                  (s.id === "complete" && currentDone) || (s.id === "lab" && labDone);
                 return (
                   <li key={s.id}>
                     <a

@@ -12,6 +12,10 @@ objectives:
   - "Choose Jobs over ad-hoc notebooks for prod"
   - "Locate Unity Catalog objects"
 updatedAt: "2026-09-11"
+cheatSheet:
+  - label: "Medallion counts"
+    code: "SELECT layer, COUNT(*) AS row_count\nFROM (\n  SELECT 'bronze' AS layer FROM bronze_orders\n  UNION ALL\n  SELECT 'silver' FROM silver_orders\n  UNION ALL\n  SELECT 'gold' FROM gold_daily_orders\n) t\nGROUP BY layer\nORDER BY layer;"
+    note: "Run this in the local practice lab on this page — not a live workspace."
 quiz:
   - question: "Bronze layers typically store…"
     options:
