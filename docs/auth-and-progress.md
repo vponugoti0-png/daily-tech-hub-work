@@ -1,6 +1,6 @@
 # Auth and progress sync
 
-Practical notes for Frontend and QA. Implementation lives in `src/lib/auth/*` and `src/app/api/progress/route.ts`.
+Practical notes for Frontend and QA. Implementation lives in `src/lib/auth/*` and `src/app/api/progress/route.ts`. Wave B (B1 AI practice → B2 Practice Engine → B3 Git VM) reuses this session + CSRF model: [`docs/wave-b-backend-ac.md`](./wave-b-backend-ac.md).
 
 ## Sessions (`readSession`)
 
