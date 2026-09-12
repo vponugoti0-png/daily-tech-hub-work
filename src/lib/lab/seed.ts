@@ -173,7 +173,7 @@ WHERE status = 'paid';
 
 CREATE OR REPLACE TABLE metrics.orders_daily AS
 SELECT
-  order_date AS dim_order_date,
+  CAST(order_date AS VARCHAR) AS dim_order_date,
   region AS dim_region,
   COUNT(*) AS measure_order_count,
   ROUND(SUM(amount), 2) AS measure_revenue
@@ -192,7 +192,7 @@ GROUP BY c.region;
 
 CREATE OR REPLACE TABLE metrics.sf_daily_revenue AS
 SELECT
-  o.order_date AS dim_order_date,
+  CAST(o.order_date AS VARCHAR) AS dim_order_date,
   c.region AS dim_region,
   COUNT(*) AS measure_order_count,
   ROUND(SUM(o.amount), 2) AS measure_revenue
