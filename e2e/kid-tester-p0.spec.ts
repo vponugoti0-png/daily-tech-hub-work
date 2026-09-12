@@ -36,8 +36,8 @@ test.describe("Kid Tester P0s — learner UX", () => {
     await expect(quiz.getByText(/the answer is [A-D]\b/i)).toHaveCount(0);
 
     const cheer = quiz.getByTestId("quiz-cheer");
-    await expect(cheer).toBeVisible();
-    await expect(cheer).toContainText(/Nice one!/i);
+    await expect(cheer.first()).toBeVisible();
+    await expect(cheer.first()).toContainText(/Nice one!/i);
   });
 
   test("jargon chips are visible on home and Training", async ({ page }) => {
