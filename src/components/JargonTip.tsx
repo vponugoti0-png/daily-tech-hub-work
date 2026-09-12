@@ -27,7 +27,7 @@ export function JargonTip({
     <span className={cn("relative inline-flex", className)}>
       <button
         type="button"
-        className="jargon-chip cursor-help rounded-md border border-dashed border-[var(--sky)]/45 bg-[var(--sky)]/10 px-1 py-0.5 font-semibold text-[var(--sky)] underline decoration-dotted underline-offset-2"
+        className="jargon-chip cursor-help rounded-full border border-dashed border-[var(--sky)]/45 bg-[var(--sky)]/10 px-2.5 py-1 text-xs font-semibold text-[var(--sky)] underline decoration-dotted underline-offset-2"
         aria-describedby={open ? tipId : undefined}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
@@ -55,15 +55,38 @@ export function JargonTip({
   );
 }
 
+/** Kid-friendly chips shown on Home + Training (DE / DBX / ETL / …). */
+export const HOME_TRAINING_JARGON = ["DE", "DBX", "ETL", "SQL", "Pipeline"] as const;
+
+export function JargonChips({
+  terms = HOME_TRAINING_JARGON,
+}: {
+  terms?: readonly string[];
+}) {
+  const entries = terms
+    .map((term) => findJargon(term))
+    .filter((e): e is JargonEntry => Boolean(e));
+
+  return (
+    <div data-testid="jargon-chips" aria-label="Plain English jargon" className="flex flex-wrap gap-2">
+      {entries.map((e) => (
+        <JargonTip key={e.term} term={e.term}>
+          {e.term} = {e.plain}
+        </JargonTip>
+      ))}
+    </div>
+  );
+}
+
 export function JargonLegend({ entries = [] as JargonEntry[] }: { entries?: JargonEntry[] }) {
   const list = entries.length
     ? entries
     : [
         findJargon("DE")!,
         findJargon("DBX")!,
-        findJargon("CLI")!,
+        findJargon("ETL")!,
         findJargon("SQL")!,
-        findJargon("Cortex")!,
+        findJargon("Pipeline")!,
       ].filter(Boolean);
 
   return (

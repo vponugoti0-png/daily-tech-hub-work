@@ -191,14 +191,14 @@ export default function DashboardPage() {
       <div className="space-y-8">
         <div>
           <p className="font-display text-xs font-bold uppercase tracking-[0.2em] text-[var(--coral)]">
-            Free learning progress · 100% free
+            Progress on this device
           </p>
           <h1 className="mt-2 font-display text-3xl font-bold text-[var(--ink-fg)]">
             Your progress
           </h1>
           <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
-            Lessons you complete are saved on this device. There are no paid plans — a free
-            account only syncs your training across devices.
+            Lessons you complete are saved on this device. An account is optional if you
+            want the same progress on another device.
           </p>
           <p className="mt-3 max-w-2xl text-xs text-[var(--muted)]">
             <span className="font-semibold text-[var(--sky)]">{META_DE_OVERLAY.eyebrow}.</span>{" "}
@@ -268,7 +268,7 @@ export default function DashboardPage() {
               Save this progress across devices
             </p>
             <p className="mt-1 text-sm text-[var(--muted)]">
-              Sign in or create a free account to sync. Still 100% free — no premium tiers.
+              Sign in only if you want the same progress on another device. Guests are welcome.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -288,7 +288,7 @@ export default function DashboardPage() {
     <div className="space-y-8">
       <div>
         <p className="font-display text-xs font-bold uppercase tracking-[0.2em] text-[var(--coral)]">
-          My progress · 100% free
+          My progress
         </p>
         <h1 className="mt-2 font-display text-3xl font-bold text-[var(--ink-fg)]">My progress</h1>
         <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">

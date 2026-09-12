@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { Keyboard, Sparkles, Table2 } from "lucide-react";
+import { FlaskConical, Keyboard, Sparkles, Table2 } from "lucide-react";
+import { JargonChips, JargonTip } from "@/components/JargonTip";
+import { FIRST_LESSON_HREF, STARTER_PRACTICE_HREF } from "@/lib/learner-paths";
 
 const CHOICES = [
   {
-    href: "/training/prompt-engineering",
+    href: FIRST_LESSON_HREF,
     title: "Learn with AI prompts",
     blurb: "Ask better questions and practice with Claude, Copilot, or Grok.",
     icon: Sparkles,
@@ -11,7 +13,7 @@ const CHOICES = [
     chip: "Beginner",
   },
   {
-    href: "/training/sql",
+    href: "/training/sql/sql-select-filter-nulls",
     title: "Learn SQL",
     blurb: "Talk to databases with simple queries — windows, joins, and checks.",
     icon: Table2,
@@ -47,7 +49,10 @@ export function StartHere() {
             Pick one path — no wrong answer
           </h2>
           <p className="mt-1 max-w-2xl text-sm text-[var(--muted)]">
-            Three friendly doors. Tap any card and you&apos;re learning.
+            Three friendly doors. The first lesson is Ask AI better questions — tap any card
+            and you&apos;re learning{" "}
+            <JargonTip term="DE">DE</JargonTip> /{" "}
+            <JargonTip term="ETL">ETL</JargonTip> words in Plain English as you go.
           </p>
         </div>
       </div>
@@ -76,6 +81,33 @@ export function StartHere() {
             </Link>
           );
         })}
+      </div>
+      <Link
+        href={STARTER_PRACTICE_HREF}
+        data-testid="practice-cta"
+        className="mt-4 flex flex-col gap-2 rounded-2xl border-2 border-[var(--mint)]/40 bg-[var(--mint)]/10 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <span className="flex items-start gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--panel)]">
+            <FlaskConical className="h-5 w-5 text-[var(--mint)]" aria-hidden />
+          </span>
+          <span>
+            <span className="block font-display text-sm font-bold text-[var(--ink-fg)]">
+              Practice in the SQL lab
+            </span>
+            <span className="mt-0.5 block text-sm text-[var(--muted)]">
+              Run a real <JargonTip term="SQL">SQL</JargonTip> sample in the browser — not a live
+              warehouse. Same Training routes; no extra header item.
+            </span>
+          </span>
+        </span>
+        <span className="btn-primary shrink-0 self-start sm:self-center">Open practice →</span>
+      </Link>
+      <div className="plain-english-panel mt-4">
+        <p className="mb-2 font-display text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--sky)]">
+          Plain English
+        </p>
+        <JargonChips />
       </div>
     </section>
   );

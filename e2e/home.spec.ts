@@ -24,7 +24,9 @@ test.describe("homepage hero", () => {
     const headline = page.getByRole("heading", { name: /Daily Tech Hub v3/i });
     await expect(headline).toBeVisible();
     await expect(headline).not.toHaveCSS("opacity", "0");
-    await expect(page.getByText(/Today ·/)).toBeVisible();
+    await expect(
+      page.getByText(/Today · (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{1,2}, \d{4}/),
+    ).toBeVisible();
 
     // Hero “updated” cluster: SSR paints an absolute datetime; after mount it
     // may switch to relative time (“ago”) plus the same UTC stamp on sm+.

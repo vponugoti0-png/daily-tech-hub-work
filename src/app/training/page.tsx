@@ -4,6 +4,7 @@ import { getAllLessons, getLesson, getLessonsByTrack } from "@/lib/content";
 import { SectionHeader } from "@/components/SectionHeader";
 import { META_DE_OVERLAY, TRACKS } from "@/lib/tracks";
 import { TrainingFilters } from "@/components/training/TrainingFilters";
+import { JargonChips } from "@/components/JargonTip";
 
 export const metadata: Metadata = {
   title: "Training",
@@ -24,10 +25,17 @@ export default function TrainingPage() {
   return (
     <div className="space-y-10">
       <SectionHeader
-        eyebrow="Training · 100% free"
+        eyebrow="Training · guest-friendly"
         title="Interactive course tracks"
-        description="Bite-sized lessons with try-it shells, quizzes, and cert-style checkpoints. No paywalls."
+        description="Bite-sized lessons with try-it shells and quizzes. Learn as a guest — an account is optional."
       />
+
+      <div className="plain-english-panel">
+        <p className="mb-2 font-display text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--sky)]">
+          Plain English
+        </p>
+        <JargonChips />
+      </div>
 
       <div className="panel rounded-3xl p-5">
         <p className="font-display text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--sky)]">

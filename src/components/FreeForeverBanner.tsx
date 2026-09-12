@@ -16,8 +16,8 @@ export function FreeForeverBanner({ compact = false }: { compact?: boolean }) {
 
   return (
     <div className="rounded-2xl border border-[var(--mint)]/35 bg-[var(--mint)]/10 px-4 py-3 text-sm text-[var(--ink-fg)]">
-      <strong className="font-display text-[var(--mint)]">Always free.</strong>{" "}
-      No paywalls — an account only syncs your training progress.
+      <strong className="font-display text-[var(--mint)]">Learn as a guest.</strong>{" "}
+      An account is optional — only if you want the same progress on another device.
       {!loading && !user ? (
         <>
           {" "}
@@ -25,7 +25,7 @@ export function FreeForeverBanner({ compact = false }: { compact?: boolean }) {
             href="/signup"
             className="font-semibold text-[var(--coral)] underline decoration-[var(--coral)] underline-offset-2"
           >
-            Create a free account
+            Optional account
           </Link>
         </>
       ) : null}

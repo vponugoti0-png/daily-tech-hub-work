@@ -15,7 +15,19 @@ const MONTHS = [
   "Dec",
 ] as const;
 
+const DATE_ONLY = /^(\d{4})-(\d{2})-(\d{2})$/;
+
 function parseDate(value: string): Date | null {
+  // Date-only strings are UTC calendar days (same as refresh-daily / todayISODate).
+  // parseISO("YYYY-MM-DD") is local midnight — getUTC* then shifts the day in UTC+.
+  const dateOnly = DATE_ONLY.exec(value);
+  if (dateOnly) {
+    const y = Number(dateOnly[1]);
+    const m = Number(dateOnly[2]);
+    const day = Number(dateOnly[3]);
+    const d = new Date(Date.UTC(y, m - 1, day));
+    return isValid(d) ? d : null;
+  }
   const d = parseISO(value);
   return isValid(d) ? d : null;
 }
@@ -43,6 +55,7 @@ export function relativeTime(value: string): string {
   return formatDistanceToNow(d, { addSuffix: true });
 }
 
+/** UTC civil date (YYYY-MM-DD). Matches formatDate / the hero Today chip. */
 export function todayISODate(): string {
   const d = new Date();
   const y = d.getUTCFullYear();

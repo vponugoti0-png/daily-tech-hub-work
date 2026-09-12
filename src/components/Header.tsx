@@ -190,7 +190,7 @@ export function Header() {
                 onClick={() => setOpen(false)}
                 className="rounded-lg px-3 py-2.5 text-sm font-semibold text-[var(--coral)]"
               >
-                Sign up free
+                Optional account
               </Link>
             )}
           </nav>

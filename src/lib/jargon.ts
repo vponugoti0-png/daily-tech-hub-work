@@ -77,6 +77,31 @@ export const JARGON: JargonEntry[] = [
     plain: "Safe practice area",
     tip: "A place to try code without breaking real systems.",
   },
+  {
+    term: "Delta Lake",
+    plain: "Spreadsheet-with-history for big tables",
+    tip: "A lakehouse table format that keeps versions so you can undo a bad write.",
+  },
+  {
+    term: "Medallion",
+    plain: "Bronze → Silver → Gold layers",
+    tip: "Raw data, then cleaned data, then the tables dashboards read.",
+  },
+  {
+    term: "Schema",
+    plain: "Table blueprint",
+    tip: "The list of columns and types a table is allowed to have.",
+  },
+  {
+    term: "Cluster",
+    plain: "Shared computers for a job",
+    tip: "The machines Databricks starts to run your notebook or pipeline.",
+  },
+  {
+    term: "Incremental",
+    plain: "Only the new rows",
+    tip: "A job that loads today’s changes instead of re-reading the whole table.",
+  },
 ];
 
 export function findJargon(word: string): JargonEntry | undefined {

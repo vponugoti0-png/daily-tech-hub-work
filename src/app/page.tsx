@@ -6,7 +6,7 @@ import { ReleaseCard } from "@/components/ReleaseCard";
 import { ShortcutCard } from "@/components/ShortcutCard";
 import { FreeForeverBanner } from "@/components/FreeForeverBanner";
 import { StartHere } from "@/components/StartHere";
-import { JargonLegend } from "@/components/JargonTip";
+import { JargonTip } from "@/components/JargonTip";
 import { getFeaturedBundle, getLessonsByTrack } from "@/lib/content";
 import { PRIMARY_TRACKS } from "@/lib/tracks";
 import Link from "next/link";
@@ -30,10 +30,6 @@ export default function HomePage() {
       <Hero digest={digest} />
       <StartHere />
       <FreeForeverBanner />
-
-      <section className="plain-english-panel" aria-label="Plain English glossary">
-        <JargonLegend />
-      </section>
 
       <section>
         <div className="mb-4 flex items-end justify-between gap-3">
@@ -66,7 +62,18 @@ export default function HomePage() {
                   {t.title}
                 </h3>
                 <p className="mt-1 line-clamp-2 text-sm text-[var(--muted)]">
-                  {FRIENDLY_BLURB[t.id] ?? t.blurb}
+                  {t.id === "databricks" ? (
+                    <>
+                      Learn <JargonTip term="DBX">Databricks (DBX)</JargonTip> lakehouse basics.
+                    </>
+                  ) : t.id === "forward-deployed" ? (
+                    <>
+                      Deliver <JargonTip term="DE">DE</JargonTip>/AI platforms in a customer{" "}
+                      <JargonTip term="Warehouse">warehouse</JargonTip>.
+                    </>
+                  ) : (
+                    (FRIENDLY_BLURB[t.id] ?? t.blurb)
+                  )}
                 </p>
                 <p className="mt-2 text-[11px] text-[var(--muted)]">
                   {count} short lessons · ~{t.estimatedHours}h
@@ -140,11 +147,12 @@ export default function HomePage() {
             Ready for the next checkpoint?
           </h2>
           <p className="mt-1 text-sm text-[var(--muted)]">
-            Free account syncs progress. No premium tiers — ever.
+            Keep going as a guest. A free account is optional if you want the same
+            progress on another device.
           </p>
         </div>
-        <Link href="/signup" className="btn-primary shrink-0">
-          Sign up free <ArrowRight className="h-4 w-4" />
+        <Link href="/signup" className="btn-ghost shrink-0">
+          Optional account <ArrowRight className="h-4 w-4" />
         </Link>
       </section>
     </div>

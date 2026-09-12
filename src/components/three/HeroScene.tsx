@@ -203,7 +203,7 @@ function SoftStars() {
 
 export function HeroScene() {
   return (
-    <div className="pointer-events-none absolute inset-0 -z-0 opacity-90" aria-hidden="true">
+    <div className="pointer-events-none absolute inset-0 z-0 opacity-90" aria-hidden="true">
       <Canvas
         camera={{ position: [0, 0.35, 5.4], fov: 40 }}
         dpr={[1, 1.35]}
