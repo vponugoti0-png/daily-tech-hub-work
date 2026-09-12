@@ -61,7 +61,7 @@
 | **Schema sidebar** (tables/columns for seed DB) | DataLab schema browser | Frontend |
 | **Restore sample DB** button | W3Schools Restore | Frontend |
 | **Hint / solution reveal** after N failed runs | DataCamp hint ladder | Frontend + content |
-| **Exercise checks** (assert row count / column present) | DataCamp XP checks | Frontend + light Backend — Wave B Practice Engine AC: [`docs/wave-b-backend-ac.md`](./wave-b-backend-ac.md) |
+| **Exercise checks** (assert row count / column present) | DataCamp XP checks | Frontend + light Backend — Wave B **B2** Practice Engine: [`docs/wave-b-backend-ac.md`](./wave-b-backend-ac.md) |
 | Phase 2 labs: Snowflake → SQL → Python | Same shell pattern | Product stamp |
 
 ### P2 — training experience
