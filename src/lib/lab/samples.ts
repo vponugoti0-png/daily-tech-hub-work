@@ -67,6 +67,13 @@ export const PYTHON_LAB_SLUGS = [
   "python-datetimes-watermarks",
   "python-comprehensions-chunks",
   "python-logging-not-print",
+  "python-dataframe-contracts",
+  "python-typing-for-pipelines",
+  "python-idempotent-writers",
+  "python-config-and-secrets",
+  "python-orchestration-hooks",
+  "python-performance-de",
+  "python-etl-pipeline-builder",
 ] as const;
 
 export const GIT_LAB_SLUGS = [
@@ -1161,16 +1168,179 @@ for batch in chunks(rows):
     print([r["order_id"] for r in batch])`,
     note: "yield keeps RAM flat on a real extract. list(chunks(...)) undoes the point.",
   },
+  {
+    id: "py-read-orders-csv",
+    label: "Read /data/orders.csv",
+    code: `import csv
+from pathlib import Path
+
+REQUIRED = ("order_id", "status", "amount")
+
+def assert_row(row: dict) -> dict:
+    missing = [k for k in REQUIRED if not row.get(k)]
+    if missing:
+        raise ValueError(f"missing keys: {missing}")
+    return row
+
+path = Path("/data/orders.csv")
+with path.open(encoding="utf-8") as f:
+    rows = [assert_row(r) for r in csv.DictReader(f)]
+print(len(rows), "rows")
+print(rows[0])`,
+    note: "stdlib csv — not pandas. The lab seeds /data/orders.csv. Empty promo_code is fine; empty order_id is not.",
+  },
+  {
+    id: "py-read-customers-json",
+    label: "Read /data/customers.json",
+    code: `import json
+from pathlib import Path
+
+customers = json.loads(Path("/data/customers.json").read_text(encoding="utf-8"))
+active = [c for c in customers if c["status"] == "active"]
+print("active", len(active), "of", len(customers))
+print(active[0])`,
+    note: "json.loads at the edge. Same habit as a warehouse customer dim — local file, not a live catalog.",
+  },
+  {
+    id: "py-typed-row",
+    label: "TypedDict + missing keys",
+    code: `from typing import TypedDict, NotRequired
+
+class OrderRow(TypedDict):
+    order_id: int
+    status: str
+    amount: float
+    promo_code: NotRequired[str | None]
+
+def missing_keys(row: dict, required: tuple[str, ...]) -> list[str]:
+    return [k for k in required if k not in row]
+
+row: OrderRow = {"order_id": 1001, "status": "paid", "amount": 42.5}
+print("missing", missing_keys(row, ("order_id", "status", "amount")))
+print(row)`,
+    note: "Types document the contract. Runtime still checks the landing — TypedDict does not validate at run.",
+  },
+  {
+    id: "py-idempotent-publish",
+    label: "Overwrite staging (retry-safe)",
+    code: `import csv
+import json
+from pathlib import Path
+
+STAGING = Path("/data/staging/orders.json")
+
+def extract() -> list[dict]:
+    with Path("/data/orders.csv").open(encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+def publish(rows: list[dict]) -> None:
+    STAGING.parent.mkdir(parents=True, exist_ok=True)
+    STAGING.write_text(json.dumps(rows, indent=2), encoding="utf-8")
+
+rows = extract()
+publish(rows)
+publish(rows)  # retry — replace, do not append
+print(STAGING.read_text(encoding="utf-8"))`,
+    note: "Same file, same bytes on retry. Append would double the grain. Spark partition overwrite is the warehouse twin.",
+  },
+  {
+    id: "py-job-config",
+    label: "Load /data/config/job.json",
+    code: `import json
+from pathlib import Path
+
+cfg = json.loads(Path("/data/config/job.json").read_text(encoding="utf-8"))
+required = ("warehouse", "database", "dry_run")
+missing = [k for k in required if k not in cfg]
+if missing:
+    raise ValueError(f"missing config: {missing}")
+if any(k in cfg for k in ("password", "secret", "token")):
+    raise ValueError("do not store secrets in the job file")
+print(cfg["warehouse"], cfg["database"], "dry_run=", cfg["dry_run"])`,
+    note: "Names in git, values from env/secret manager in prod. This file is a dry-run fixture — no credentials.",
+  },
+  {
+    id: "py-orchestrator-door",
+    label: "run(start, end, dry_run)",
+    code: `def run(start: str, end: str, dry_run: bool = False) -> dict:
+    metrics = {"start": start, "end": end, "status": "dry_run" if dry_run else "ok"}
+    print(metrics)
+    return metrics
+
+print(run("2026-09-01", "2026-09-02", dry_run=True))`,
+    note: "Date windows are the job interface. Orchestrators pass --start/--end; this lab just calls run().",
+  },
+  {
+    id: "py-chunk-csv",
+    label: "Chunk /data/orders.csv",
+    code: `import csv
+from pathlib import Path
+
+def extract_chunks(path: Path, size=2):
+    with path.open(encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    offset = 0
+    while offset < len(rows):
+        batch = rows[offset : offset + size]
+        yield batch
+        offset += len(batch)
+
+for chunk in extract_chunks(Path("/data/orders.csv")):
+    print([r["order_id"] for r in chunk])`,
+    note: "Chunk so a 20GB extract never lands in RAM. Do not concat every chunk back into one list.",
+  },
+  {
+    id: "py-etl-stdlib",
+    label: "extract → transform → load",
+    code: `import csv
+import json
+from pathlib import Path
+
+REQUIRED = ("order_id", "status", "amount")
+
+def extract(path: Path) -> list[dict]:
+    with path.open(encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+def transform(rows: list[dict]) -> list[dict]:
+    out = []
+    for row in rows:
+        missing = [k for k in REQUIRED if not row.get(k)]
+        if missing:
+            raise ValueError(f"missing: {missing}")
+        if row["status"] == "paid":
+            out.append(row)
+    return out
+
+def load(rows: list[dict], dest: Path) -> None:
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(json.dumps(rows, indent=2), encoding="utf-8")
+
+raw = extract(Path("/data/orders.csv"))
+clean = transform(raw)
+dest = Path("/data/staging/paid_orders.json")
+load(clean, dest)
+print("rows_in", len(raw), "rows_out", len(clean))
+print(dest.read_text(encoding="utf-8"))`,
+    note: "I/O at the edges. transform is pytest-able. pandas/SQL twins live in the lesson body — this lab is stdlib + /data files.",
+  },
 ];
 
 const PYTHON_BY_LESSON: Record<PythonLabSlug, string[]> = {
   "python-none-dicts-rows": ["py-unknown-promos", "py-assert-row", "py-paid-only", "py-promo-lookup"],
   "python-functions-pure-transforms": ["py-paid-only", "py-no-mutate", "py-assert-row", "py-promo-lookup"],
-  "python-pathlib-extracts": ["py-landing-glob", "py-assert-row", "py-parse-landing", "py-returns-landing"],
+  "python-pathlib-extracts": ["py-landing-glob", "py-read-orders-csv", "py-assert-row", "py-parse-landing", "py-returns-landing"],
   "python-exceptions-retries": ["py-loud-transform", "py-assert-row", "py-unknown-promos", "py-retry-shape"],
   "python-datetimes-watermarks": ["py-watermark", "py-project-filter", "py-window-overlap"],
   "python-comprehensions-chunks": ["py-project-filter", "py-chunk-ids", "py-paid-only", "py-chunk-landing"],
   "python-logging-not-print": ["py-job-log", "py-paid-only", "py-parse-landing"],
+  "python-dataframe-contracts": ["py-read-orders-csv", "py-assert-row", "py-read-customers-json"],
+  "python-typing-for-pipelines": ["py-typed-row", "py-assert-row", "py-read-orders-csv"],
+  "python-idempotent-writers": ["py-idempotent-publish", "py-read-orders-csv", "py-paid-only"],
+  "python-config-and-secrets": ["py-job-config", "py-assert-row"],
+  "python-orchestration-hooks": ["py-orchestrator-door", "py-job-log", "py-paid-only"],
+  "python-performance-de": ["py-chunk-csv", "py-chunk-ids", "py-project-filter"],
+  "python-etl-pipeline-builder": ["py-etl-stdlib", "py-idempotent-publish", "py-read-orders-csv"],
 };
 
 export function samplesForLesson(slug: string): LabSample[] {

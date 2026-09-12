@@ -11,11 +11,17 @@ objectives:
   - "Load typed config from env"
   - "Never commit secrets"
   - "Separate prod/staging endpoints cleanly"
-updatedAt: "2026-09-11"
+updatedAt: "2026-09-12"
 cheatSheet:
-  - label: "Env, not notebooks"
-    code: "settings = Settings(\n    warehouse=os.environ[\"WH\"],\n    database=os.environ[\"DB\"],\n    dry_run=os.environ.get(\"DRY_RUN\", \"0\") == \"1\",\n)\n# Password: secret manager / CI inject — never commit."
-    note: "12-factor. Staging and prod are different env files, not if/else in code."
+  - label: "Load job.json (no secrets)"
+    code: "import json\nfrom pathlib import Path\n\ncfg = json.loads(Path(\"/data/config/job.json\").read_text(encoding=\"utf-8\"))\nrequired = (\"warehouse\", \"database\", \"dry_run\")\nmissing = [k for k in required if k not in cfg]\nif missing:\n    raise ValueError(f\"missing config: {missing}\")\nif any(k in cfg for k in (\"password\", \"secret\", \"token\")):\n    raise ValueError(\"do not store secrets in the job file\")\nprint(cfg[\"warehouse\"], cfg[\"database\"], \"dry_run=\", cfg[\"dry_run\"])"
+    note: "Run in the local lab. Names belong in git; passwords never do. This fixture has no credentials."
+  - label: "Required env names"
+    code: "import os\n\nREQUIRED = (\"WH\", \"DB\")\nmissing = [k for k in REQUIRED if k not in os.environ]\nprint(\"missing env\", missing or \"none — set these in the job, not the notebook\")"
+    note: "The in-browser lab has no secret manager. Fail loud when a name is absent — never default a password."
+  - label: "DRY_RUN flag"
+    code: "dry_run = True  # from /data/config/job.json in the lab\nprint(\"would load\" if dry_run else \"loading\")"
+    note: "A dry-run rehearses extract/transform without publishing. Orchestrators pass the flag."
 quiz:
   - question: "Where should warehouse passwords live?"
     options:
@@ -45,6 +51,8 @@ quiz:
 ---
 
 # Config, secrets, and environment boundaries
+
+Practice loading `/data/config/job.json` in the **local practice lab** on this page. That fixture has warehouse/database names and `dry_run` — **no passwords**. Pydantic + env injection below is the repo twin.
 
 ## Typed settings
 

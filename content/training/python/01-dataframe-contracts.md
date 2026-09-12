@@ -11,17 +11,17 @@ objectives:
   - "Define explicit column contracts at pipeline boundaries"
   - "Write pure transform functions that are unit-testable"
   - "Handle unmatched joins without silent data loss"
-updatedAt: "2026-09-11"
+updatedAt: "2026-09-12"
 cheatSheet:
-  - label: "Assert columns"
-    code: "REQUIRED = (\"order_id\", \"amount\", \"status\")\nmissing = set(REQUIRED) - set(df.columns)\nif missing:\n    raise ValueError(f\"missing columns: {sorted(missing)}\")"
-    note: "Fail loud at the boundary. Copy into a notebook — this lesson is not a lab host."
+  - label: "Assert columns (stdlib)"
+    code: "import csv\nfrom pathlib import Path\n\nREQUIRED = (\"order_id\", \"status\", \"amount\")\n\ndef assert_row(row: dict) -> dict:\n    missing = [k for k in REQUIRED if not row.get(k)]\n    if missing:\n        raise ValueError(f\"missing keys: {missing}\")\n    return row\n\nwith Path(\"/data/orders.csv\").open(encoding=\"utf-8\") as f:\n    rows = [assert_row(r) for r in csv.DictReader(f)]\nprint(len(rows), rows[0])"
+    note: "Fail loud at the boundary. Run this in the local lab — /data/orders.csv is seeded. pandas/Spark twins stay in the lesson body."
   - label: "Latest dedupe"
-    code: "df.sort_values(\"updated_at\").drop_duplicates(\"order_id\", keep=\"last\")"
-    note: "Same grain as warehouse silver: one row per natural key."
+    code: "rows = [\n    {\"order_id\": 1, \"updated_at\": \"2026-09-01\", \"amount\": 10},\n    {\"order_id\": 1, \"updated_at\": \"2026-09-12\", \"amount\": 12.5},\n]\nlatest = {}\nfor row in sorted(rows, key=lambda r: r[\"updated_at\"]):\n    latest[row[\"order_id\"]] = row\nprint(list(latest.values()))"
+    note: "Same grain as warehouse silver: one row per natural key. sort_values().drop_duplicates(keep=\"last\") is the pandas twin."
   - label: "Unmatched keys"
-    code: "unmatched = left.merge(right, on=\"user_id\", how=\"left\", indicator=True)\nmissing = unmatched[unmatched[\"_merge\"] == \"left_only\"]"
-    note: "Do not drop unmatched ids silently. Quarantine or count them."
+    code: "import json\nfrom pathlib import Path\n\nevents = [{\"user_id\": 1}, {\"user_id\": 9}]\nusers = {c[\"customer_id\"] for c in json.loads(Path(\"/data/customers.json\").read_text())}\nmissing = [e[\"user_id\"] for e in events if e[\"user_id\"] not in users]\nprint(\"unmatched\", missing)"
+    note: "Do not drop unmatched ids silently. Quarantine or count them. A left merge with indicator is the pandas twin."
 quiz:
   - question: "Why prefer pure transform functions over notebook cells with I/O mixed in?"
     options:
@@ -61,6 +61,8 @@ quiz:
 # DataFrame contracts for ETL utilities
 
 Silent data bugs — wrong joins, dropped nulls, “helpful” coercion — cost more than loud failures. Build **contract-first** ETL utilities.
+
+Practice the stdlib shape in the **local practice lab** on this page (`#lab`): read `/data/orders.csv` and `/data/customers.json`. pandas/PySpark twins stay in the body — this lab is not a Spark kernel.
 
 ## Column contracts
 

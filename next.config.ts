@@ -45,8 +45,10 @@ const oauthOriginList = [...oauthBrowserOrigins].join(" ");
 // wasm-unsafe-eval: DuckDB-WASM + Pyodide compile for local practice labs.
 // Safer than widening script-src with full unsafe-eval in production.
 // Python assets are copied to /public/pyodide (same-origin). No CDN host is
-// required. If Security later prefers jsDelivr, add https://cdn.jsdelivr.net
-// to script-src and connect-src — see the practice PR body.
+// required. WAVE A #3 (deeper Python lab) does not change CSP — keep
+// script-src / connect-src / worker-src on 'self' + wasm-unsafe-eval.
+// If Security later prefers jsDelivr, add https://cdn.jsdelivr.net
+// to script-src and connect-src — see docs/python-local-lab.md.
 const scriptSrc = isDev
   ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'"
   : "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'";

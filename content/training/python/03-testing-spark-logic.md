@@ -11,11 +11,14 @@ objectives:
   - "Separate pure rules from Spark I/O"
   - "Use pytest fixtures for small DataFrames"
   - "Assert on row sets, not printouts"
-updatedAt: "2026-09-11"
+updatedAt: "2026-09-12"
 cheatSheet:
-  - label: "Pure rule + tiny fixture"
-    code: "def is_late(event_ts, watermark) -> bool:\n    return event_ts < watermark\n\ndef test_late_row():\n    assert is_late(t0, t1) is True"
-    note: "No cluster for the rule. Pin Spark later with 2-row fixtures."
+  - label: "Pure late rule"
+    code: "def is_late(event_ts: str, watermark: str) -> bool:\n    return event_ts < watermark\n\nassert is_late(\"2026-09-01\", \"2026-09-12\") is True\nprint(\"ok\")"
+    note: "Copy into pytest. This lesson stays copy-to-repo — Spark fixtures are not an in-browser kernel."
+  - label: "pytest-shaped assert"
+    code: "def paid_only(rows):\n    return [r for r in rows if r[\"status\"] == \"paid\"]\n\ngot = paid_only([{\"status\": \"paid\"}, {\"status\": \"pending\"}])\nassert [r[\"status\"] for r in got] == [\"paid\"]\nprint(got)"
+    note: "Assert on the row set, not a printout. Run pytest in your repo — no cluster required for the rule."
 quiz:
   - question: "Best first test for a watermark policy?"
     options:
@@ -47,6 +50,8 @@ quiz:
 # Testing Spark-bound logic in pure Python
 
 Clusters are slow feedback. Extract rules you can test in milliseconds.
+
+This lesson stays **Copy to practice** (pytest + optional Spark fixtures). The in-browser lab is stdlib + `/data` files — not a cluster. Use [contracts](/training/python/python-dataframe-contracts#lab) or [None/dicts](/training/python/python-none-dicts-rows#lab) to run small Python samples.
 
 ## Pattern
 
