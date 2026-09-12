@@ -23,7 +23,7 @@ test.describe("SQL foundations local practice lab", () => {
     const lab = page.locator("#lab");
     await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
     await expect(lab.getByText(/Coming soon: connect workspace/i)).toBeVisible();
-    await expect(lab.getByText(/Not a live warehouse/i)).toBeVisible();
+    await expect(lab.getByText(/Not a live warehouse\. SQL samples run locally/i)).toBeVisible();
   });
 
   test("open lab → run sample → see result → guest progress persists", async ({ page }) => {
