@@ -82,7 +82,9 @@ test.describe("Python local practice lab — file editor + VFS", () => {
     await expect(dataEditor).toHaveValue(/order_id,status,amount/);
     await expect(dataEditor).toHaveValue(/1001,paid,42.50,FALL26/);
     await expect(lab.getByText(/Seeded VFS/)).toBeVisible();
-    await expect(lab.locator("span.font-mono", { hasText: "/data/orders.csv" })).toBeVisible();
+    await expect(
+      lab.getByRole("region", { name: "Lab files" }).getByText("/data/orders.csv", { exact: true }),
+    ).toBeVisible();
 
     await lab.getByRole("tab", { name: "main.py", exact: true }).click();
     await lab.getByLabel("Python sample", { exact: true }).selectOption({ label: "Read /data/orders.csv" });
