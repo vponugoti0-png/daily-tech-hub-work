@@ -9,6 +9,10 @@ export const STARTER_PRACTICE_HREF = FIRST_LESSON_HREF;
 export const PRACTICE_HREF = "/practice";
 export const PATHS_HREF = "/paths";
 export const ZERO_TO_HERO_HREF = "/paths/zero-to-hero";
+/** Dedicated L1 mastery finish screen (Prompt F). Not a new lesson slug. */
+export const L1_FINISH_HREF = "/paths/l1-complete";
+export const L1_FINISH_TITLE = "L1 SQL trophy";
+export const L2_PYTHON_HREF = "/training/python/python-none-dicts-rows#lab";
 
 export function firstLessonHref(): string {
   return FIRST_LESSON_HREF;
@@ -118,19 +122,37 @@ export function spineLessonHref(step: PathSpineStep): string {
   return `/training/${step.track}/${step.slug}${step.lab ? "#lab" : ""}`;
 }
 
-/** Prev/next inside the L1 SQL loop. Last L1 continues to L2 Python — not windows / SCD / ETL. */
+export function isL1Mastered(
+  lessons: Record<string, { completed?: boolean } | undefined>,
+): boolean {
+  return L1_SQL_SLUGS.every((slug) => lessons[lessonProgressKey("sql", slug)]?.completed);
+}
+
+export function remainingL1Slugs(
+  lessons: Record<string, { completed?: boolean } | undefined>,
+): string[] {
+  return L1_SQL_SLUGS.filter((slug) => !lessons[lessonProgressKey("sql", slug)]?.completed);
+}
+
+/** Prev/next inside the L1 SQL loop. Last L1 lands on the Prompt F trophy — not windows / SCD / ETL. */
 export function l1SqlNeighbors(slug: string): {
   prev?: PathSpineStep;
   next?: PathSpineStep;
+  finishHref?: string;
+  finishTitle?: string;
 } {
   const idx = L1_SQL_SPINE.findIndex((s) => s.slug === slug);
   if (idx < 0) return {};
+  if (idx < L1_SQL_SPINE.length - 1) {
+    return {
+      prev: idx > 0 ? L1_SQL_SPINE[idx - 1] : undefined,
+      next: L1_SQL_SPINE[idx + 1],
+    };
+  }
   return {
     prev: idx > 0 ? L1_SQL_SPINE[idx - 1] : undefined,
-    next:
-      idx < L1_SQL_SPINE.length - 1
-        ? L1_SQL_SPINE[idx + 1]
-        : ZERO_TO_HERO_SPINE.find((s) => s.level === "L2"),
+    finishHref: L1_FINISH_HREF,
+    finishTitle: L1_FINISH_TITLE,
   };
 }
 
@@ -350,6 +372,15 @@ export function resolveNextStep(
   for (const step of ZERO_TO_HERO_SPINE) {
     const p = lessons[lessonProgressKey(step.track, step.slug)];
     if (!p?.completed) {
+      if (step.level === "L2" && isL1Mastered(lessons)) {
+        return {
+          href: L1_FINISH_HREF,
+          title: L1_FINISH_TITLE,
+          eyebrow: "L1 complete",
+          cta: "Open your trophy",
+          isContinue: true,
+        };
+      }
       return {
         href: spineHref(step),
         title: step.title,

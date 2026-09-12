@@ -6,6 +6,8 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { CERT_PATH, META_DE_OVERLAY, TRACKS } from "@/lib/tracks";
 import { loadProgress, trackCompletion } from "@/lib/progress";
 import { loginHref, signupHref } from "@/lib/safe-path";
+import { DownloadTranscript } from "@/components/training/DownloadTranscript";
+import { isL1Mastered, L1_FINISH_HREF } from "@/lib/learner-paths";
 
 const TRACK_SLUGS: Record<string, string[]> = {
   "prompt-engineering": [
@@ -175,6 +177,7 @@ export default function DashboardPage() {
   }, [rows]);
 
   const hasLocalProgress = overall.done > 0;
+  const l1Done = isL1Mastered(loadProgress().lessons);
 
   if (loading) {
     return (
@@ -232,6 +235,26 @@ export default function DashboardPage() {
             />
           </div>
         </div>
+
+        {l1Done ? (
+          <Link
+            href={L1_FINISH_HREF}
+            data-testid="dashboard-l1-trophy"
+            className="panel glass-hover block rounded-3xl border-2 border-[var(--mint)]/35 p-5"
+          >
+            <p className="font-display text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--sun)]">
+              First trophy
+            </p>
+            <p className="mt-1 font-display text-lg font-bold text-[var(--ink-fg)]">
+              Open your L1 SQL trophy
+            </p>
+            <p className="mt-1 text-sm text-[var(--muted)]">
+              Dirty orders → daily revenue, the transfer sentence, and a downloadable transcript.
+            </p>
+          </Link>
+        ) : null}
+
+        <DownloadTranscript />
 
         <div className="grid gap-4 sm:grid-cols-2">
           {rows.map(({ meta, done, total, pct }) => (
@@ -328,6 +351,26 @@ export default function DashboardPage() {
           />
         </div>
       </div>
+
+      {l1Done ? (
+        <Link
+          href={L1_FINISH_HREF}
+          data-testid="dashboard-l1-trophy"
+          className="panel glass-hover block rounded-3xl border-2 border-[var(--mint)]/35 p-5"
+        >
+          <p className="font-display text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--sun)]">
+            First trophy
+          </p>
+          <p className="mt-1 font-display text-lg font-bold text-[var(--ink-fg)]">
+            Open your L1 SQL trophy
+          </p>
+          <p className="mt-1 text-sm text-[var(--muted)]">
+            Dirty orders → daily revenue, the transfer sentence, and a downloadable transcript.
+          </p>
+        </Link>
+      ) : null}
+
+      <DownloadTranscript />
 
       <div className="grid gap-4 sm:grid-cols-2">
         {rows.map(({ meta, done, total, pct }) => (
