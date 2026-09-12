@@ -239,25 +239,44 @@ export function resolveNextStep(
   };
 }
 
+export type PracticeDialectId = "sql" | "sql-dbx" | "sql-sf" | "python";
+
 export const PRACTICE_DIALECTS = [
   {
-    id: "sql",
-    label: "SQL",
-    href: "/training/sql/sql-select-filter-nulls#lab",
+    id: "sql" as const,
+    label: "sql",
+    href: "/practice",
+    track: "sql",
+    slug: "sql-select-filter-nulls",
+    lessonHref: "/training/sql/sql-select-filter-nulls#lab",
   },
   {
-    id: "sql-dbx",
-    label: "Databricks SQL",
-    href: "/training/databricks/dbx-spark-select-nulls#lab",
+    id: "sql-dbx" as const,
+    label: "sql-dbx",
+    href: "/practice?dialect=sql-dbx",
+    track: "databricks",
+    slug: "dbx-spark-select-nulls",
+    lessonHref: "/training/databricks/dbx-spark-select-nulls#lab",
   },
   {
-    id: "sql-sf",
-    label: "Snowflake SQL",
-    href: "/training/snowflake/sf-select-filter-nulls#lab",
+    id: "sql-sf" as const,
+    label: "sql-sf",
+    href: "/practice?dialect=sql-sf",
+    track: "snowflake",
+    slug: "sf-select-filter-nulls",
+    lessonHref: "/training/snowflake/sf-select-filter-nulls#lab",
   },
   {
-    id: "python",
-    label: "Python",
-    href: "/training/python/python-none-dicts-rows#lab",
+    id: "python" as const,
+    label: "python",
+    href: "/practice?dialect=python",
+    track: "python",
+    slug: "python-none-dicts-rows",
+    lessonHref: "/training/python/python-none-dicts-rows#lab",
   },
 ] as const;
+
+export function practiceDeskForDialect(raw?: string | null) {
+  const id = (PRACTICE_DIALECTS.find((d) => d.id === raw)?.id ?? "sql") as PracticeDialectId;
+  return PRACTICE_DIALECTS.find((d) => d.id === id)!;
+}

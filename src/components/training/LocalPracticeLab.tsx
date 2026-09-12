@@ -1,7 +1,16 @@
 "use client";
 
 import { useEffect, useId, useMemo, useState } from "react";
-import { FlaskConical, Lightbulb, Play, RotateCcw, Table2 } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  FlaskConical,
+  Lightbulb,
+  Play,
+  RotateCcw,
+  Table2,
+  Undo2,
+} from "lucide-react";
 import { getLessonProgress, upsertLessonProgress } from "@/lib/progress";
 import { TRYIT_RUN_EVENT, type TryItRunDetail } from "@/lib/lab/events";
 import {
@@ -18,10 +27,11 @@ import type { LabPythonResult } from "@/lib/lab/pyodide-client";
 
 const FAILED_HINT_AFTER = 1;
 
+/** Unified Tryit desk for lesson `#lab` and `/practice`. */
 export function LocalPracticeLab({ track, slug }: { track: string; slug: string }) {
   const python = isPythonLabLesson(track, slug);
   const samples = useMemo(() => samplesForLesson(slug), [slug]);
-  const schema = useMemo(() => schemaForTrack(track), [track]);
+  const schema = useMemo(() => (python ? [] : schemaForTrack(track)), [python, track]);
   const titleId = useId();
   const [sampleId, setSampleId] = useState(samples[0]?.id ?? "");
   const [source, setSource] = useState(samples[0] ? sampleSource(samples[0]) : "");
@@ -33,6 +43,20 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
   const [failCount, setFailCount] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [restoreStatus, setRestoreStatus] = useState<string | null>(null);
+  const [hasRun, setHasRun] = useState(false);
+
+  useEffect(() => {
+    const first = samples[0];
+    setSampleId(first?.id ?? "");
+    setSource(first ? sampleSource(first) : "");
+    setError(null);
+    setSqlResult(null);
+    setPythonResult(null);
+    setFailCount(0);
+    setShowHint(false);
+    setRestoreStatus(null);
+    setHasRun(false);
+  }, [track, slug, samples]);
 
   useEffect(() => {
     const refresh = () => {
@@ -43,13 +67,35 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
     return () => window.removeEventListener("dth-progress", refresh);
   }, [track, slug]);
 
+  function clearOutput() {
+    setSqlResult(null);
+    setPythonResult(null);
+    setError(null);
+    setHasRun(false);
+  }
+
   function applySample(next: LabSample) {
     setSampleId(next.id);
     setSource(sampleSource(next));
-    setError(null);
     setFailCount(0);
     setShowHint(false);
     setRestoreStatus(null);
+    clearOutput();
+  }
+
+  function resetStatement() {
+    const current = samples.find((s) => s.id === sampleId) ?? samples[0];
+    if (!current) return;
+    setSource(sampleSource(current));
+    setRestoreStatus(null);
+    setError(null);
+  }
+
+  function stepSample(delta: number) {
+    if (!samples.length) return;
+    const idx = Math.max(0, samples.findIndex((s) => s.id === sampleId));
+    const next = samples[(idx + delta + samples.length) % samples.length];
+    if (next) applySample(next);
   }
 
   function markFailed() {
@@ -77,6 +123,7 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
         setSqlResult(next);
         setPythonResult(null);
       }
+      setHasRun(true);
       upsertLessonProgress(track, slug, { stepIndex: LAB_STEP_INDEX });
       setLabSaved(true);
       setFailCount(0);
@@ -84,6 +131,7 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
     } catch (err) {
       setSqlResult(null);
       setPythonResult(null);
+      setHasRun(true);
       setError(err instanceof Error ? err.message : "The local lab could not run that sample.");
       markFailed();
     } finally {
@@ -92,15 +140,22 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
   }
 
   async function restoreSampleDb() {
-    if (busy || python) return;
+    if (busy) return;
     setBusy(true);
     setError(null);
     try {
-      const { restoreLabDb } = await import("@/lib/lab/duckdb-client");
-      await restoreLabDb();
+      if (python) {
+        const { restoreLabPython } = await import("@/lib/lab/pyodide-client");
+        await restoreLabPython();
+        setRestoreStatus("Sample files restored.");
+      } else {
+        const { restoreLabDb } = await import("@/lib/lab/duckdb-client");
+        await restoreLabDb();
+        setRestoreStatus("Sample database restored.");
+      }
       setSqlResult(null);
       setPythonResult(null);
-      setRestoreStatus("Sample database restored.");
+      setHasRun(false);
     } catch (err) {
       setRestoreStatus(null);
       setError(err instanceof Error ? err.message : "Could not restore the sample database.");
@@ -117,15 +172,20 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
       setSource(code);
       const match = samples.find((s) => sampleSource(s).trim() === code.trim());
       if (match) setSampleId(match.id);
-      void runSource(code);
+      setRestoreStatus(null);
+      setFailCount(0);
+      setShowHint(false);
+      setSqlResult(null);
+      setPythonResult(null);
+      setError(null);
+      setHasRun(false);
     }
     window.addEventListener(TRYIT_RUN_EVENT, onTryIt);
     return () => window.removeEventListener(TRYIT_RUN_EVENT, onTryIt);
-    // Intentionally omit runSource — listener always reads latest samples/python via closure refresh on slug.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [python, samples, busy]);
+  }, [samples]);
 
   const current = samples.find((s) => s.id === sampleId);
+  const sampleIndex = Math.max(0, samples.findIndex((s) => s.id === sampleId));
   const engineLabel = python ? "Pyodide · in-browser" : "DuckDB · in-browser";
   const honest = python
     ? "Not a live Databricks / cloud Python kernel. Samples run locally in your browser — no shell, no network, no credentials."
@@ -135,10 +195,12 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
         ? "Not a live warehouse. SQL samples run locally in your browser — no cloud credentials, no shell."
         : "Not a live Databricks workspace. SQL samples run locally in your browser — no cloud credentials, no shell.";
   const hintText = labHint(current, python);
+  const showEmpty = !hasRun && !sqlResult && !pythonResult && !error;
 
   return (
     <section
       id="lab"
+      data-testid="unified-tryit"
       aria-labelledby={titleId}
       className="tryit lab-surface my-6 scroll-mt-24 overflow-hidden rounded-2xl border border-[var(--ink-border)] bg-[var(--panel)]"
     >
@@ -163,7 +225,7 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
       </div>
 
       <div className={schema.length ? "lg:grid lg:grid-cols-[minmax(13rem,16rem)_1fr]" : ""}>
-        {schema.length ? <LabSchemaSidebar tables={schema} /> : null}
+        {schema.length ? <LabSchemaSidebar tables={schema} track={track} /> : null}
 
         <div className="space-y-3 px-3 py-3">
           <p className="text-sm text-[var(--muted)]">{honest}</p>
@@ -190,42 +252,78 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
-                className="btn-primary shrink-0"
-                onClick={() => void runSource(source)}
-                disabled={busy}
-                aria-label={python ? "Run Python sample" : "Run SQL sample"}
-                aria-busy={busy}
+                className="btn-ghost shrink-0"
+                onClick={() => stepSample(-1)}
+                disabled={busy || samples.length < 2}
+                aria-label="Previous sample"
               >
-                <Play className="h-4 w-4" aria-hidden />
-                {busy ? "Running…" : "Run sample"}
+                <ChevronLeft className="h-4 w-4" aria-hidden />
+                Prev
               </button>
-              {python ? null : (
-                <button
-                  type="button"
-                  className="btn-ghost shrink-0"
-                  onClick={() => void restoreSampleDb()}
-                  disabled={busy}
-                  aria-label="Restore sample database"
-                >
-                  <RotateCcw className="h-4 w-4" aria-hidden />
-                  Restore sample DB
-                </button>
-              )}
               <button
                 type="button"
                 className="btn-ghost shrink-0"
-                onClick={() => setShowHint((open) => !open)}
-                aria-expanded={showHint}
-                aria-label={showHint ? "Hide hint" : "Show hint"}
+                onClick={() => stepSample(1)}
+                disabled={busy || samples.length < 2}
+                aria-label="Next sample"
               >
-                <Lightbulb className="h-4 w-4" aria-hidden />
-                {showHint ? "Hide hint" : "Hint"}
+                Next
+                <ChevronRight className="h-4 w-4" aria-hidden />
               </button>
             </div>
           </div>
+          {samples.length > 1 ? (
+            <p className="text-[11px] text-[var(--muted)]">
+              Sample {sampleIndex + 1} of {samples.length}
+            </p>
+          ) : null}
+
+          <div className="flex flex-wrap items-end gap-2">
+            <button
+              type="button"
+              className="btn-primary h-11 min-h-[44px] shrink-0"
+              onClick={() => void runSource(source)}
+              disabled={busy}
+              aria-label={python ? "Run Python sample" : "Run SQL sample"}
+              aria-busy={busy}
+            >
+              <Play className="h-4 w-4" aria-hidden />
+              {busy ? "Running…" : "Run"}
+            </button>
+            <button
+              type="button"
+              className="btn-ghost shrink-0"
+              onClick={() => void restoreSampleDb()}
+              disabled={busy}
+              aria-label="Restore sample database"
+            >
+              <RotateCcw className="h-4 w-4" aria-hidden />
+              Restore
+            </button>
+            <button
+              type="button"
+              className="btn-ghost shrink-0"
+              onClick={resetStatement}
+              disabled={busy}
+              aria-label="Reset statement"
+            >
+              <Undo2 className="h-4 w-4" aria-hidden />
+              Reset
+            </button>
+            <button
+              type="button"
+              className="btn-ghost shrink-0"
+              onClick={() => setShowHint((open) => !open)}
+              aria-expanded={showHint}
+              aria-label={showHint ? "Hide hint" : "Show hint"}
+            >
+              <Lightbulb className="h-4 w-4" aria-hidden />
+              {showHint ? "Hide hint" : "Hint"}
+            </button>
+          </div>
 
           <label className="block text-xs font-semibold text-[var(--ink-fg)]">
-            {python ? "Python to run" : "SQL to run"}
+            {python ? "Python to run" : "SQL Statement"}
             <textarea
               className="field mt-1 min-h-[140px] w-full resize-y font-mono text-[12px] leading-relaxed"
               value={source}
@@ -268,6 +366,17 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
             </p>
           ) : null}
 
+          {showEmpty ? (
+            <p
+              className="rounded-xl border border-dashed border-[var(--ink-border)] bg-[var(--canvas)]/40 px-3 py-4 text-sm text-[var(--muted)]"
+              data-testid="lab-empty"
+            >
+              {python
+                ? "Press Run to execute the sample."
+                : "Press Run to query the sample DB"}
+            </p>
+          ) : null}
+
           {sqlResult ? <LabResultTable result={sqlResult} /> : null}
           {pythonResult ? <PythonResult result={pythonResult} /> : null}
         </div>
@@ -280,24 +389,28 @@ function labHint(sample: LabSample | undefined, python: boolean): string {
   if (sample?.note) return sample.note;
   return python
     ? "Samples run in-browser with the Python standard library. Check names in the sample — there is no warehouse schema."
-    : "Check table and column names in the schema sidebar. This lab only runs SELECT / WITH against the sample database.";
+    : "Check table and column names in Your database. This lab only runs SELECT / WITH against the sample database.";
 }
 
-function LabSchemaSidebar({ tables }: { tables: LabSchemaTable[] }) {
+function schemaSubtitle(track: string): string {
+  if (track === "snowflake") return "local DuckDB seed, not a warehouse";
+  if (track === "databricks") return "local DuckDB seed, not a cluster";
+  return "local DuckDB seed, not a warehouse";
+}
+
+function LabSchemaSidebar({ tables, track }: { tables: LabSchemaTable[]; track: string }) {
   return (
     <aside
-      aria-label="Sample database schema"
+      aria-label="Your database"
       className="border-b border-[var(--ink-border)] bg-[var(--panel-2)]/70 px-3 py-3 lg:border-b-0 lg:border-r"
     >
       <div className="mb-2 flex items-center gap-1.5">
         <Table2 className="h-3.5 w-3.5 text-[var(--sky)]" aria-hidden />
         <h3 className="font-display text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--ink-fg)]">
-          Sample schema
+          Your database
         </h3>
       </div>
-      <p className="mb-2 text-[11px] text-[var(--muted)]">
-        Seed tables and columns. Local sample DB — not a live catalog.
-      </p>
+      <p className="mb-2 text-[11px] text-[var(--muted)]">{schemaSubtitle(track)}</p>
       <ul className="max-h-[28rem] space-y-1 overflow-y-auto pr-1">
         {tables.map((table, index) => (
           <li key={table.name}>
@@ -333,6 +446,7 @@ function PythonResult({ result }: { result: LabPythonResult }) {
       <pre
         className="whitespace-pre-wrap px-3 py-2 font-mono text-[12px] leading-relaxed text-[var(--ink-fg)]"
         aria-label="Python result"
+        data-testid="lab-python-stdout"
       >
         {result.text}
       </pre>

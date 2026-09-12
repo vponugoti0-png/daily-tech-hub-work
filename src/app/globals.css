@@ -313,6 +313,35 @@ html:not(.dark) .btn-primary { color: #fff8f1; }
   max-width: 720px;
 }
 
+.lesson-column.lesson-tryit-shell,
+.practice-tryit-shell {
+  max-width: none;
+}
+
+@media (min-width: 1024px) {
+  .lesson-tryit-shell,
+  .practice-tryit-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(22rem, 46%);
+    align-items: start;
+    column-gap: 1.25rem;
+  }
+  .lesson-tryit-shell > #lab,
+  .practice-tryit-shell > #lab {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    position: sticky;
+    top: 5.5rem;
+    max-height: calc(100vh - 6.5rem);
+    overflow: auto;
+    align-self: start;
+  }
+  .lesson-tryit-shell > :not(#lab),
+  .practice-tryit-shell > :not(#lab) {
+    grid-column: 1;
+  }
+}
+
 @keyframes pulse-glow {
   0%, 100% { opacity: 0.45; }
   50% { opacity: 1; }

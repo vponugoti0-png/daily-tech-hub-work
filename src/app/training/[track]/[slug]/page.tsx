@@ -73,7 +73,14 @@ export default async function LessonPage({
     <div className="flex flex-col gap-4 lg:flex-row lg:gap-8">
       <CourseOutline lessons={siblings} currentSlug={lesson.slug} track={lesson.track} />
 
-      <article className="lesson-column min-w-0 flex-1">
+      <article
+        className={
+          showLab
+            ? "lesson-column lesson-tryit-shell min-w-0 flex-1"
+            : "lesson-column min-w-0 flex-1"
+        }
+        data-testid={showLab ? "lesson-tryit-shell" : undefined}
+      >
         <Link
           href={`/training/${lesson.track}`}
           className="mb-5 mt-3 inline-flex min-h-[40px] items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--coral)]"

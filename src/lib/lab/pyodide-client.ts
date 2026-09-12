@@ -154,6 +154,12 @@ async function getRuntime() {
   return runtimePromise;
 }
 
+/** Re-seed the in-browser VFS. Keeps the runtime; does not change editor text. */
+export async function restoreLabPython(): Promise<void> {
+  const runtime = await getRuntime();
+  seedLandingFs(runtime);
+}
+
 function clip(text: string): LabPythonResult {
   if (text.length <= LAB_PYTHON_OUTPUT_LIMIT) {
     return { text, truncated: false };
