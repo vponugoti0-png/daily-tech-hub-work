@@ -25,12 +25,12 @@ export const TRACKS: TrackMeta[] = [
     id: "python",
     title: "Python for Data Engineers",
     blurb:
-      "Exercise path (None/dicts → functions → pathlib → exceptions → datetimes → chunks → logging) plus ETL utilities, typing, testing, and a Build ETL job. Practice small examples in the local (Pyodide) lab on the exercise-path lessons.",
+      "Exercise path plus depth lessons (contracts, typing, tests, writers, config, VFS datasets) and a Build ETL job. Practice stdlib samples in the local (Pyodide) lab on exercise-path and those depth lessons.",
     accent: "from-[#FFD166] to-[#FF6B4A]",
     difficulty: "Beginner → Advanced",
-    estimatedHours: 10,
+    estimatedHours: 11,
     orderNote:
-      "Recommended reading order (catalog numbers stay put): None/dicts → functions → pathlib extracts → exceptions → datetimes → chunks → logging → then contracts → config/secrets → typing → testing → writers → orchestration → perf → packaging → Build ETL. Local Practice lab (Pyodide, in-browser) lives on the exercise-path lessons.",
+      "Recommended reading order (catalog numbers stay put): None/dicts → functions → pathlib extracts → exceptions → datetimes → chunks → logging → then contracts → config/secrets → typing → testing → writers → VFS datasets → orchestration → perf → packaging → Build ETL. Local Practice lab (Pyodide, in-browser) lives on the exercise-path lessons plus contracts / typing / tests / writers / config / ETL builder / VFS datasets.",
   },
   {
     id: "sql",
@@ -39,9 +39,9 @@ export const TRACKS: TrackMeta[] = [
       "Aurora SQL exercise path (SELECT through DDL/dates), catalogs/views/metrics on the local lab, joins recap, windows, incrementals, DQ gates, and a Build staging→mart ETL. Practice SQL in the local lab on the exercise-path and catalog lessons.",
     accent: "from-[#2EE59D] to-[#4CC9F0]",
     difficulty: "Beginner → Advanced",
-    estimatedHours: 12,
+    estimatedHours: 12.5,
     orderNote:
-      "Recommended reading order (catalog numbers stay put): SELECT/filters → DML → Aggregates → Patterns/CASE → EXISTS → DDL → Dates/injection → Joins recap. Then CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL → Catalogs/views/metrics. Local Practice lab lives on the exercise-path lessons, the joins recap, and the catalog lesson.",
+      "Recommended reading order (catalog numbers stay put): SELECT/filters → DML → Aggregates → Patterns/CASE → EXISTS → DDL → Dates/injection → Joins recap. Then CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL → Catalogs/views/metrics → Shipments/events/tickets. Local Practice lab lives on the exercise-path lessons, the joins recap, the catalog lesson, and shipments/events.",
   },
   {
     id: "databricks",
@@ -50,9 +50,9 @@ export const TRACKS: TrackMeta[] = [
       "Exercise path (Spark SQL SELECT → Delta preview → gold aggregates → silver CASE → leftovers → contracts → dates) plus workspace day-0, lakehouse, Autoloader, catalogs/views/metrics, and a Build medallion ETL. Practice SQL in the local lab on exercise-path, day-0 / lakehouse, Unity Catalog, and catalog lessons.",
     accent: "from-[#FF6B4A] to-[#9B5CFF]",
     difficulty: "Beginner → Advanced",
-    estimatedHours: 13,
+    estimatedHours: 14.5,
     orderNote:
-      "Recommended reading order (catalog numbers stay put): Spark SQL SELECT → Delta write preview → Gold aggregates → Silver CASE → Semi-joins → Delta contracts → Dates/partitions → then day-0 workspace → lakehouse → Delta → Autoloader → Build medallion ETL → Jobs / DLT → Job capstone → Catalogs/views/metrics. Local Practice lab lives on the exercise-path lessons, day-0 / lakehouse, Unity Catalog, and the catalog lesson.",
+      "Recommended reading order (catalog numbers stay put): Spark SQL SELECT → Delta write preview → Gold aggregates → Silver CASE → Semi-joins → Delta contracts → Dates/partitions → then day-0 workspace → lakehouse → Delta → Autoloader → Build medallion ETL → Jobs / DLT → Job capstone → Catalogs/views/metrics → Notebook cells → dbutils → Delta MERGE deep. Local Practice lab lives on the exercise-path lessons, day-0 / lakehouse, Unity Catalog, catalog, notebook, dbutils, and MERGE lessons.",
   },
   {
     id: "snowflake",
@@ -61,9 +61,9 @@ export const TRACKS: TrackMeta[] = [
       "Exercise path (SELECT → DML preview → aggregates → CASE → EXISTS → DDL → dates) plus day-0 objects, COPY/stages, Streams & Tasks, Dynamic Tables, catalogs/views/metrics, and a Build warehouse ETL. Practice SQL in the local lab on exercise-path, day-0 / architecture, and catalog lessons.",
     accent: "from-[#4CC9F0] to-[#9B5CFF]",
     difficulty: "Beginner → Advanced",
-    estimatedHours: 12.5,
+    estimatedHours: 13,
     orderNote:
-      "Recommended reading order (catalog numbers stay put): SELECT/filters → DML → Aggregates → Patterns/CASE → EXISTS → DDL → Dates/Time Travel → then day-0 objects → architecture → COPY/stages → Streams & Tasks or Dynamic Tables → Build warehouse ETL → DT capstone → Catalogs/views/metrics. Local Practice lab lives on the exercise-path lessons, day-0 / architecture, and the catalog lesson.",
+      "Recommended reading order (catalog numbers stay put): SELECT/filters → DML → Aggregates → Patterns/CASE → EXISTS → DDL → Dates/Time Travel → then day-0 objects → architecture → COPY/stages → Streams & Tasks or Dynamic Tables → Build warehouse ETL → DT capstone → Catalogs/views/metrics → COPY history practice. Local Practice lab lives on the exercise-path lessons, day-0 / architecture, the catalog lesson, and COPY history.",
   },
   {
     id: "forward-deployed",
@@ -72,17 +72,17 @@ export const TRACKS: TrackMeta[] = [
       "Customer-facing delivery for DE/AI platforms — discover, scope, integrate, deploy, secure, hand off.",
     accent: "from-[#FF6B4A] to-[#2EE59D]",
     difficulty: "Intermediate",
-    estimatedHours: 7.5,
+    estimatedHours: 8,
     badge: "New · Free",
   },
   {
     id: "git",
     title: "Git (bonus)",
     blurb:
-      "Rebase, hygiene, bisect, dbt/SQL branching, and PR templates — plus an in-browser Git Play Lab (commit graph + CLI). No practice VM.",
+      "Rebase, hygiene, bisect, dbt/SQL branching, PR templates, and conflict practice — plus an in-browser Git Play Lab (commit graph + CLI). No practice VM.",
     accent: "from-[#A9A3C2] to-[#5C5675]",
     difficulty: "Intermediate",
-    estimatedHours: 3,
+    estimatedHours: 3.5,
     badge: "Play Lab",
     orderNote:
       "Cheat sheet → Try it → Git Play Lab on every lesson. Levels: commit/branch → merge/rebase → relative refs → cherry-pick → remotes (fetch/rebase origin). No GitHub push.",
@@ -113,14 +113,14 @@ export const META_DE_OVERLAY = {
   eyebrow: "Meta DE path · optional overlay",
   title: "Suggested cert-style order (no new nav)",
   blurb:
-    "Use the tracks you already have. Overnight spine: W0 recommended-order overlay → W1–W4 waves → Practice labs (Databricks + Snowflake + SQL DuckDB labs; Python Pyodide lab on the exercise path; Prompt Engineering / AI-for-DE Local practice) → exercise-path siblings → Build ETL on each tool track → Forward Deployed Engineer → Git Play Lab (in-browser graph + CLI). Suggested cert-style order: Prompt Engineering → AI for DE → Python → SQL → Snowflake → Databricks → Forward Deployed Engineer → Git.",
+    "Use the tracks you already have. Overnight spine: W0 recommended-order overlay → W1–W4 waves → Practice labs (Databricks + Snowflake + SQL DuckDB labs; Python Pyodide lab on exercise-path and depth lessons; Prompt Engineering / AI-for-DE Local practice) → exercise-path siblings → Build ETL on each tool track → Forward Deployed Engineer → Git Play Lab (in-browser graph + CLI). Suggested cert-style order: Prompt Engineering → AI for DE → Python → SQL → Snowflake → Databricks → Forward Deployed Engineer → Git.",
   sqlOrder:
-    "SELECT/filters → DML → Aggregates → Patterns/CASE → EXISTS → DDL → Dates/injection → Joins recap. Then CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL → Catalogs/views/metrics",
+    "SELECT/filters → DML → Aggregates → Patterns/CASE → EXISTS → DDL → Dates/injection → Joins recap. Then CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL → Catalogs/views/metrics → Shipments/events/tickets",
   pythonOrder:
-    "None/dicts → functions → pathlib → exceptions → datetimes → chunks → logging → then contracts → config/secrets → typing → testing → writers → orchestration → perf → packaging → Build ETL",
+    "None/dicts → functions → pathlib → exceptions → datetimes → chunks → logging → then contracts → config/secrets → typing → testing → writers → VFS datasets → orchestration → perf → packaging → Build ETL",
   databricksOrder:
-    "Spark SQL SELECT → Delta write preview → Gold aggregates → Silver CASE → Semi-joins → Delta contracts → Dates/partitions → then day-0 workspace → lakehouse → Delta → Autoloader → Build medallion ETL → Jobs / DLT → Job capstone → Catalogs/views/metrics",
+    "Spark SQL SELECT → Delta write preview → Gold aggregates → Silver CASE → Semi-joins → Delta contracts → Dates/partitions → then day-0 workspace → lakehouse → Delta → Autoloader → Build medallion ETL → Jobs / DLT → Job capstone → Catalogs/views/metrics → Notebook cells → dbutils → Delta MERGE deep",
   snowflakeOrder:
-    "SELECT/filters → DML → Aggregates → Patterns/CASE → EXISTS → DDL → Dates/Time Travel → then day-0 objects → architecture → COPY/stages → Streams & Tasks or Dynamic Tables → Build warehouse ETL → DT capstone → Catalogs/views/metrics",
+    "SELECT/filters → DML → Aggregates → Patterns/CASE → EXISTS → DDL → Dates/Time Travel → then day-0 objects → architecture → COPY/stages → Streams & Tasks or Dynamic Tables → Build warehouse ETL → DT capstone → Catalogs/views/metrics → COPY history practice",
   etlSpine: "Build ETL · Python job → SQL staging→mart → DBX medallion → Snowflake COPY/Stream/DT",
 };

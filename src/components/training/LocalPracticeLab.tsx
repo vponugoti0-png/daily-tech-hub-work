@@ -14,17 +14,23 @@ import {
 import { schemaForTrack, type LabSchemaTable } from "@/lib/lab/schema";
 import { cellText } from "@/lib/lab/render";
 import type { LabQueryResult } from "@/lib/lab/duckdb-client";
-import type { LabPythonResult } from "@/lib/lab/pyodide-client";
+import type { LabPythonResult, LabPythonVfsWrite } from "@/lib/lab/pyodide-client";
+import { vfsFilesForLesson, type LabVfsFile } from "@/lib/lab/python-vfs";
 
 const FAILED_HINT_AFTER = 1;
+const SOLUTION_AFTER_FAILS = 2;
+const MAIN_TAB = "main.py";
 
 export function LocalPracticeLab({ track, slug }: { track: string; slug: string }) {
   const python = isPythonLabLesson(track, slug);
   const samples = useMemo(() => samplesForLesson(slug), [slug]);
   const schema = useMemo(() => schemaForTrack(track), [track]);
+  const vfsFiles = useMemo(() => (python ? vfsFilesForLesson(slug) : []), [python, slug]);
   const titleId = useId();
   const [sampleId, setSampleId] = useState(samples[0]?.id ?? "");
   const [source, setSource] = useState(samples[0] ? sampleSource(samples[0]) : "");
+  const [vfsEdits, setVfsEdits] = useState<Record<string, string>>({});
+  const [activeTab, setActiveTab] = useState(MAIN_TAB);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sqlResult, setSqlResult] = useState<LabQueryResult | null>(null);
@@ -33,6 +39,16 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
   const [failCount, setFailCount] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [restoreStatus, setRestoreStatus] = useState<string | null>(null);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    setActiveTab(MAIN_TAB);
+    setVfsEdits({});
+  }, [slug]);
 
   useEffect(() => {
     const refresh = () => {
@@ -46,6 +62,7 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
   function applySample(next: LabSample) {
     setSampleId(next.id);
     setSource(sampleSource(next));
+    setActiveTab(MAIN_TAB);
     setError(null);
     setFailCount(0);
     setShowHint(false);
@@ -60,6 +77,14 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
     });
   }
 
+  function vfsContents(file: LabVfsFile): string {
+    return vfsEdits[file.path] ?? file.contents;
+  }
+
+  function overlayFiles(): LabPythonVfsWrite[] {
+    return vfsFiles.map((file) => ({ path: file.path, contents: vfsContents(file) }));
+  }
+
   async function runSource(nextSource: string) {
     if (busy) return;
     setBusy(true);
@@ -68,7 +93,7 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
     try {
       if (python) {
         const { runLabPython } = await import("@/lib/lab/pyodide-client");
-        const next = await runLabPython(nextSource);
+        const next = await runLabPython(nextSource, overlayFiles());
         setPythonResult(next);
         setSqlResult(null);
       } else {
@@ -115,6 +140,7 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
       const code = (event as CustomEvent<TryItRunDetail>).detail?.code;
       if (typeof code !== "string") return;
       setSource(code);
+      setActiveTab(MAIN_TAB);
       const match = samples.find((s) => sampleSource(s).trim() === code.trim());
       if (match) setSampleId(match.id);
       void runSource(code);
@@ -123,23 +149,27 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
     return () => window.removeEventListener(TRYIT_RUN_EVENT, onTryIt);
     // Intentionally omit runSource — listener always reads latest samples/python via closure refresh on slug.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [python, samples, busy]);
+  }, [python, samples, busy, vfsFiles, vfsEdits]);
 
   const current = samples.find((s) => s.id === sampleId);
+  const activeFile = vfsFiles.find((file) => file.path === activeTab);
+  const editorValue = activeFile ? vfsContents(activeFile) : source;
   const engineLabel = python ? "Pyodide · in-browser" : "DuckDB · in-browser";
   const honest = python
-    ? "Not a live Databricks / cloud Python kernel. Samples run locally in your browser — no shell, no network, no credentials."
+    ? "Not a live Databricks / cloud Python kernel. Samples run locally in your browser — no shell, no network, no credentials. Practice files live under /data/ (CSV/JSON) in this page's VFS."
     : track === "snowflake"
       ? "Not a live Snowflake account. SQL samples run locally in your browser — no cloud credentials, no shell."
       : track === "sql"
         ? "Not a live warehouse. SQL samples run locally in your browser — no cloud credentials, no shell."
         : "Not a live Databricks workspace. SQL samples run locally in your browser — no cloud credentials, no shell.";
   const hintText = labHint(current, python);
+  const showSolution = failCount >= SOLUTION_AFTER_FAILS && Boolean(current?.solution);
 
   return (
     <section
       id="lab"
       aria-labelledby={titleId}
+      data-lab-ready={hydrated ? "1" : undefined}
       className="tryit lab-surface my-6 scroll-mt-24 overflow-hidden rounded-2xl border border-[var(--ink-border)] bg-[var(--panel)]"
     >
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--ink-border)] bg-[var(--panel-2)] px-3 py-2">
@@ -224,17 +254,68 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
             </div>
           </div>
 
+          {python ? (
+            <div>
+              <p className="text-xs font-semibold text-[var(--ink-fg)]">Files</p>
+              <div role="tablist" aria-label="Lab files" className="mt-1 flex flex-wrap gap-1">
+                <FileTab
+                  selected={activeTab === MAIN_TAB}
+                  label={MAIN_TAB}
+                  onSelect={() => setActiveTab(MAIN_TAB)}
+                />
+                {vfsFiles.map((file) => (
+                  <FileTab
+                    key={file.path}
+                    selected={activeTab === file.path}
+                    label={file.label}
+                    path={file.path}
+                    onSelect={() => setActiveTab(file.path)}
+                  />
+                ))}
+              </div>
+              {activeFile ? (
+                <p className="mt-1 text-[11px] text-[var(--muted)]">
+                  Seeded VFS · <span className="font-mono">{activeFile.path}</span> — written before
+                  Run. Open it from main.py.
+                </p>
+              ) : (
+                <p className="mt-1 text-[11px] text-[var(--muted)]">
+                  main.py is what Run executes. Data tabs are the /data files in this browser.
+                </p>
+              )}
+            </div>
+          ) : null}
+
           <label className="block text-xs font-semibold text-[var(--ink-fg)]">
-            {python ? "Python to run" : "SQL to run"}
+            {python
+              ? activeFile
+                ? `${activeFile.label} (VFS)`
+                : "Python to run"
+              : "SQL to run"}
             <textarea
               className="field mt-1 min-h-[140px] w-full resize-y font-mono text-[12px] leading-relaxed"
-              value={source}
+              value={editorValue}
               spellCheck={false}
-              aria-label={python ? "Python to run" : "SQL to run"}
-              onChange={(e) => setSource(e.target.value)}
+              aria-label={
+                python
+                  ? activeFile
+                    ? `Lab file ${activeFile.label}`
+                    : "Python to run"
+                  : "SQL to run"
+              }
+              onChange={(e) => {
+                const next = e.target.value;
+                if (activeFile) {
+                  setVfsEdits((prev) => ({ ...prev, [activeFile.path]: next }));
+                } else {
+                  setSource(next);
+                }
+              }}
             />
           </label>
-          {current?.note ? <p className="text-xs text-[var(--muted)]">{current.note}</p> : null}
+          {current?.note && activeTab === MAIN_TAB ? (
+            <p className="text-xs text-[var(--muted)]">{current.note}</p>
+          ) : null}
 
           {busy ? (
             <p className="text-sm text-[var(--sky)]" role="status">
@@ -262,10 +343,21 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
               className="rounded-xl border border-[var(--sun)]/35 bg-[var(--sun)]/15 px-3 py-2 text-sm text-[var(--ink-fg)]"
               data-testid="lab-hint"
             >
-              {failCount >= FAILED_HINT_AFTER
-                ? `After that failed run: ${hintText}`
-                : hintText}
+              {failCount >= FAILED_HINT_AFTER ? `After that failed run: ${hintText}` : hintText}
             </p>
+          ) : null}
+
+          {showSolution ? (
+            <div
+              className="rounded-xl border border-[var(--sky)]/40 bg-[var(--sky)]/10 px-3 py-2 text-sm text-[var(--ink-fg)]"
+              data-testid="lab-solution"
+              role="status"
+            >
+              <p className="font-bold text-[var(--sky)]">Solution</p>
+              <pre className="mt-1 overflow-x-auto font-mono text-[12px] leading-relaxed">
+                <code>{current?.solution}</code>
+              </pre>
+            </div>
           ) : null}
 
           {sqlResult ? <LabResultTable result={sqlResult} /> : null}
@@ -277,10 +369,41 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
 }
 
 function labHint(sample: LabSample | undefined, python: boolean): string {
+  if (sample?.hint) return sample.hint;
   if (sample?.note) return sample.note;
   return python
     ? "Samples run in-browser with the Python standard library. Check names in the sample — there is no warehouse schema."
     : "Check table and column names in the schema sidebar. This lab only runs SELECT / WITH against the sample database.";
+}
+
+function FileTab({
+  selected,
+  label,
+  path,
+  onSelect,
+}: {
+  selected: boolean;
+  label: string;
+  path?: string;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={selected}
+      aria-label={label}
+      data-lab-file={path ?? MAIN_TAB}
+      className={
+        selected
+          ? "rounded-lg border border-[var(--coral)]/40 bg-[var(--coral)]/15 px-2.5 py-1 font-mono text-[11px] font-bold text-[var(--ink-fg)]"
+          : "rounded-lg border border-[var(--ink-border)] bg-[var(--panel-2)] px-2.5 py-1 font-mono text-[11px] font-semibold text-[var(--muted)] hover:text-[var(--ink-fg)]"
+      }
+      onClick={onSelect}
+    >
+      {label}
+    </button>
+  );
 }
 
 function LabSchemaSidebar({ tables }: { tables: LabSchemaTable[] }) {

@@ -16,6 +16,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "pe-safety-privacy",
     "pe-prompts-for-learning",
     "pe-de-role-prompt-library",
+    "pe-practice-de-reviews",
   ],
   "ai-data-eng": [
     "ai-de-copilot-mindset",
@@ -26,6 +27,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "ai-de-review-changes",
     "ai-de-practice-agents",
     "ai-de-practice-nonsf-agents",
+    "ai-de-practice-sql-review",
   ],
   python: [
     "python-none-dicts-rows",
@@ -45,6 +47,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "python-packaging-de-libs",
     "python-capstone-cli-package",
     "python-etl-pipeline-builder",
+    "python-vfs-datasets",
   ],
   sql: [
     "sql-select-filter-nulls",
@@ -68,6 +71,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "sql-explain-plan-lab",
     "sql-staging-mart-etl",
     "sql-catalog-views-metrics",
+    "sql-shipments-events",
   ],
   databricks: [
     "dbx-spark-select-nulls",
@@ -91,6 +95,9 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "dbx-liquid-clustering",
     "dbx-medallion-etl-builder",
     "dbx-catalog-views-metrics",
+    "dbx-notebook-cell-types",
+    "dbx-dbutils-notebook",
+    "dbx-delta-merge-deep",
   ],
   snowflake: [
     "sf-select-filter-nulls",
@@ -114,6 +121,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "sf-cortex-vs-snowpark",
     "sf-warehouse-etl-builder",
     "sf-catalog-views-metrics",
+    "sf-copy-history-practice",
   ],
   "forward-deployed": [
     "fde-what-an-fde-is",
@@ -126,6 +134,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "fde-ai-rag-evals",
     "fde-stakeholder-demos",
     "fde-capstone-engagement",
+    "fde-practice-runbooks",
   ],
   git: [
     "git-rebase-vs-merge",
@@ -133,6 +142,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "git-bisect-and-blame",
     "git-branching-dbt-sql",
     "git-pr-templates-data-diffs",
+    "git-conflict-practice",
   ],
 };
 

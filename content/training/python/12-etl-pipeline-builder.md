@@ -13,6 +13,9 @@ objectives:
   - "Expose --start/--end/--dry-run so Airflow, Dagster, or Databricks Jobs can rerun safely"
 updatedAt: "2026-09-12"
 cheatSheet:
+  - label: "stdlib run() metrics (lab)"
+    code: "import logging\n\nlogging.basicConfig(level=logging.INFO, format=\"%(levelname)s %(name)s %(message)s\")\nlog = logging.getLogger(\"aurora.orders_etl\")\n\ndef run(start: str, end: str, extract, transform, load) -> dict:\n    raw = extract(start, end)\n    clean = transform(raw)\n    metrics = {\"start\": start, \"end\": end, \"rows_in\": len(raw), \"rows_out\": len(clean)}\n    log.info(\"transform_ok %s\", metrics)\n    load(clean)\n    return metrics\n\nprint(run(\"2026-09-01\", \"2026-09-02\", lambda *_: [{\"order_id\": 1}], lambda rows: rows, lambda *_: None))"
+    note: "Run this stdlib shape in the local lab. The pandas/SQL extract below is copy-to-repo."
   - label: "extract_orders (chunked)"
     code: "def extract_orders(read_sql, start: str, end: str, chunksize=50_000):\n    q = \"\"\"\n      SELECT order_id, customer_id, amount, status, updated_at, src_file\n      FROM raw.orders\n      WHERE updated_at >= %(start)s AND updated_at < %(end)s\n    \"\"\"\n    frames = list(read_sql(q, params={\"start\": start, \"end\": end}, chunksize=chunksize))\n    return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()"
     note: "Extract is a window, not SELECT *. Chunk so a 20GB source never lands in RAM."
@@ -21,7 +24,7 @@ cheatSheet:
     note: "Same latest-per-order_id rule as the SQL / warehouse silver grain."
   - label: "run() — orchestrator door"
     code: "def run(start: str, end: str, dry_run: bool = False) -> dict:\n    raw = extract_orders(read_sql, start, end)\n    clean = transform_orders(raw)\n    metrics = {\"rows_in\": len(raw), \"rows_out\": len(clean), \"start\": start, \"end\": end}\n    if dry_run:\n        return {**metrics, \"status\": \"dry_run\"}\n    write_staging_then_publish(clean, start, end)\n    return {**metrics, \"status\": \"ok\"}"
-    note: "Copy into your repo. This builder is copy-to-practice — the in-browser Python lab is on the exercise-path lessons."
+    note: "Copy the pandas/SQL shape into your repo. The local lab on this page runs the stdlib logger / chunk samples — not a warehouse kernel."
 quiz:
   - question: "Where should file/SQL I/O live in this ETL job?"
     options:

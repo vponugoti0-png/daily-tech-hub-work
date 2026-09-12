@@ -154,7 +154,7 @@ SELECT * FROM (VALUES
   (1008, 5, DATE '2026-09-05', 'paid', 31.00, 'FLASH'),
   (1009, 6, DATE '2026-09-05', 'pending', 48.00, NULL),
   (1010, 2, DATE '2026-09-06', 'paid', 15.75, 'FALL26'),
-  (1011, 4, DATE '2026-09-07', 'paid', 88.00, 'VIP'),
+  (1011, 4, DATE '2026-09-07', 'paid', 55.00, 'VIP'),
   (1012, 5, DATE '2026-09-08', 'returned', 31.00, 'FLASH'),
   (1013, 1, DATE '2026-09-09', 'cancelled', 9.00, NULL),
   (1014, 6, DATE '2026-09-10', 'paid', 27.40, 'EMEA26')
@@ -225,6 +225,43 @@ SELECT event_id, order_id, event_type, event_ts
 FROM bronze_events
 WHERE event_type <> 'corrupt';
 
+CREATE OR REPLACE TABLE aurora_support_tickets AS
+SELECT * FROM (VALUES
+  (501, 1, DATE '2026-09-03', 'high', 'open', 'late_shipment'),
+  (502, 2, DATE '2026-09-04', 'low', 'closed', 'promo_code'),
+  (503, 3, DATE '2026-09-05', 'medium', 'open', 'refund'),
+  (504, 4, DATE '2026-09-06', 'high', 'pending', 'missing_item')
+) AS t(ticket_id, customer_id, opened_at, severity, status, reason);
+CREATE OR REPLACE TABLE aurora_events AS
+SELECT * FROM (VALUES
+  (9001, 1001, TIMESTAMP '2026-09-01 10:00:00', 'checkout'),
+  (9002, 1001, TIMESTAMP '2026-09-01 10:01:00', 'paid'),
+  (9003, 1003, TIMESTAMP '2026-09-02 14:22:00', 'checkout'),
+  (9004, 1004, TIMESTAMP '2026-09-02 16:00:00', 'cancelled'),
+  (9005, 1005, TIMESTAMP '2026-09-03 09:15:00', 'paid')
+) AS t(event_id, order_id, event_ts, event_type);
+CREATE OR REPLACE TABLE dbx_notebook_cells AS
+SELECT * FROM (VALUES
+  (1, '/Repos/aurora/orders_etl', 'md', 'intro', 0),
+  (2, '/Repos/aurora/orders_etl', 'sql', 'bronze_select', 1),
+  (3, '/Repos/aurora/orders_etl', 'python', 'silver_transform', 1),
+  (4, '/Repos/aurora/orders_etl', 'sql', 'gold_merge_preview', 1),
+  (5, '/Repos/aurora/orders_etl', 'sh', 'copy_only_debug', 0)
+) AS t(cell_id, notebook_path, cell_type, cell_name, runs_in_job);
+CREATE OR REPLACE TABLE dbx_job_params AS
+SELECT * FROM (VALUES
+  ('orders_daily', 'start_date', '2026-09-01'),
+  ('orders_daily', 'end_date', '2026-09-02'),
+  ('orders_daily', 'catalog', 'main'),
+  ('orders_daily', 'env', 'dev')
+) AS t(job_name, param_name, param_value);
+CREATE OR REPLACE TABLE sf_copy_history AS
+SELECT * FROM (VALUES
+  ('@analytics.raw.orders_stage/2026-09-01/', 4, 'LOADED', DATE '2026-09-01'),
+  ('@analytics.raw.orders_stage/2026-09-02/', 2, 'LOADED', DATE '2026-09-02'),
+  ('@analytics.raw.orders_stage/2026-09-03/', 0, 'PARTIAL', DATE '2026-09-03')
+) AS t(stage_path, rows_loaded, status, load_date);
+
 CREATE SCHEMA IF NOT EXISTS bronze;
 CREATE SCHEMA IF NOT EXISTS silver;
 CREATE SCHEMA IF NOT EXISTS gold;
@@ -254,6 +291,8 @@ CREATE OR REPLACE TABLE aurora.orders AS SELECT * FROM aurora_orders;
 CREATE OR REPLACE TABLE aurora.order_items AS SELECT * FROM aurora_order_items;
 CREATE OR REPLACE TABLE aurora.products AS SELECT * FROM aurora_products;
 CREATE OR REPLACE TABLE aurora.shipments AS SELECT * FROM aurora_shipments;
+CREATE OR REPLACE TABLE aurora.events AS SELECT * FROM aurora_events;
+CREATE OR REPLACE TABLE aurora.tickets AS SELECT * FROM aurora_support_tickets;
 CREATE OR REPLACE TABLE aurora.refunds AS SELECT * FROM aurora_refunds;
 
 CREATE OR REPLACE TABLE analytics.customers AS SELECT * FROM sf_customers;
@@ -268,6 +307,11 @@ WHERE status = 'ok';
 CREATE OR REPLACE VIEW gold.daily_revenue AS
 SELECT order_date, region, orders, revenue
 FROM gold.orders_daily;
+
+CREATE OR REPLACE VIEW aurora.open_tickets AS
+SELECT ticket_id, customer_id, opened_at, severity, status, reason
+FROM aurora.tickets
+WHERE status IN ('open', 'pending');
 
 CREATE OR REPLACE VIEW aurora.paid_orders AS
 SELECT order_id, customer_id, order_date, status, amount, promo_code

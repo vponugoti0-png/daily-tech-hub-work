@@ -73,7 +73,7 @@ test.describe("Git Play Lab", () => {
     const nav = page.getByRole("navigation", { name: "Primary" });
     await expect(nav.getByRole("link", { name: /^Lab$/i })).toHaveCount(0);
 
-    await page.goto("/training/python/python-dataframe-contracts");
+    await page.goto("/training/python/python-performance-de");
     await expect(page.locator("#lab")).toHaveCount(0);
   });
 });

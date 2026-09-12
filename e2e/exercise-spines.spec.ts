@@ -106,7 +106,7 @@ test.describe("Sibling exercise spines (DBX + SF + Python)", () => {
     await expect(page.getByRole("button", { name: /Mark complete/i })).toBeEnabled();
   });
 
-  test("Python exercise-path hosts the local Pyodide lab; older lessons stay copy-only", async ({
+  test("Python exercise-path hosts the local Pyodide lab; perf lesson stays copy-only", async ({
     page,
   }) => {
     await page.goto("/training/python");
@@ -127,7 +127,7 @@ test.describe("Sibling exercise spines (DBX + SF + Python)", () => {
     await expect(page.locator("#learn")).toHaveText(/logging — not print/i);
     await expect(page.locator("#lab").getByRole("heading", { name: "Local practice lab" })).toBeVisible();
 
-    await page.goto("/training/python/python-dataframe-contracts");
+    await page.goto("/training/python/python-performance-de");
     await expect(page.locator("#lab")).toHaveCount(0);
   });
 

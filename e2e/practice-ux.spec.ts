@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 const SQL_SELECT = "/training/sql/sql-select-filter-nulls";
 const PY_NONE = "/training/python/python-none-dicts-rows";
-const PY_CONTRACTS = "/training/python/python-dataframe-contracts";
+const PY_COPY_ONLY = "/training/python/python-performance-de";
 const AI_PRACTICE = "/training/ai-data-eng/ai-de-practice-agents";
 const FDE = "/training/forward-deployed/fde-what-an-fde-is";
 const PROGRESS_KEY = "dth-progress-v3";
@@ -12,7 +12,7 @@ const CRAWL = [
   "/training/databricks/dbx-spark-select-nulls",
   "/training/snowflake/sf-select-filter-nulls",
   PY_NONE,
-  PY_CONTRACTS,
+  PY_COPY_ONLY,
   AI_PRACTICE,
   FDE,
   "/training/git/git-rebase-vs-merge",
@@ -125,7 +125,7 @@ test.describe("Practice UX — layout, editor Run, Python lab", () => {
   });
 
   test("copy-only pages never show a fake Run or Coming soon", async ({ page }) => {
-    await page.goto(PY_CONTRACTS);
+    await page.goto(PY_COPY_ONLY);
     const tryit = page.locator(".tryit").first();
     await expect(tryit.getByRole("button", { name: /Copy to practice/i })).toBeVisible();
     await expect(tryit.getByRole("button", { name: /Run in local lab/i })).toHaveCount(0);

@@ -13,6 +13,9 @@ objectives:
   - "Emit load metrics for observability"
 updatedAt: "2026-09-11"
 cheatSheet:
+  - label: "Dict upsert (lab)"
+    code: "def upsert_by_id(current, incoming, key=\"order_id\"):\n    by_id = {row[key]: row for row in current}\n    for row in incoming:\n        by_id[row[key]] = {**by_id.get(row[key], {}), **row}\n    return [by_id[k] for k in sorted(by_id)]\n\nprint(upsert_by_id([{\"order_id\": 1, \"status\": \"pending\"}], [{\"order_id\": 1, \"status\": \"paid\"}]))"
+    note: "Same key twice → last write wins. Run it in the local lab. Spark overwrite / MERGE stay copy-to-workspace."
   - label: "Dynamic partition overwrite"
     code: "spark.conf.set('spark.sql.sources.partitionOverwriteMode', 'dynamic')"
   - label: "Delta replaceWhere"

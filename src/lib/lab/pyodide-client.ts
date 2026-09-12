@@ -3,10 +3,21 @@ import {
   LAB_PYTHON_OUTPUT_LIMIT,
   LAB_PYTHON_TIMEOUT_MS,
 } from "./python-guard";
+import {
+  clipVfsContents,
+  isLabVfsPath,
+  LAB_VFS_SEED,
+  type LabVfsFile,
+} from "./python-vfs";
 
 export interface LabPythonResult {
   text: string;
   truncated: boolean;
+}
+
+export interface LabPythonVfsWrite {
+  path: string;
+  contents: string;
 }
 
 type PyodideFs = {
@@ -47,78 +58,32 @@ function loadScript(src: string): Promise<void> {
   });
 }
 
-function seedLandingFs(runtime: PyodideRuntime) {
-  const { FS } = runtime;
-  const mkdirp = (dir: string) => {
-    const parts = dir.split("/").filter(Boolean);
-    let cur = "";
-    for (const part of parts) {
-      cur += `/${part}`;
-      if (!FS.analyzePath(cur).exists) FS.mkdir(cur);
-    }
-  };
-  mkdirp("/data/landing/orders/2026-09-11");
-  mkdirp("/data/landing/orders/2026-09-12");
-  mkdirp("/data/landing/orders/2026-09-13");
-  mkdirp("/data/landing/returns/2026-09-12");
-  mkdirp("/data/ref");
-  FS.writeFile(
-    "/data/landing/orders/2026-09-11/orders_2026-09-11.json",
-    JSON.stringify(
-      [
-        { order_id: 1008, status: "paid", amount: 31.0, promo_code: "FLASH" },
-        { order_id: 1009, status: "pending", amount: 48.0, promo_code: null },
-        { order_id: 1010, status: "paid", amount: null, promo_code: "FALL26" },
-      ],
-      null,
-      2,
-    ),
-  );
-  FS.writeFile(
-    "/data/landing/orders/2026-09-12/orders_2026-09-12.json",
-    JSON.stringify([{ order_id: 1001, status: "paid", amount: 42.5 }], null, 2),
-  );
-  FS.writeFile(
-    "/data/landing/orders/2026-09-12/notes.json",
-    JSON.stringify({ note: "not an orders file" }),
-  );
-  FS.writeFile(
-    "/data/landing/orders/2026-09-13/orders_2026-09-13.json",
-    JSON.stringify(
-      [
-        { order_id: 1011, status: "paid", amount: 88.0, promo_code: "VIP" },
-        { order_id: 1012, status: "returned", amount: 31.0, promo_code: "FLASH" },
-        { order_id: 1014, status: "paid", amount: 27.4, promo_code: "EMEA26" },
-        { order_id: 1015, status: "paid", amount: 12.0, promo_code: null },
-      ],
-      null,
-      2,
-    ),
-  );
-  FS.writeFile(
-    "/data/landing/returns/2026-09-12/returns_2026-09-12.json",
-    JSON.stringify(
-      [
-        { refund_id: 9001, order_id: 1006, amount: 22.0, reason: "changed_mind" },
-        { refund_id: 9002, order_id: 1012, amount: 31.0, reason: "damaged" },
-      ],
-      null,
-      2,
-    ),
-  );
-  FS.writeFile(
-    "/data/ref/promos.json",
-    JSON.stringify(
-      [
-        { code: "FALL26", pct: 10 },
-        { code: "FLASH", pct: 15 },
-        { code: "VIP", pct: 20 },
-        { code: "EMEA26", pct: 12 },
-      ],
-      null,
-      2,
-    ),
-  );
+function mkdirp(FS: PyodideFs, dir: string) {
+  const parts = dir.split("/").filter(Boolean);
+  let cur = "";
+  for (const part of parts) {
+    cur += `/${part}`;
+    if (!FS.analyzePath(cur).exists) FS.mkdir(cur);
+  }
+}
+
+function writeVfsFile(runtime: PyodideRuntime, file: LabVfsFile | LabPythonVfsWrite) {
+  if (!isLabVfsPath(file.path)) {
+    throw new Error("This local lab only writes practice files under /data/.");
+  }
+  const slash = file.path.lastIndexOf("/");
+  if (slash > 0) mkdirp(runtime.FS, file.path.slice(0, slash));
+  runtime.FS.writeFile(file.path, clipVfsContents(file.contents));
+}
+
+/** Seed (and re-seed) CSV/JSON practice files under /data/. Overlay wins. */
+export function seedPracticeFs(runtime: PyodideRuntime, overlay: LabPythonVfsWrite[] = []) {
+  for (const file of LAB_VFS_SEED) {
+    writeVfsFile(runtime, file);
+  }
+  for (const file of overlay) {
+    writeVfsFile(runtime, file);
+  }
 }
 
 async function hardenRuntime(runtime: PyodideRuntime) {
@@ -136,7 +101,7 @@ async function initRuntime(): Promise<PyodideRuntime> {
     throw new Error("Local Python engine assets are missing. Refresh and try again.");
   }
   const runtime = await loadPyodide({ indexURL: publicPyodideUrl() });
-  seedLandingFs(runtime);
+  seedPracticeFs(runtime);
   await hardenRuntime(runtime);
   return runtime;
 }
@@ -164,9 +129,14 @@ function clip(text: string): LabPythonResult {
   };
 }
 
-export async function runLabPython(source: string): Promise<LabPythonResult> {
+export async function runLabPython(
+  source: string,
+  overlay: LabPythonVfsWrite[] = [],
+): Promise<LabPythonResult> {
   const safe = assertSafeLabPython(source);
   const runtime = await getRuntime();
+  seedPracticeFs(runtime, overlay);
+
   let buffer = "";
   runtime.setStdout({
     batched: (chunk) => {

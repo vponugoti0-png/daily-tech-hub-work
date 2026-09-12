@@ -29,6 +29,9 @@ export const DATABRICKS_LAB_SLUGS = [
   "dbx-dates-partition-filters",
   "dbx-unity-catalog",
   "dbx-catalog-views-metrics",
+  "dbx-notebook-cell-types",
+  "dbx-dbutils-notebook",
+  "dbx-delta-merge-deep",
 ] as const;
 
 export const SNOWFLAKE_LAB_SLUGS = [
@@ -45,6 +48,7 @@ export const SNOWFLAKE_LAB_SLUGS = [
   "sf-ddl-constraints",
   "sf-dates-injection",
   "sf-catalog-views-metrics",
+  "sf-copy-history-practice",
 ] as const;
 
 export const SQL_LAB_SLUGS = [
@@ -57,6 +61,7 @@ export const SQL_LAB_SLUGS = [
   "sql-dates-injection",
   "sql-joins-set-logic-recap",
   "sql-catalog-views-metrics",
+  "sql-shipments-events",
 ] as const;
 
 export const PYTHON_LAB_SLUGS = [
@@ -67,6 +72,13 @@ export const PYTHON_LAB_SLUGS = [
   "python-datetimes-watermarks",
   "python-comprehensions-chunks",
   "python-logging-not-print",
+  "python-dataframe-contracts",
+  "python-typing-for-pipelines",
+  "python-testing-spark-logic",
+  "python-idempotent-writers",
+  "python-config-and-secrets",
+  "python-etl-pipeline-builder",
+  "python-vfs-datasets",
 ] as const;
 
 export const GIT_LAB_SLUGS = [
@@ -75,6 +87,7 @@ export const GIT_LAB_SLUGS = [
   "git-bisect-and-blame",
   "git-branching-dbt-sql",
   "git-pr-templates-data-diffs",
+  "git-conflict-practice",
 ] as const;
 
 export type DatabricksLabSlug = (typeof DATABRICKS_LAB_SLUGS)[number];
@@ -861,7 +874,133 @@ FROM analytics.line_items
 WHERE sku LIKE 'SKU-%'
 ORDER BY order_id, sku;`,
     note: "database.schema.table in an account. This lab uses schema.table — the warehouse name is still compute.",
+  },,
+  {
+    id: "aurora-open-tickets",
+    label: "Open support tickets",
+    sql: `SELECT t.ticket_id, c.region, t.severity, t.status, t.reason
+FROM aurora_support_tickets t
+JOIN aurora_customers c ON c.customer_id = t.customer_id
+WHERE t.status IN ('open', 'pending')
+ORDER BY t.severity, t.ticket_id;`,
+    note: "Ticket grain. aurora.open_tickets is the same filter as a view.",
   },
+
+  {
+    id: "aurora-open-tickets-view",
+    label: "aurora.open_tickets view",
+    sql: `SELECT ticket_id, customer_id, severity, status, reason
+FROM aurora.open_tickets
+ORDER BY ticket_id;`,
+    note: "A view over open/pending tickets. Persist a mart when on-call needs a freshness SLO.",
+  },
+
+  {
+    id: "aurora-paid-events",
+    label: "Paid checkout events",
+    sql: `SELECT e.event_id, e.order_id, e.event_type, o.amount
+FROM aurora_events e
+JOIN aurora_orders o ON o.order_id = e.order_id
+WHERE e.event_type = 'paid'
+ORDER BY e.event_id;`,
+    note: "Event grain. One order can have checkout + paid. Do not SUM(o.amount) if you later join items.",
+  },
+
+  {
+    id: "aurora-shipments",
+    label: "Orders × shipments",
+    sql: `SELECT o.order_id, o.status AS order_status, s.carrier, s.status AS ship_status
+FROM aurora_orders o
+LEFT JOIN aurora_shipments s ON s.order_id = o.order_id
+ORDER BY o.order_id;`,
+    note: "LEFT JOIN keeps unpaid / unshipped orders. Item grain lives on aurora_order_items — do not SUM(amount) after that join.",
+    hint: "LEFT JOIN aurora_shipments on order_id so unpaid orders still appear.",
+    solution: `SELECT o.order_id, o.status AS order_status, s.carrier, s.status AS ship_status
+FROM aurora_orders o
+LEFT JOIN aurora_shipments s ON s.order_id = o.order_id
+ORDER BY o.order_id;`,
+  },
+
+  {
+    id: "dbx-job-cells",
+    label: "Cells that belong on a Job",
+    sql: `SELECT cell_name, cell_type
+FROM dbx_notebook_cells
+WHERE runs_in_job = 1 AND cell_type <> 'sh'
+ORDER BY cell_id;`,
+    note: "%sh / secrets stay in a laptop notebook for debug. Jobs schedule sql + python cells from a repo.",
+  },
+
+  {
+    id: "dbx-job-params",
+    label: "Job widget stand-ins",
+    sql: `SELECT job_name, param_name, param_value
+FROM dbx_job_params
+ORDER BY param_name;`,
+    note: "DuckDB stand-in for dbutils.widgets.get. Copy widget code into a workspace — no live dbutils here.",
+  },
+
+  {
+    id: "dbx-merge-matched",
+    label: "MERGE MATCHED preview",
+    sql: `SELECT t.order_id, t.status AS silver_status, u.status AS bronze_status, u.amount
+FROM silver_orders t
+INNER JOIN bronze_orders u ON t.order_id = u.order_id
+ORDER BY t.order_id;`,
+    note: "WHEN MATCHED set. Preview before you copy MERGE INTO silver in a workspace.",
+    hint: "INNER JOIN bronze_orders to silver_orders on order_id — that is the MATCHED set.",
+    solution: `SELECT t.order_id, t.status AS silver_status, u.status AS bronze_status, u.amount
+FROM silver_orders t
+INNER JOIN bronze_orders u ON t.order_id = u.order_id
+ORDER BY t.order_id;`,
+  },
+
+  {
+    id: "dbx-merge-not-matched",
+    label: "MERGE NOT MATCHED preview",
+    sql: `SELECT u.order_id, u.status, u.amount
+FROM bronze_orders u
+WHERE NOT EXISTS (
+  SELECT 1 FROM silver_orders t WHERE t.order_id = u.order_id
+)
+ORDER BY u.order_id;`,
+    note: "WHEN NOT MATCHED THEN INSERT. This seed’s leftover is the corrupt bronze row.",
+  },
+
+  {
+    id: "dbx-notebook-cells",
+    label: "Notebook cell types (inventory)",
+    sql: `SELECT cell_id, cell_type, cell_name, runs_in_job
+FROM dbx_notebook_cells
+ORDER BY cell_id;`,
+    note: "md / sql / python cells are teaching labels. %sh is inventory only — this lab never runs a shell.",
+    hint: "Select from dbx_notebook_cells. Filter cell_type if you only want sql or python.",
+    solution: `SELECT cell_id, cell_type, cell_name, runs_in_job
+FROM dbx_notebook_cells
+ORDER BY cell_id;`,
+  },
+  {
+    id: "sf-copy-history",
+    label: "COPY history stand-in",
+    sql: `SELECT stage_path, rows_loaded, status, load_date
+FROM sf_copy_history
+ORDER BY load_date;`,
+    note: "Local stand-in for COPY INTO history. Not a live account. PARTIAL days need a replay.",
+    hint: "Select from sf_copy_history. Filter status = 'PARTIAL' to find days to replay.",
+    solution: `SELECT stage_path, rows_loaded, status, load_date
+FROM sf_copy_history
+ORDER BY load_date;`,
+  },
+
+  {
+    id: "sf-copy-partial",
+    label: "PARTIAL COPY days",
+    sql: `SELECT stage_path, rows_loaded, load_date
+FROM sf_copy_history
+WHERE status = 'PARTIAL'
+ORDER BY load_date;`,
+    note: "A PARTIAL load is a contract break. Replay the stage; do not silently zero-fill gold.",
+  }
 ];
 
 const BY_LESSON: Record<DatabricksLabSlug | SnowflakeLabSlug | SqlLabSlug, string[]> = {
@@ -901,6 +1040,11 @@ const BY_LESSON: Record<DatabricksLabSlug | SnowflakeLabSlug | SqlLabSlug, strin
   "sql-dates-injection": ["aurora-date-window", "aurora-like-in", "aurora-paid-select", "aurora-late-window"],
   "sql-joins-set-logic-recap": ["aurora-join-lane", "aurora-exists-paid", "aurora-paid-select", "aurora-refunds-join", "aurora-sku-mix", "aurora-window-latest"],
   "sql-catalog-views-metrics": ["lab-catalogs", "lab-schemas", "lab-views", "aurora-paid-view", "aurora-metric-view", "aurora-open-shipments"],
+  "dbx-notebook-cell-types": ["dbx-notebook-cells", "dbx-job-cells", "dbx-schema"],
+  "dbx-dbutils-notebook": ["dbx-job-params", "dbx-notebook-cells", "partition-filter"],
+  "dbx-delta-merge-deep": ["dbx-merge-matched", "dbx-merge-not-matched", "upsert-shape", "dbx-exists-ok"],
+  "sf-copy-history-practice": ["sf-copy-history", "sf-copy-partial", "sf-paid-limit"],
+  "sql-shipments-events": ["aurora-shipments", "aurora-paid-events", "aurora-open-tickets", "aurora-open-tickets-view"],
 };
 
 const PYTHON_SAMPLES: LabSample[] = [
@@ -1161,16 +1305,177 @@ for batch in chunks(rows):
     print([r["order_id"] for r in batch])`,
     note: "yield keeps RAM flat on a real extract. list(chunks(...)) undoes the point.",
   },
+
+  {
+    id: "py-read-config",
+    label: "Read job.json from VFS",
+    code: `import json
+from pathlib import Path
+
+cfg = json.loads(Path("/data/config/job.json").read_text())
+if "dsn" in cfg or "password" in cfg:
+    raise ValueError("do not load secrets into the lab")
+print(cfg["job_name"], cfg["start"], cfg["end"], cfg["env"])`,
+    note: "Config is a JSON file on the seeded VFS. Secrets stay out of the file and out of logs.",
+  },
+
+  {
+    id: "py-read-customers",
+    label: "Read customers.json (VFS)",
+    code: `import json
+from pathlib import Path
+
+rows = json.loads(Path("/data/customers/customers.json").read_text())
+active = [r for r in rows if r["status"] == "active"]
+print(len(active), [r["customer_id"] for r in active])`,
+    note: "Same-origin VFS only. No urllib, no js bridge.",
+    hint: "json.loads(Path('/data/customers/customers.json').read_text()) then filter status == 'active'.",
+    solution: `import json
+from pathlib import Path
+
+rows = json.loads(Path("/data/customers/customers.json").read_text())
+active = [r for r in rows if r["status"] == "active"]
+print(len(active), [r["customer_id"] for r in active])`,
+  },
+
+  {
+    id: "py-read-events",
+    label: "Read events.jsonl (VFS)",
+    code: `import json
+from pathlib import Path
+
+paid = []
+for line in Path("/data/events/events.jsonl").read_text().splitlines():
+    if not line.strip():
+        continue
+    event = json.loads(line)
+    if event["event_type"] == "paid":
+        paid.append(event["order_id"])
+print(paid)`,
+    note: "JSONL is one object per line. Do not json.loads the whole file.",
+  },
+
+  {
+    id: "py-read-shipments",
+    label: "Read shipments.json (VFS)",
+    code: `import json
+from pathlib import Path
+
+rows = json.loads(Path("/data/shipments/shipments.json").read_text())
+for row in rows:
+    print(row["order_id"], row["carrier"], row["status"])`,
+    note: "Practice files live under /data. glob landing leftovers still apply on orders.",
+  },
+
+  {
+    id: "py-typed-row",
+    label: "TypedDict row contract",
+    code: `from typing import TypedDict, NotRequired
+
+class OrderRow(TypedDict):
+    order_id: int
+    status: str
+    amount: float
+    promo_code: NotRequired[str | None]
+
+def missing_keys(row: dict, required: tuple[str, ...]) -> list[str]:
+    return [k for k in required if k not in row]
+
+row: OrderRow = {"order_id": 1001, "status": "paid", "amount": 42.5, "promo_code": None}
+print(missing_keys(row, ("order_id", "status", "amount")))`,
+    note: "TypedDict documents the contract. Runtime still checks the landing.",
+    hint: "Build a dict with order_id, status, amount. Print missing_keys — it should be empty.",
+    solution: `from typing import TypedDict, NotRequired
+
+class OrderRow(TypedDict):
+    order_id: int
+    status: str
+    amount: float
+    promo_code: NotRequired[str | None]
+
+def missing_keys(row: dict, required: tuple[str, ...]) -> list[str]:
+    return [k for k in required if k not in row]
+
+row: OrderRow = {"order_id": 1001, "status": "paid", "amount": 42.5, "promo_code": None}
+print(missing_keys(row, ("order_id", "status", "amount")))`,
+  },
+
+  {
+    id: "py-unittest-row",
+    label: "unittest a row contract",
+    code: `import unittest
+
+REQUIRED = ("order_id", "status", "amount")
+
+def assert_row(row: dict) -> dict:
+    missing = [k for k in REQUIRED if k not in row]
+    if missing:
+        raise ValueError(f"missing keys: {missing}")
+    return row
+
+class TestOrderRow(unittest.TestCase):
+    def test_ok(self):
+        row = {"order_id": 1, "status": "paid", "amount": 10}
+        self.assertEqual(assert_row(row)["order_id"], 1)
+
+    def test_missing_raises(self):
+        with self.assertRaises(ValueError):
+            assert_row({"status": "paid"})
+
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestOrderRow)
+result = unittest.TextTestRunner(verbosity=2).run(suite)
+print("failures", len(result.failures), "errors", len(result.errors))`,
+    note: "Unit-test the transform. Do not start a Spark session in this lab.",
+  },
+
+  {
+    id: "py-upsert-dict",
+    label: "Idempotent dict upsert",
+    code: `def upsert_by_id(current: list[dict], incoming: list[dict], key="order_id") -> list[dict]:
+    by_id = {row[key]: row for row in current}
+    for row in incoming:
+        by_id[row[key]] = {**by_id.get(row[key], {}), **row}
+    return [by_id[k] for k in sorted(by_id)]
+
+silver = [{"order_id": 1, "status": "pending", "amount": 10}]
+delta = [{"order_id": 1, "status": "paid", "amount": 12.5}, {"order_id": 2, "status": "paid", "amount": 8}]
+print(upsert_by_id(silver, delta))`,
+    note: "Same key twice → last write wins. No file, no SQL, no Spark session.",
+  },
+,
+  {
+    id: "py-read-orders-csv",
+    label: "Read /data/orders.csv",
+    code: `import csv
+from pathlib import Path
+
+path = Path("/data/orders.csv")
+with path.open(encoding="utf-8", newline="") as f:
+    rows = list(csv.DictReader(f))
+print(len(rows))
+print(rows[0]["order_id"], rows[0]["status"], rows[0]["amount"])
+for row in rows:
+    if row["promo_code"] == "":
+        print("empty promo", row["order_id"])`,
+    note: "stdlib csv — not pandas. The lab seeds /data/orders.csv. Empty promo_code is fine; empty order_id is not.",
+  }
 ];
 
 const PYTHON_BY_LESSON: Record<PythonLabSlug, string[]> = {
   "python-none-dicts-rows": ["py-unknown-promos", "py-assert-row", "py-paid-only", "py-promo-lookup"],
   "python-functions-pure-transforms": ["py-paid-only", "py-no-mutate", "py-assert-row", "py-promo-lookup"],
-  "python-pathlib-extracts": ["py-landing-glob", "py-assert-row", "py-parse-landing", "py-returns-landing"],
+  "python-pathlib-extracts": ["py-landing-glob", "py-read-orders-csv", "py-assert-row", "py-parse-landing", "py-returns-landing"],
   "python-exceptions-retries": ["py-loud-transform", "py-assert-row", "py-unknown-promos", "py-retry-shape"],
   "python-datetimes-watermarks": ["py-watermark", "py-project-filter", "py-window-overlap"],
   "python-comprehensions-chunks": ["py-project-filter", "py-chunk-ids", "py-paid-only", "py-chunk-landing"],
   "python-logging-not-print": ["py-job-log", "py-paid-only", "py-parse-landing"],
+  "python-dataframe-contracts": ["py-assert-row", "py-paid-only", "py-read-orders-csv", "py-unknown-promos"],
+  "python-typing-for-pipelines": ["py-typed-row", "py-assert-row", "py-paid-only"],
+  "python-testing-spark-logic": ["py-unittest-row", "py-assert-row", "py-loud-transform"],
+  "python-idempotent-writers": ["py-upsert-dict", "py-no-mutate", "py-assert-row"],
+  "python-config-and-secrets": ["py-read-config", "py-assert-row"],
+  "python-etl-pipeline-builder": ["py-job-log", "py-chunk-ids", "py-landing-glob"],
+  "python-vfs-datasets": ["py-read-customers", "py-read-shipments", "py-read-events", "py-landing-glob"],
 };
 
 export function samplesForLesson(slug: string): LabSample[] {
