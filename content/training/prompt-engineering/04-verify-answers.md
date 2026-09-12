@@ -11,7 +11,11 @@ objectives: [Separate facts to verify from opinions, Use tiny experiments and of
 updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Verify loop"
-    code: "1. Restate claim\\n2. Find source or run tiny test\\n3. Compare\\n4. Keep / fix / discard"
+    code: "1. Restate claim\n2. Find source or run tiny test\n3. Compare\n4. Keep / fix / discard"
+    note: "Confident tone is not evidence. Docs or a tiny test decide."
+  - label: "SQL smell check"
+    code: "Claim: UPDATE SET * works on Snowflake\nCheck: official MERGE docs + a dry-run worksheet\nResult: discard — dialect mismatch"
+    note: "Warehouse dialects lie to each other. Verify write-path syntax before you paste."
 quiz:
   - question: "AI gives a Snowflake hotkey. What should you do?"
     options:

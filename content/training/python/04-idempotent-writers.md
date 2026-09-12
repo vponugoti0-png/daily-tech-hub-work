@@ -14,11 +14,14 @@ objectives:
 updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Dynamic partition overwrite"
-    code: "spark.conf.set('spark.sql.sources.partitionOverwriteMode', 'dynamic')"
+    code: "spark.conf.set(\"spark.sql.sources.partitionOverwriteMode\", \"dynamic\")"
+    note: "Retry writes only the partitions present in this batch — not the whole table."
   - label: "Delta replaceWhere"
-    code: "df.write.format('delta').mode('overwrite').option('replaceWhere', \"dt = '2026-09-11'\").save(path)"
+    code: "df.write.format(\"delta\").mode(\"overwrite\").option(\"replaceWhere\", \"dt = '2026-09-11'\").save(path)"
+    note: "Atomic replace of one date slice. Safer than append-after-crash."
   - label: "Merge key"
-    code: "ON t.id = s.id AND t.dt = s.dt"
+    code: "MERGE INTO target t\nUSING src s\nON t.id = s.id AND t.dt = s.dt\nWHEN MATCHED THEN UPDATE SET *\nWHEN NOT MATCHED THEN INSERT *"
+    note: "Name the business key. A crash-safe retry re-MERGEs the same slice."
 quiz:
   - question: "A job crashes after writing half a partition. Safest retry pattern?"
     options:

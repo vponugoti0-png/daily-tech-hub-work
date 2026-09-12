@@ -14,9 +14,14 @@ objectives:
 updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Avoid iterrows"
-    code: "df['x'] = df['a'] + df['b']"
+    code: "df[\"amount_tax\"] = df[\"amount\"] * 1.08  # vectorized"
+    note: "Row loops over millions of rows belong in SQL/Spark, not Python."
   - label: "Chunk read"
-    code: "pd.read_sql(q, con, chunksize=50_000)"
+    code: "for chunk in pd.read_sql(q, con, chunksize=50_000):\n    transform(chunk)"
+    note: "Stream extracts so a 20M-row pull does not blow RAM."
+  - label: "Push down"
+    code: "SELECT order_id, amount FROM orders WHERE order_date >= DATE '2026-09-01'"
+    note: "Filter and project in the warehouse. Pandas should see a slice, not the lake."
 quiz:
   - question: "Python row loops over millions of rows usually means…"
     options:

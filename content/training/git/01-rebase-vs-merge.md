@@ -12,6 +12,16 @@ objectives:
   - Avoid rebasing shared history
   - Resolve conflicts with intent
 updatedAt: "2026-09-11"
+cheatSheet:
+  - label: "Update a personal branch"
+    code: "git fetch origin\ngit rebase origin/main"
+    note: "Rebase your feature branch before the PR. Never rewrite shared history."
+  - label: "Abort / continue"
+    code: "git rebase --abort\n# or, after fixing conflicts:\ngit add -u && git rebase --continue"
+    note: "Conflicts in SQL often mean grain changed — re-read the model contract."
+  - label: "Shared branch: merge"
+    code: "git checkout release/analytics\ngit merge origin/main"
+    note: "Long-lived shared branches merge. git pull --rebase there hurts teammates."
 quiz:
   - question: "When is rebasing onto main usually appropriate?"
     options:
@@ -54,10 +64,4 @@ Explain why `git pull --rebase` on a shared release branch can hurt teammates.
 ### Exercise 2
 Practice: create a conflict intentionally in a scratch repo and resolve it.
 
-## Cheat sheet
-
-| Action | Command |
-|--------|---------|
-| Update branch | `git rebase origin/main` |
-| Abort | `git rebase --abort` |
-| Continue | `git rebase --continue` |
+The structured **Cheat sheet** and **Try it** boxes above are the copyable commands. Paste them into your repo — no in-browser git runtime.

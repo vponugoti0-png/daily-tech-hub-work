@@ -14,9 +14,14 @@ objectives:
 updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Merge"
-    code: "MERGE INTO target t USING src s ON t.id = s.id WHEN MATCHED THEN UPDATE SET * WHEN NOT MATCHED THEN INSERT *"
+    code: "MERGE INTO silver_orders t\nUSING bronze_orders s\nON t.order_id = s.order_id\nWHEN MATCHED THEN UPDATE SET *\nWHEN NOT MATCHED THEN INSERT *;"
+    note: "ACID upsert. Copy-shaped — run SELECT previews in the local lab, not a live MERGE."
   - label: "Time travel"
-    code: "SELECT * FROM t TIMESTAMP AS OF '2026-09-01'"
+    code: "SELECT * FROM silver_orders TIMESTAMP AS OF '2026-09-01';"
+    note: "Read a prior version for audit/rollback. Vacuum will eventually drop it."
+  - label: "Current vs history count"
+    code: "SELECT COUNT(*) AS silver_rows FROM silver_orders;"
+    note: "Lab-safe current-state check. Time Travel syntax stays warehouse-only."
 quiz:
   - question: "Delta Time Travel helps you…"
     options:

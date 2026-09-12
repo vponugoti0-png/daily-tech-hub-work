@@ -10,8 +10,8 @@ import { ArrowLeft, Clock, ListChecks } from "lucide-react";
 import { CourseOutline } from "@/components/training/CourseOutline";
 import { Quiz } from "@/components/training/Quiz";
 import { CompleteButton } from "@/components/training/CompleteButton";
-import { CopyButton } from "@/components/CopyButton";
 import { TryItBox } from "@/components/training/TryItBox";
+import { CheatSheet } from "@/components/training/CheatSheet";
 import { StepCards } from "@/components/training/StepCards";
 import { LocalPracticeLab } from "@/components/training/LocalPracticeLab";
 import { isLabLesson } from "@/lib/lab/samples";
@@ -136,33 +136,16 @@ export default async function LessonPage({
           <StepCards
             steps={[
               { title: "Learn", body: "Read the short lesson — the lab does not gate reading." },
-              { title: "Practice lab", body: "Run a SQL sample in the local (DuckDB) lab." },
+              {
+                title: "Practice lab",
+                body: "Cheat sheet → Try it → run a sample in the local (DuckDB) lab.",
+              },
               { title: "Quiz", body: "Check understanding, then mark the checkpoint." },
             ]}
           />
         ) : null}
 
-        {lesson.cheatSheet?.length ? (
-          <div className="panel mt-8 rounded-2xl p-5">
-            <h2 className="font-display text-sm font-bold uppercase tracking-wider text-[var(--sky)]">
-              Cheat sheet
-            </h2>
-            <ul className="mt-3 space-y-3">
-              {lesson.cheatSheet.map((e) => (
-                <li key={e.label} className="rounded-xl border border-[var(--ink-border)] bg-[var(--canvas)]/50 p-3">
-                  <div className="mb-1 flex items-center justify-between gap-2">
-                    <p className="text-sm font-medium text-[var(--ink-fg)]">{e.label}</p>
-                    <CopyButton text={e.code} />
-                  </div>
-                  <pre className="overflow-x-auto font-mono text-xs text-[var(--ink-fg)]">
-                    <code>{e.code}</code>
-                  </pre>
-                  {e.note ? <p className="mt-1 text-xs text-[var(--muted)]">{e.note}</p> : null}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
+        {lesson.cheatSheet?.length ? <CheatSheet entries={lesson.cheatSheet} /> : null}
 
         {tryItEntries.map((entry, i) => {
           const code = entry.code.replace(/\\n/g, "\n");
@@ -183,6 +166,7 @@ export default async function LessonPage({
               dialect={dialect}
               hint={entry.note ?? defaultHint}
               labHref={showLab ? "#lab" : undefined}
+              anchor={i === 0}
             />
           );
         })}

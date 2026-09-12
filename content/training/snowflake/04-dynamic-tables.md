@@ -16,6 +16,9 @@ cheatSheet:
   - label: "Daily mart grain"
     code: "SELECT o.order_date, c.region, COUNT(*) AS orders, ROUND(SUM(o.amount), 2) AS revenue\nFROM sf_orders o\nJOIN sf_customers c ON c.customer_id = o.customer_id\nGROUP BY o.order_date, c.region\nORDER BY o.order_date, c.region;"
     note: "Mart-shaped SELECT you can run in the local practice lab."
+  - label: "Declare a Dynamic Table"
+    code: "CREATE OR REPLACE DYNAMIC TABLE analytics.gold.orders_daily\n  TARGET_LAG = '1 hour'\n  WAREHOUSE = learn_wh\nAS\nSELECT order_date, region, COUNT(*) AS orders\nFROM analytics.silver.orders\nGROUP BY order_date, region;"
+    note: "TARGET_LAG is max staleness. Copy this into a worksheet — the local lab runs the SELECT only."
 quiz:
   - question: "TARGET_LAG expresses…"
     options:

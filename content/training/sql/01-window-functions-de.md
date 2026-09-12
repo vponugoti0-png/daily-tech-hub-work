@@ -15,9 +15,14 @@ objectives:
 updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Latest per key"
-    code: "ROW_NUMBER() OVER (PARTITION BY id ORDER BY ts DESC)"
+    code: "SELECT *\nFROM (\n  SELECT o.*,\n    ROW_NUMBER() OVER (PARTITION BY order_id ORDER BY updated_at DESC) AS rn\n  FROM orders o\n) t\nWHERE rn = 1;"
+    note: "ROW_NUMBER is unique per partition. Filter rn = 1 for current grain."
   - label: "Prev value"
-    code: "LAG(status) OVER (PARTITION BY id ORDER BY ts)"
+    code: "SELECT order_id, status,\n  LAG(status) OVER (PARTITION BY order_id ORDER BY updated_at) AS prev_status\nFROM orders;"
+    note: "LAG is SCD-friendly change detection — no self-join required."
+  - label: "Running total"
+    code: "SELECT order_date, amount,\n  SUM(amount) OVER (PARTITION BY customer_id ORDER BY order_date) AS running_amt\nFROM orders;"
+    note: "Windows beat explosive self-joins for running metrics."
 quiz:
   - question: "ROW_NUMBER vs RANK when ties share the same ORDER BY value?"
     options:

@@ -16,6 +16,9 @@ cheatSheet:
   - label: "Account map"
     code: "SELECT database, schema, object_name, object_type\nFROM sf_account_objects\nORDER BY database, schema, object_name;"
     note: "Run this in the local practice lab — not a live Snowflake account."
+  - label: "Storage vs compute"
+    code: "SELECT warehouse_name, size, auto_suspend_s\nFROM sf_warehouses\nORDER BY warehouse_name;"
+    note: "Warehouses bill credits while they run. Databases/schemas do not."
 quiz:
   - question: "Virtual warehouses primarily provide…"
     options:

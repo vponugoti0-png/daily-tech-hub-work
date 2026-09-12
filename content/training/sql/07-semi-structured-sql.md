@@ -15,9 +15,14 @@ objectives:
 updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Snowflake path"
-    code: "payload:user.id::string"
+    code: "SELECT payload:user.id::string AS user_id\nFROM events;"
+    note: "Cast at the leaf. Keep VARIANT in bronze; project typed columns in silver."
   - label: "Spark get"
-    code: "payload.user.id"
+    code: "SELECT payload.user.id AS user_id\nFROM events;"
+    note: "Dot path on STRUCT/JSON. Missing fields are NULL, not an error."
+  - label: "Flatten with grain"
+    code: "SELECT e.event_id, f.value:sku::string AS sku\nFROM events e, LATERAL FLATTEN(input => e.payload:items) f;"
+    note: "Flattening arrays multiplies rows — name the new grain before you SUM."
 quiz:
   - question: "Flattening arrays before aggregating often…"
     options:

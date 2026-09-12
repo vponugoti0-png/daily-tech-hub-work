@@ -16,6 +16,9 @@ cheatSheet:
   - label: "Serve gold"
     code: "SELECT order_date, region, orders, revenue\nFROM gold_daily_orders\nORDER BY order_date, region;"
     note: "BI-shaped read against gold — run it in the local practice lab."
+  - label: "Warehouse vs job compute"
+    code: "SELECT order_date, SUM(revenue) AS revenue\nFROM gold_daily_orders\nGROUP BY order_date\nORDER BY order_date;"
+    note: "Serving query. Heavy MERGE/OPTIMIZE belongs on a job cluster, not this warehouse."
 quiz:
   - question: "Running heavy ETL on the same small SQL warehouse as BI often…"
     options:

@@ -12,6 +12,16 @@ objectives:
   - Use blame to understand a line's origin
   - Combine with dbt/pytest smoke tests
 updatedAt: "2026-09-11"
+cheatSheet:
+  - label: "Bisect with a smoke test"
+    code: "git bisect start\ngit bisect bad\ngit bisect good v1.2.0\ngit bisect run pytest tests/test_orders_grain.py"
+    note: "The test exit code marks each commit good/bad. Stop with git bisect reset."
+  - label: "Blame a grain line"
+    code: "git blame -L 40,80 models/marts/orders.sql"
+    note: "Misleading after bulk reformats. Prefer blame -w or the pickaxe."
+  - label: "Pickaxe a deleted string"
+    code: "git log -S \"unique_key='order_id'\" -- models/marts/orders.sql"
+    note: "Find when a contract string disappeared — better than guessing from blame."
 quiz:
   - question: "What does git bisect run pytest … do?"
     options:
@@ -55,10 +65,4 @@ Describe a `git bisect run` command that fails when a SQL file no longer contain
 ### Exercise 2
 When is blame misleading? (hint: reformats / bulk renames)
 
-## Cheat sheet
-
-| Tool | Use |
-|------|-----|
-| bisect | Find breaking commit |
-| blame | Line provenance |
-| log -S | Pickaxe search for deleted strings |
+The structured **Cheat sheet** and **Try it** boxes above are the copyable commands. Paste them into your repo — no in-browser git runtime.

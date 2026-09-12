@@ -15,9 +15,14 @@ objectives:
 updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Selectivity"
-    code: "WHERE event_date BETWEEN ... AND ..."
+    code: "SELECT order_id, amount\nFROM orders\nWHERE event_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-07';"
+    note: "Bare date columns prune. Wrapping the column in a function often blocks it."
   - label: "Avoid SELECT *"
-    code: "SELECT id, ts, amount FROM ..."
+    code: "SELECT order_id, event_date, amount FROM orders;"
+    note: "Project the contract. * pulls unused VARIANT and wrecks scan cost."
+  - label: "Filter before join"
+    code: "SELECT o.order_id, c.region\nFROM orders o\nJOIN customers c ON c.customer_id = o.customer_id\nWHERE o.event_date >= DATE '2026-09-01';"
+    note: "Push the date window to the fact side before the shuffle."
 quiz:
   - question: "Applying a function to a filter column often…"
     options:

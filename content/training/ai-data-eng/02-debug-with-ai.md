@@ -11,7 +11,11 @@ objectives: [Describe failures with expected vs actual, Ask for hypotheses ranke
 updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Debug prompt"
-    code: "Symptom:\\nExpected:\\nActual:\\nRecent changes:\\nEnvironment:\\nAsk: 3 hypotheses + checks (no secrets)."
+    code: "Symptom:\nExpected:\nActual:\nRecent changes:\nEnvironment:\nAsk: 3 hypotheses + checks (no secrets)."
+    note: "Never paste passwords, tokens, or PII. Expected vs actual beats “it’s broken.”"
+  - label: "Hypothesis check"
+    code: "Hypothesis 1: late-arriving keys dropped in the left join\nCheck: COUNT unmatched user_id after the enrich\nHypothesis 2: timezone shift on the watermark\nCheck: MIN/MAX event_ts vs load_ts"
+    note: "Turn each guess into a concrete query or test. Do not apply a patch you cannot verify."
 quiz:
   - question: "What should a debug prompt include?"
     options:

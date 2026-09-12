@@ -14,9 +14,14 @@ objectives:
 updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Time travel"
-    code: "SELECT * FROM t AT (TIMESTAMP => '...') "
+    code: "SELECT * FROM analytics.gold.orders_daily AT (TIMESTAMP => '2026-09-11 12:00:00');"
+    note: "AT/BEFORE reads a prior table version. Retention is not forever — Fail-safe is support-only."
   - label: "Clone"
-    code: "CREATE TABLE t_dev CLONE t_prod;"
+    code: "CREATE TABLE analytics.dev.orders_daily CLONE analytics.gold.orders_daily;"
+    note: "Zero-copy: metadata now, bytes later as the clone diverges."
+  - label: "Lab current-state check"
+    code: "SELECT COUNT(*) AS orders FROM sf_orders;"
+    note: "Lab-safe current count. AT/CLONE syntax stays on a real account."
 quiz:
   - question: "Zero-copy clone is valuable because…"
     options:

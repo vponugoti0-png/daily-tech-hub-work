@@ -16,6 +16,9 @@ cheatSheet:
   - label: "Filter early"
     code: "SELECT region, COUNT(*) AS n\nFROM silver_orders\nWHERE order_date >= DATE '2026-09-02'\nGROUP BY region\nORDER BY n DESC;"
     note: "Partition-style filter you can run in the local practice lab."
+  - label: "Project then aggregate"
+    code: "SELECT region, SUM(amount) AS revenue\nFROM silver_orders\nWHERE order_date >= DATE '2026-09-02'\nGROUP BY region;"
+    note: "Do not SELECT * into an aggregate. Columns you do not need still get scanned."
 quiz:
   - question: "Countless tiny files usually cause…"
     options:

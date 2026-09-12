@@ -16,6 +16,9 @@ cheatSheet:
   - label: "Medallion counts"
     code: "SELECT layer, COUNT(*) AS row_count\nFROM (\n  SELECT 'bronze' AS layer FROM bronze_orders\n  UNION ALL\n  SELECT 'silver' FROM silver_orders\n  UNION ALL\n  SELECT 'gold' FROM gold_daily_orders\n) t\nGROUP BY layer\nORDER BY layer;"
     note: "Run this in the local practice lab on this page — not a live workspace."
+  - label: "Gold grain check"
+    code: "SELECT order_date, region, COUNT(*) AS rows\nFROM gold_daily_orders\nGROUP BY order_date, region\nHAVING COUNT(*) > 1;"
+    note: "Gold should already be one row per date×region. Leftover duplicates are a silver bug."
 quiz:
   - question: "Bronze layers typically store…"
     options:

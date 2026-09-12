@@ -15,8 +15,13 @@ updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Auto suspend"
     code: "ALTER WAREHOUSE etl SET AUTO_SUSPEND = 60;"
+    note: "Idle large warehouses burn credits. 60s is a sane default for labs and ETL."
   - label: "Clustering"
-    code: "ALTER TABLE t CLUSTER BY (event_date, account_id);"
+    code: "ALTER TABLE analytics.silver.orders CLUSTER BY (event_date, account_id);"
+    note: "Cluster on filter columns you actually use. Recluster cost is real."
+  - label: "Prunable read"
+    code: "SELECT order_date, region, SUM(amount) AS revenue\nFROM sf_orders\nWHERE order_date >= DATE '2026-09-01'\nGROUP BY order_date, region;"
+    note: "Date-window first. Run this shape in the local practice lab."
 quiz:
   - question: "Leaving a large warehouse running idle primarily wastes…"
     options:

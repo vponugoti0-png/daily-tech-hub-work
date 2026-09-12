@@ -14,9 +14,14 @@ objectives:
 updatedAt: "2026-09-11"
 cheatSheet:
   - label: "TypedDict"
-    code: "class Event(TypedDict): event_id: str; ts: datetime"
+    code: "from typing import TypedDict\nfrom datetime import datetime\n\nclass Event(TypedDict):\n    event_id: str\n    ts: datetime"
+    note: "Row contract for dict-shaped extracts — static check, not a runtime Spark plan."
   - label: "Protocol"
-    code: "class FrameLike(Protocol): columns: Sequence[str]"
+    code: "from typing import Protocol, Sequence\n\nclass FrameLike(Protocol):\n    columns: Sequence[str]"
+    note: "Duck-typed DataFrame surface so helpers stay pandas/Spark portable."
+  - label: "Required keys helper"
+    code: "def missing_keys(row: Event, required: tuple[str, ...] = (\"event_id\", \"ts\")) -> list[str]:\n    return [k for k in required if k not in row]"
+    note: "Pair the TypedDict with a tiny runtime guard in CI tests."
 quiz:
   - question: "TypedDict is best used for…"
     options:

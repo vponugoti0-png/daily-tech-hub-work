@@ -12,7 +12,10 @@ updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Prompt skeleton"
     code: "Goal:\nContext:\nConstraints:\nOutput format:"
-    note: "Fill every line"
+    note: "Fill every line. Vague asks get vague answers."
+  - label: "Rewrite a vague ask"
+    code: "Goal: explain Spark partitions to a junior DE\nContext: they know SQL GROUP BY, not executors\nConstraints: 5 bullets, one concrete example, no vendor pitch\nOutput format: markdown bullets"
+    note: "Audience + length + format beat “explain Spark.”"
 quiz:
   - question: "Which prompt is most likely to get a useful first answer?"
     options:

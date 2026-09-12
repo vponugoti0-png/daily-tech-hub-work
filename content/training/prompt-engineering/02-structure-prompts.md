@@ -11,7 +11,11 @@ objectives: [Use role + task + examples when helpful, Break complex asks into st
 updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Role + task"
-    code: "You are a patient data-engineering tutor.\\nTask: ...\\nShow work in steps.\\nEnd with a 3-item checklist I can verify."
+    code: "You are a patient data-engineering tutor.\nTask: ...\nShow work in steps.\nEnd with a 3-item checklist I can verify."
+    note: "Role sets tone. A verify checklist keeps you from trusting the first draft."
+  - label: "Add one good example"
+    code: "Example of a good answer:\n- Names the grain (order_id)\n- Shows the SQL\n- Calls out the NULL case"
+    note: "One short example of the shape you want beats a long lecture."
 quiz:
   - question: "Why add a short example of good output?"
     options:

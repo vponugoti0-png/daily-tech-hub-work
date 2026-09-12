@@ -21,7 +21,7 @@ test.describe("Sibling exercise spines (DBX + SF + Python)", () => {
     await page.locator('a[href="/training/databricks/dbx-spark-select-nulls"]').first().click();
     await expect(page).toHaveURL(/\/training\/databricks\/dbx-spark-select-nulls/);
     await expect(page.locator("#learn")).toHaveText(/Spark SQL SELECT, NULLs, and LIMIT/i);
-    const tryItLab = page.getByRole("link", { name: /Open local practice lab/i }).first();
+    const tryItLab = page.getByRole("link", { name: /Run in local lab/i }).first();
     await expect(tryItLab).toBeVisible();
     await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
     const how = page.getByRole("link", { name: /How to practice/i }).first();
@@ -76,7 +76,7 @@ test.describe("Sibling exercise spines (DBX + SF + Python)", () => {
     await page.locator('a[href="/training/snowflake/sf-select-filter-nulls"]').first().click();
     await expect(page).toHaveURL(/\/training\/snowflake\/sf-select-filter-nulls/);
     await expect(page.locator("#learn")).toHaveText(/SELECT, filters, NULLs on SAMPLE/i);
-    const tryItLab = page.getByRole("link", { name: /Open local practice lab/i }).first();
+    const tryItLab = page.getByRole("link", { name: /Run in local lab/i }).first();
     await expect(tryItLab).toBeVisible();
     await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
     await expect(page.getByRole("link", { name: /How to practice/i }).first()).toHaveAttribute(
@@ -116,7 +116,7 @@ test.describe("Sibling exercise spines (DBX + SF + Python)", () => {
     await expect(page).toHaveURL(/\/training\/python\/python-none-dicts-rows/);
     await expect(page.locator("#learn")).toHaveText(/None, dicts, and pipeline rows/i);
     await expect(page.locator("#lab")).toHaveCount(0);
-    await expect(page.getByRole("link", { name: /Open local practice lab/i })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /Run in local lab/i })).toHaveCount(0);
     await expect(page.locator(".tryit").first()).toBeVisible();
     await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
     const tryit = page.locator(".tryit").first();

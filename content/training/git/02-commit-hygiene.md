@@ -12,6 +12,16 @@ objectives:
   - Use fixup/autosquash before review
   - Keep secrets out of history
 updatedAt: "2026-09-11"
+cheatSheet:
+  - label: "Amend message"
+    code: "git commit --amend"
+    note: "Only amend commits that have not been pushed to a shared branch."
+  - label: "Soft undo last commit"
+    code: "git reset --soft HEAD~1"
+    note: "Keeps the files staged so you can split or rewrite the message."
+  - label: "Untrack a secret"
+    code: "git rm --cached .env\n# then add .env to .gitignore and rotate the credential"
+    note: "gitignore does not erase history. Rotate anything that was committed."
 quiz:
   - question: "Which commit message best fits a dbt incremental change?"
     options:
@@ -59,10 +69,4 @@ Rewrite `update stuff` into a proper message for a dbt incremental change.
 ### Exercise 2
 List files you would add to `.gitignore` for a Databricks+Python repo.
 
-## Cheat sheet
-
-| Goal | Command |
-|------|---------|
-| Amend message | `git commit --amend` |
-| Soft undo | `git reset --soft HEAD~1` |
-| Untrack secret | `git rm --cached <file>` |
+The structured **Cheat sheet** and **Try it** boxes above are the copyable commands. Paste them into your repo — no in-browser git runtime.
