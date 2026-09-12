@@ -45,8 +45,8 @@ One story, three implementations. This page is the **shared scorecard** — not 
 ## Implementations
 
 - SQL patterns: [Deduping & late-data](/training/sql/sql-deduping-late-data)
-- Snowflake: [COPY/stages](/training/snowflake/sf-copy-stages-ingestion) → [DT mart + cost](/training/snowflake/sf-capstone-dynamic-table-mart)
-- Databricks: [Autoloader](/training/databricks/dbx-autoloader-ingestion) → [bronze→silver→gold Job](/training/databricks/dbx-capstone-medallion-job)
+- Snowflake: [COPY/stages](/training/snowflake/sf-copy-stages-ingestion) → [Capstone — Dynamic Table mart + cost checklist](/training/snowflake/sf-capstone-dynamic-table-mart)
+- Databricks: [Autoloader](/training/databricks/dbx-autoloader-ingestion) → [Capstone — bronze→silver→gold Job](/training/databricks/dbx-capstone-medallion-job)
 - Optional Python: [CLI + tests + package](/training/python/python-capstone-cli-package)
 
 ## Grain (write this on the ticket)

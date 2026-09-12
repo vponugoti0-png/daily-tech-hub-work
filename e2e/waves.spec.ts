@@ -34,7 +34,7 @@ test.describe("W0–W4 training waves", () => {
 
     await expect(page.getByRole("heading", { name: "SQL for Analytics Engineering" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Databricks (DBX)" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Snowflake" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Snowflake", exact: true }).first()).toBeVisible();
 
     await expect(page.getByText(/Shared capstone · Orders → daily revenue mart/i)).toBeVisible();
     await expect(

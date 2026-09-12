@@ -15,7 +15,7 @@ export const TRACKS: TrackMeta[] = [
     id: "ai-data-eng",
     title: "AI for Data Engineers",
     blurb:
-      "Use AI as a DE copilot: debug, generate SQL/Python safely, then practice with agents, Cortex functions, and generic / Databricks Assistant-shaped tool calling.",
+      "Use AI as a DE copilot: debug, generate SQL/Python safely, then practice with agents and Cortex functions, plus generic / Databricks Assistant-shaped tool calling.",
     accent: "from-[#FF6B4A] to-[#FFD166]",
     difficulty: "Beginner → Intermediate",
     estimatedHours: 3.5,
