@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { expectCleanLabCells } from "./lab-result";
 
 const TRACK = "/training/snowflake";
 const DAY0 = "/training/snowflake/sf-day0-objects";
@@ -43,6 +44,7 @@ test.describe("Snowflake local practice lab v1", () => {
       table.getByRole("columnheader", { name: /database|schema|object_name|name|size/i }).first(),
     ).toBeVisible();
     await expect(table.locator("tbody tr").first()).toBeVisible();
+    await expectCleanLabCells(table, ["analytics", "orders"]);
     await expect(lab.getByText(/Lab step saved on this device/i)).toBeVisible();
 
     const stored = await page.evaluate((key) => localStorage.getItem(key), PROGRESS_KEY);

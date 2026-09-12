@@ -68,6 +68,11 @@ async function getDb() {
   return dbPromise;
 }
 
+function fieldDecimalScale(field: { type?: { scale?: unknown } }): number | undefined {
+  const scale = field.type?.scale;
+  return typeof scale === "number" && Number.isInteger(scale) && scale > 0 ? scale : undefined;
+}
+
 export async function runLabSql(sql: string): Promise<LabQueryResult> {
   const safe = assertSafeLabSql(sql);
   const wrapped = `SELECT * FROM (${safe}) AS lab_q LIMIT ${LAB_RESULT_ROW_LIMIT + 1}`;
@@ -80,12 +85,20 @@ export async function runLabSql(sql: string): Promise<LabQueryResult> {
         window.setTimeout(() => reject(new Error("Query timed out (10s).")), 10_000);
       }),
     ]);
-    const rawNames = table.schema.fields.map((f) => f.name);
+    const fields = table.schema.fields;
+    const rawNames = fields.map((f) => f.name);
     const columns = rawNames.map((name) => headerText(name));
-    const objects = table.toArray().map((row) => row.toJSON() as Record<string, unknown>);
-    const truncated = objects.length > LAB_RESULT_ROW_LIMIT;
-    const sliced = truncated ? objects.slice(0, LAB_RESULT_ROW_LIMIT) : objects;
-    const rows = sliced.map((obj) => rawNames.map((name) => cellText(obj[name])));
+    const records = table.toArray();
+    const truncated = records.length > LAB_RESULT_ROW_LIMIT;
+    const sliced = truncated ? records.slice(0, LAB_RESULT_ROW_LIMIT) : records;
+    const rows = sliced.map((row) => {
+      const obj = row.toJSON() as Record<string, unknown>;
+      return fields.map((field) =>
+        cellText(obj[field.name] ?? (row as Record<string, unknown>)[field.name], {
+          decimalScale: fieldDecimalScale(field),
+        }),
+      );
+    });
     return {
       columns,
       rows,

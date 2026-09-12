@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { expectCleanLabCells } from "./lab-result";
 
 const TRACK = "/training/sql";
 const SELECT = "/training/sql/sql-select-filter-nulls";
@@ -45,6 +46,15 @@ test.describe("SQL local practice lab + exercise path", () => {
       table.getByRole("columnheader", { name: /order_id|region|status|amount|promo_code/i }).first(),
     ).toBeVisible();
     await expect(table.locator("tbody tr").first()).toBeVisible();
+    await expectCleanLabCells(table, ["64.25", "VIP", "paid"]);
+
+    await lab.getByLabel("SQL to run").fill(
+      "SELECT unit_price AS amount, sku FROM aurora_order_items WHERE sku = 'SKU-LANE' AND qty = 2 LIMIT 1",
+    );
+    await lab.getByRole("button", { name: "Run SQL sample" }).click();
+    await expect(table).toBeVisible({ timeout: 45_000 });
+    await expectCleanLabCells(table, ["12.50", "SKU-LANE"]);
+
     await expect(lab.getByText(/Lab step saved on this device/i)).toBeVisible();
 
     const stored = await page.evaluate((key) => localStorage.getItem(key), PROGRESS_KEY);
