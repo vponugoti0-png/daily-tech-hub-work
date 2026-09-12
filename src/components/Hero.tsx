@@ -54,6 +54,10 @@ export function Hero({ digest }: { digest: DigestMeta }) {
     transition: { duration: 0.35, delay },
   });
 
+  // UTC calendar day only — never local timezone, never a digest.json write.
+  const todayUtc = todayISODate();
+  const todayLabel = formatDate(digest.date === todayUtc ? digest.date : todayUtc);
+
   return (
     <section className="relative isolate overflow-hidden rounded-[1.5rem] border border-[var(--ink-border)] bg-[var(--panel)] p-6 sm:p-9">
       {/* Art stays in its own stacking context (z-0) so WebGL/blobs cannot cover copy. */}
@@ -78,7 +82,7 @@ export function Hero({ digest }: { digest: DigestMeta }) {
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--coral)]/15 px-3 py-1 font-bold text-[var(--coral)] ring-1 ring-[var(--coral)]/30">
               <span className="live-dot h-1.5 w-1.5 rounded-full bg-[var(--coral)]" />
               <CalendarDays className="h-3.5 w-3.5" aria-hidden />
-              Today · {formatDate(todayISODate())}
+              Today · {todayLabel}
             </span>
             <span className="inline-flex items-center gap-1.5">
               <RefreshCw className="h-3.5 w-3.5" aria-hidden />
