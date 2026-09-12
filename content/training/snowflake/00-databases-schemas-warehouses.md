@@ -51,6 +51,9 @@ Storage and compute are separate. Creating a table does not start a warehouse. R
 
 ```sql
 -- Dialect: Snowflake
+SHOW DATABASES;
+SHOW SCHEMAS IN DATABASE analytics;
+USE DATABASE analytics;
 CREATE DATABASE IF NOT EXISTS analytics;
 CREATE SCHEMA IF NOT EXISTS analytics.raw;
 CREATE SCHEMA IF NOT EXISTS analytics.marts;
