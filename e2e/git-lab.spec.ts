@@ -19,7 +19,7 @@ test.describe("Git Play Lab", () => {
     await expect(lab.getByRole("heading", { name: "Git Play Lab" })).toBeVisible();
     await expect(lab.getByText(/Coming soon/i)).toHaveCount(0);
     await expect(lab.getByText(/no VM/i).first()).toBeVisible();
-    await expect(lab.getByLabel("Git command")).toBeVisible();
+    await expect(lab.getByRole("textbox", { name: "Git command" })).toBeVisible();
   });
 
   test("open lab → run a command → progress persists", async ({ page }) => {
@@ -31,7 +31,7 @@ test.describe("Git Play Lab", () => {
     await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
     await expect(lab.getByRole("img", { name: /Commit graph/i })).toBeVisible();
 
-    await lab.getByLabel("Git command").fill('git commit -m "feat(marts): late-arriving orders"');
+    await lab.getByRole("textbox", { name: "Git command" }).fill('git commit -m "feat(marts): late-arriving orders"');
     await lab.getByRole("button", { name: "Run git command" }).click();
 
     await expect(lab.getByText(/\[C\d+[']*\] feat\(marts\): late-arriving orders/)).toBeVisible();
@@ -60,7 +60,7 @@ test.describe("Git Play Lab", () => {
 
     await expect(page.locator("#learn")).toHaveText(/Commit hygiene for data PRs/i);
     await expect(page.getByRole("heading", { name: "Objectives" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Cheat sheet" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Cheat sheet" }).first()).toBeVisible();
     await expect(page.getByRole("link", { name: /Open Git Play Lab/i }).first()).toBeVisible();
     await expect(page.locator("#lab").getByRole("heading", { name: "Git Play Lab" })).toBeVisible();
     await expect(page.locator("#quiz").getByRole("heading", { name: "Check your understanding" })).toBeVisible();
