@@ -47,7 +47,7 @@ test.describe("Wave B1 — AI Local practice", () => {
 
     const rubric = lab.getByTestId("ai-rubric");
     await expect(rubric).toBeVisible();
-    await expect(rubric.getByText(/Checklist met|Checklist \d+\/\d+/i)).toBeVisible();
+    await expect(rubric.getByRole("status")).toContainText(/Checklist met|Checklist \d+\/\d+/i);
     await expect(lab.getByLabel("Practice sketch")).toContainText(/not a live Claude or GPT/i);
     await expect(lab.getByText(/Lab step saved on this device/i)).toBeVisible();
     await expect(lab.getByRole("button", { name: /^Copy$/i })).toBeVisible();
