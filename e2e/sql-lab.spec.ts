@@ -108,8 +108,8 @@ test.describe("SQL local practice lab + exercise path", () => {
     await expect(tryit.getByRole("button", { name: /Run SQL sample|Run sample/i })).toHaveCount(0);
     const copy = tryit.getByRole("button", { name: /Copy to practice/i });
     await expect(copy).toBeVisible();
-    await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
     await copy.click();
-    await expect(tryit.getByRole("button", { name: /Copied/i })).toBeVisible();
+    await tryit.getByRole("button", { name: /How to practice/i }).click();
+    await expect(tryit.getByText(/Copy this example and run it/i)).toBeVisible();
   });
 });

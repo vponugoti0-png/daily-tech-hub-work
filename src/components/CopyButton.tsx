@@ -4,6 +4,38 @@ import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+async function copyText(text: string): Promise<boolean> {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await Promise.race([
+        navigator.clipboard.writeText(text),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("clipboard timeout")), 400),
+        ),
+      ]);
+      return true;
+    }
+  } catch {
+    /* fall through to execCommand */
+  }
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.top = "0";
+    ta.style.left = "-9999px";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    const ok = document.execCommand("copy");
+    document.body.removeChild(ta);
+    return ok;
+  } catch {
+    return false;
+  }
+}
+
 export function CopyButton({
   text,
   className,
@@ -22,13 +54,10 @@ export function CopyButton({
         className,
       )}
       onClick={async () => {
-        try {
-          await navigator.clipboard.writeText(text);
-          setOk(true);
-          setTimeout(() => setOk(false), 1400);
-        } catch {
-          /* ignore */
-        }
+        const copied = await copyText(text);
+        if (!copied) return;
+        setOk(true);
+        setTimeout(() => setOk(false), 1400);
       }}
       aria-label={label}
     >

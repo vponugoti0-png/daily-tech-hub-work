@@ -119,11 +119,12 @@ test.describe("Sibling exercise spines (DBX + SF + Python)", () => {
     await expect(page.getByRole("link", { name: /Open local practice lab/i })).toHaveCount(0);
     await expect(page.locator(".tryit").first()).toBeVisible();
     await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
-    const copy = page.locator(".tryit").first().getByRole("button", { name: /Copy to practice/i });
+    const tryit = page.locator(".tryit").first();
+    const copy = tryit.getByRole("button", { name: /Copy to practice/i });
     await expect(copy).toBeVisible();
-    await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
     await copy.click();
-    await expect(page.locator(".tryit").first().getByRole("button", { name: /Copied/i })).toBeVisible();
+    await tryit.getByRole("button", { name: /How to practice/i }).click();
+    await expect(tryit.getByText(/Copy this example and run it/i)).toBeVisible();
     await expect(page.locator("#quiz").getByRole("heading", { name: "Check your understanding" })).toBeVisible();
 
     await page.goto(PY_LOG);
