@@ -42,7 +42,7 @@
 - **Aurora Play Lab** brand (coral/mint/sky/sun) — playful, not cyan SaaS
 - **W0–W4 zero-to-hero content** across SQL / Databricks / Snowflake / Python / AI tracks (live)
 - **Forward Deployed Engineer track** (`/training/forward-deployed`, 10 lessons) — customer-facing DE/AI delivery; quizzes + copy cards; no new WASM lab or header nav
-- Honest chrome (“Coming soon · live Run” → Local practice lab) beats fake “cloud” claims
+- Honest chrome (Copy to practice vs Local practice lab) beats fake “cloud” claims
 - Shortcuts packs (Claude / Copilot / Grok) adjacent to lessons
 
 ---

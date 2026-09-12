@@ -174,7 +174,7 @@ export default async function LessonPage({
               : "Paste into Claude, Copilot Chat, or Grok — then iterate."
             : isFdeTrack
               ? "Copy into a ticket, runbook, or customer notes. No live cloud deploy on this page."
-              : "Copy into your warehouse, notebook, or repo. Live Run is not on this page.";
+              : "Copy this example into your warehouse, notebook, or repo to practice.";
           return (
             <TryItBox
               key={`${entry.label}-${i}`}

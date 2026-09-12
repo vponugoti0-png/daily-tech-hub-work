@@ -17,8 +17,12 @@ test.describe("SQL local practice lab + exercise path", () => {
     await expect(page).toHaveURL(/\/training\/sql\/sql-select-filter-nulls#lab/);
     const lab = page.locator("#lab");
     await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
-    await expect(lab.getByText(/Coming soon: connect workspace/i)).toBeVisible();
+    await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
     await expect(lab.getByText(/Not a live warehouse/i)).toBeVisible();
+    await expect(page.getByRole("link", { name: /How to practice/i }).first()).toHaveAttribute(
+      "href",
+      "#lab",
+    );
   });
 
   test("open lab → run sample → see result → guest progress persists", async ({ page }) => {
@@ -27,7 +31,9 @@ test.describe("SQL local practice lab + exercise path", () => {
 
     const lab = page.locator("#lab");
     await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
+    await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
     await expect(page.locator(".tryit").first()).toBeVisible();
+    await expect(page.locator(".tryit").first().getByRole("link", { name: /How to practice/i })).toBeVisible();
     await expect(page.getByText(/aurora_orders/i).first()).toBeVisible();
     await expect(page.getByText(/aurora_lane/i).first()).toBeVisible();
 
@@ -80,6 +86,10 @@ test.describe("SQL local practice lab + exercise path", () => {
     await expect(page.locator("#learn")).toHaveText(/SELECT, filters, NULLs, and LIMIT/i);
     const tryItLab = page.getByRole("link", { name: /Open local practice lab/i }).first();
     await expect(tryItLab).toBeVisible();
+    const how = page.getByRole("link", { name: /How to practice/i }).first();
+    await expect(how).toHaveAttribute("href", "#lab");
+    await how.click();
+    await expect(page.locator("#lab").getByRole("heading", { name: "Local practice lab" })).toBeVisible();
     await tryItLab.click();
     await expect(page.locator("#lab").getByRole("heading", { name: "Local practice lab" })).toBeVisible();
   });
@@ -91,5 +101,15 @@ test.describe("SQL local practice lab + exercise path", () => {
 
     await page.goto("/training/python/python-dataframe-contracts");
     await expect(page.locator("#lab")).toHaveCount(0);
+    const tryit = page.locator(".tryit").first();
+    await expect(tryit).toBeVisible();
+    await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
+    await expect(tryit.getByRole("link", { name: /Open local practice lab/i })).toHaveCount(0);
+    await expect(tryit.getByRole("button", { name: /Run SQL sample|Run sample/i })).toHaveCount(0);
+    const copy = tryit.getByRole("button", { name: /Copy to practice/i });
+    await expect(copy).toBeVisible();
+    await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+    await copy.click();
+    await expect(tryit.getByRole("button", { name: /Copied/i })).toBeVisible();
   });
 });
