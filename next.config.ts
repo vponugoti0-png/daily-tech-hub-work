@@ -1,9 +1,6 @@
 import type { NextConfig } from "next";
 import lessonRedirects from "./lesson-redirects.json";
-import {
-  HTML_DOCUMENT_CACHE_CONTROL,
-  STATIC_ASSET_CACHE_CONTROL,
-} from "./src/lib/http-cache";
+import { HTML_DOCUMENT_CACHE_CONTROL } from "./src/lib/http-cache";
 
 const isDev = process.env.NODE_ENV !== "production";
 
@@ -107,11 +104,8 @@ const nextConfig: NextConfig = {
         headers: securityHeaders,
       },
       {
-        source: "/_next/static/:path*",
-        headers: [{ key: "Cache-Control", value: STATIC_ASSET_CACHE_CONTROL }],
-      },
-      {
-        // Documents + RSC (same pathnames). Hashed /_next/static stays long-lived.
+        // Documents + RSC. Do not match /_next/static — Next.js already
+        // sends `public, max-age=31536000, immutable` for hashed assets.
         source: "/((?!_next/static|_next/image).*)",
         headers: [{ key: "Cache-Control", value: HTML_DOCUMENT_CACHE_CONTROL }],
       },
