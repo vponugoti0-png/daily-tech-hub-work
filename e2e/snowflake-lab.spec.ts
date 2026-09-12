@@ -17,8 +17,12 @@ test.describe("Snowflake local practice lab v1", () => {
     await expect(page).toHaveURL(/\/training\/snowflake\/sf-day0-objects#lab/);
     const lab = page.locator("#lab");
     await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
-    await expect(lab.getByText(/Coming soon: connect workspace/i)).toBeVisible();
+    await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
     await expect(lab.getByText(/Not a live Snowflake account/i)).toBeVisible();
+    await expect(page.getByRole("link", { name: /How to practice/i }).first()).toHaveAttribute(
+      "href",
+      "#lab",
+    );
   });
 
   test("open lab → run sample → see result → guest progress persists", async ({ page }) => {
@@ -27,6 +31,7 @@ test.describe("Snowflake local practice lab v1", () => {
 
     const lab = page.locator("#lab");
     await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
+    await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
     await expect(page.locator(".tryit").first()).toBeVisible();
     await expect(page.getByText(/learn_wh/i).first()).toBeVisible();
 

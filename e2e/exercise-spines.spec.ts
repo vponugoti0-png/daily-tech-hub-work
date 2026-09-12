@@ -23,6 +23,9 @@ test.describe("Sibling exercise spines (DBX + SF + Python)", () => {
     await expect(page.locator("#learn")).toHaveText(/Spark SQL SELECT, NULLs, and LIMIT/i);
     const tryItLab = page.getByRole("link", { name: /Open local practice lab/i }).first();
     await expect(tryItLab).toBeVisible();
+    await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
+    const how = page.getByRole("link", { name: /How to practice/i }).first();
+    await expect(how).toHaveAttribute("href", "#lab");
     await tryItLab.click();
     await expect(page.locator("#lab").getByRole("heading", { name: "Local practice lab" })).toBeVisible();
   });
@@ -75,6 +78,11 @@ test.describe("Sibling exercise spines (DBX + SF + Python)", () => {
     await expect(page.locator("#learn")).toHaveText(/SELECT, filters, NULLs on SAMPLE/i);
     const tryItLab = page.getByRole("link", { name: /Open local practice lab/i }).first();
     await expect(tryItLab).toBeVisible();
+    await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /How to practice/i }).first()).toHaveAttribute(
+      "href",
+      "#lab",
+    );
     await tryItLab.click();
     await expect(page.locator("#lab").getByRole("heading", { name: "Local practice lab" })).toBeVisible();
   });
@@ -110,7 +118,13 @@ test.describe("Sibling exercise spines (DBX + SF + Python)", () => {
     await expect(page.locator("#lab")).toHaveCount(0);
     await expect(page.getByRole("link", { name: /Open local practice lab/i })).toHaveCount(0);
     await expect(page.locator(".tryit").first()).toBeVisible();
-    await expect(page.getByText(/Coming soon · live Run/i).first()).toBeVisible();
+    await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
+    const tryit = page.locator(".tryit").first();
+    const copy = tryit.getByRole("button", { name: /Copy to practice/i });
+    await expect(copy).toBeVisible();
+    await copy.click();
+    await tryit.getByRole("button", { name: /How to practice/i }).click();
+    await expect(tryit.getByText(/Copy this example and run it/i)).toBeVisible();
     await expect(page.locator("#quiz").getByRole("heading", { name: "Check your understanding" })).toBeVisible();
 
     await page.goto(PY_LOG);

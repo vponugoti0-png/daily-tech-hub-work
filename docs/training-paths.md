@@ -39,7 +39,7 @@ Header nav is unchanged: News · Training · Releases · Shortcuts · Dashboard.
 | Databricks | `dbx-medallion-etl-builder` | Autoloader bronze → silver MERGE → DQ → gold (Job-shaped) |
 | Snowflake | `sf-warehouse-etl-builder` | COPY/stages → Stream/Task MERGE → Dynamic Table gold |
 
-Each lesson: objectives, DE body, cheat-sheet TryIt cards, 3 quiz questions, ~30 min. Copy cards are honest (`Coming soon · live Run` where no lab is wired). DBX/SF builders point at the existing Practice labs on day-0 / lakehouse / architecture lessons. SQL / Databricks / Snowflake exercise-path lessons host the same **Local practice lab** shell; Python exercise-path and all ETL builders stay copy-to-repo / copy-to-warehouse.
+Each lesson: objectives, DE body, cheat-sheet TryIt cards, 3 quiz questions, ~30 min. Copy cards are honest (`Copy to practice` where no lab is wired). DBX/SF builders point at the existing Practice labs on day-0 / lakehouse / architecture lessons. SQL / Databricks / Snowflake exercise-path lessons host the same **Local practice lab** shell; Python exercise-path and all ETL builders stay copy-to-repo / copy-to-warehouse.
 
 ## Exercise paths (W6 SQL · W7 siblings)
 

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { CopyButton } from "@/components/CopyButton";
 import { Sparkles } from "lucide-react";
 
-/** W3Schools/Codecademy-style try-it shell (sandbox runtime not live yet). */
+/** Try-it shell: DuckDB lab lessons deep-link to #lab; others are copy-to-practice. */
 export function TryItBox({
   title = "Try it",
   code,
@@ -38,8 +38,8 @@ export function TryItBox({
               Local lab below
             </span>
           ) : (
-            <span className="rounded-full border border-[var(--sun)]/40 bg-[var(--sun)]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--sun)]">
-              Coming soon · live Run
+            <span className="rounded-full border border-[var(--mint)]/40 bg-[var(--mint)]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--mint)]">
+              Copy to practice
             </span>
           )}
         </div>
@@ -53,15 +53,24 @@ export function TryItBox({
               Run in local lab
             </a>
           ) : null}
-          <CopyButton text={code} />
-          <button
-            type="button"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--ink-border)] bg-[var(--panel)] px-2.5 py-1 text-xs font-bold text-[var(--muted)]"
-            onClick={() => setShowHint(true)}
-            aria-expanded={showHint}
-          >
-            How to practice
-          </button>
+          <CopyButton text={code} label={labHref ? "Copy" : "Copy to practice"} />
+          {labHref ? (
+            <a
+              href={labHref}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--ink-border)] bg-[var(--panel)] px-2.5 py-1 text-xs font-bold text-[var(--ink-fg)]"
+            >
+              How to practice
+            </a>
+          ) : (
+            <button
+              type="button"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--ink-border)] bg-[var(--panel)] px-2.5 py-1 text-xs font-bold text-[var(--muted)]"
+              onClick={() => setShowHint(true)}
+              aria-expanded={showHint}
+            >
+              How to practice
+            </button>
+          )}
         </div>
       </div>
       <pre className="overflow-x-auto p-3 font-mono text-[12px] leading-relaxed text-[var(--ink-fg)]">
@@ -69,9 +78,7 @@ export function TryItBox({
       </pre>
       {showHint ? (
         <div className="border-t border-[var(--ink-border)] bg-[var(--panel-2)] px-3 py-2 text-xs text-[var(--muted)]">
-          {labHref
-            ? "Copy if you want, or run a SQL sample in the local practice lab below."
-            : "Live Run isn't ready yet — copy this into Snowflake, Databricks, or your AI chat to practice."}
+          Copy this example and run it in your warehouse, notebook, repo, or AI chat.
           {hint ? <span className="mt-1 block font-semibold text-[var(--mint)]">{hint}</span> : null}
         </div>
       ) : (
@@ -79,13 +86,14 @@ export function TryItBox({
           {labHref ? (
             <>
               Tip:{" "}
-              <strong className="text-[var(--ink-fg)]">Run in local lab</strong> opens the DuckDB
-              practice surface on this page.
+              <strong className="text-[var(--ink-fg)]">Run in local lab</strong> or{" "}
+              <strong className="text-[var(--ink-fg)]">How to practice</strong> opens the DuckDB
+              surface on this page — then use <strong className="text-[var(--ink-fg)]">Run sample</strong>.
             </>
           ) : (
             <>
-              Tip: use <strong className="text-[var(--ink-fg)]">Copy</strong> — the green Play button
-              will arrive later (honest!).
+              Tip: use <strong className="text-[var(--ink-fg)]">Copy to practice</strong> — paste this
+              example in your own tool. No in-browser runtime on this page.
             </>
           )}
         </div>

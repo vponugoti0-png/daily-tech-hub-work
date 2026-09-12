@@ -74,9 +74,6 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
           <span className="rounded-md bg-[var(--sky)]/15 px-1.5 py-0.5 text-[10px] font-semibold text-[var(--sky)]">
             DuckDB · in-browser
           </span>
-          <span className="rounded-full border border-[var(--ink-border)] bg-[var(--panel)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--muted)]">
-            Coming soon: connect workspace
-          </span>
         </div>
         {labSaved ? (
           <p className="text-[11px] font-semibold text-[var(--mint)]" role="status">
