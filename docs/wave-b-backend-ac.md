@@ -12,7 +12,7 @@ Wave A (content / local labs) stays on a separate track. Wave B is three **held*
 - **Ship order: B1 → B2 → B3.** Separate future impl PRs.
 - **Still OMIT:** real Snowflake/Databricks cloud credential connect / live workspace login.
 - Prefer client-side for B1/B2 so Backend may be thin (rate-limit/proxy only if needed); B3 is the heavy Backend surface.
-- **Open decision:** sandbox host for B3 (Railway sidecar vs external).
+- **B3 host (v1, locked):** Railway sidecar — same project as aurora, separate service, deny-egress, short TTL. External sandbox provider only if the sidecar cannot meet caps/isolation.
 
 Existing session / CSRF / guest progress (do not reinvent): [`docs/auth-and-progress.md`](./auth-and-progress.md). Training backlog: [`docs/improvements-and-training.md`](./improvements-and-training.md).
 
@@ -59,15 +59,15 @@ Flag-off **404** is intentional so Frontend treats “not shipped” as absent.
 
 ---
 
-## Open decisions
+## Closed decisions
 
-**Only D5 is open.** Everything else in the Product stamp is closed.
+No Product-open items remain.
 
 | ID | Surface | Question | Status |
 |----|---------|----------|--------|
-| D5 | B3 Git VM | Sandbox host | **OPEN — blocks B3 impl.** Railway sidecar vs external provider. Not `spawn('git')` on the SQLite web service. |
+| D5 | B3 Git VM | Sandbox host | **Locked for v1:** Railway sidecar, same project as aurora, **separate service**, deny-egress, short TTL. Not `spawn('git')` on the SQLite web service. External provider is a **fallback only** if the sidecar cannot meet caps/isolation (requires a new Security stamp). |
 
-B3 TTL / idle / concurrency numbers in §B3.2 are **proposed defaults** for the impl PR (tune after D5), not a Product-open question.
+B3 TTL / idle / concurrency numbers in §B3.2 are **proposed defaults** for the impl PR (tune against the sidecar), not a Product-open question.
 
 ---
 
@@ -430,7 +430,7 @@ Ship **after B1**. Production stays off until Security + QA stamp this section. 
 - Guest sessions OK with IP rate-limit; signed-in can have slightly higher caps
 - UI: open → run git cmds → graph/state → TTL countdown → destroy
 
-**This is the heavy Backend surface.** Separate PR from B1 and B2. **D5 (sandbox host) must be stamped before code.**
+**This is the heavy Backend surface.** Separate PR from B1 and B2. **D5 locked:** Railway sidecar (same project as aurora, separate service). See §B3.10.
 
 ### B3.1 Goal / non-goals
 
@@ -559,14 +559,14 @@ Log: `session_id`, `user_id` (or `guest`), `action` (`create`/`exec`/`kill`/`exp
 
 Do **not** log full argv (subcommand name only, e.g. `status`), stdout, emails, or IP in cleartext (hash if needed).
 
-Metric: active sessions, create failures, 429s — needed for the D5 cost conversation.
+Metric: active sessions, create failures, 429s — needed to judge whether the sidecar meets caps (fallback trigger).
 
 ### B3.7 Rollout
 
 ```
 GIT_VM_ENABLED=0
-# Set only after D5 is stamped — names TBD in the impl PR:
-# GIT_VM_PROVIDER=sidecar|external
+# v1 host is the Railway sidecar (same project, separate service). Names TBD in the impl PR:
+# GIT_VM_PROVIDER=sidecar
 # GIT_VM_TTL_SEC=1200
 # GIT_VM_IDLE_SEC=300
 ```
@@ -588,10 +588,11 @@ Frontend: VM chrome only on flag + create not 404. Flag-off keeps **Git Play Lab
 - [ ] CSRF missing on create/exec/destroy → `403`.
 - [ ] Logs have no command line, no email, no secrets.
 - [ ] Cookies: existing auth cookies unchanged; no secret leakage.
+- [ ] `git` runs on a **separate Railway service** in the same aurora project (not the web/SQLite container); sidecar has no public ingress and deny-egress.
 
 **Fail**
 
-- Git runs in the Next.js container with the SQLite volume visible.
+- Git runs in the Next.js / aurora web container (sidecar is a **separate** Railway service; SQLite volume must not be visible).
 - Default egress, host mount, docker-in-docker, or docker.sock.
 - Unlimited guest creates.
 - Shell allowlisted “for debugging”.
@@ -605,32 +606,32 @@ Frontend: VM chrome only on flag + create not 404. Flag-off keeps **Git Play Lab
 - Pairing / share-session URLs.
 - Using this sandbox for B1 or B2.
 
-### B3.10 Cost / hosting — **decision required (D5)**
+### B3.10 Hosting — **locked for v1 (D5)**
 
-Real `git` + isolation **will not** fit “one more Route Handler that `spawn('git')`” on the current Railway/Fly web service:
+**v1 host:** Railway **sidecar** — same project as aurora, **separate service**. Deny-egress. Short TTL (see §B3.2). The Next.js / SQLite web service talks to it over the private network only.
+
+Real `git` + isolation **will not** fit “one more Route Handler that `spawn('git')`” on the aurora web service:
 
 - That process can see `DATA_DIR`, env secrets, and the app filesystem.
 - CPU burn from one learner hits the site for everyone.
 - No deny-egress story without a separate network namespace.
 
-**Pick one before writing B3 code:**
+| Option | Status | Sketch |
+|--------|--------|--------|
+| **Railway sidecar** (same project, separate service) | **v1 — chosen** | Sandbox image: git + fixtures. No public ingress. Egress denied. App calls an internal create/exec/kill API. Kill loop + TTL/idle on the sidecar. |
+| **External sandbox provider** | **Fallback only** | Use only if the sidecar **cannot** meet the caps/isolation in §B3.4 (CPU/RAM/disk, deny-egress, no mounts, no DinD). Requires a new Security stamp + vendor DPA. |
 
-| Option | Sketch | Tradeoff |
-|--------|--------|----------|
-| **A. Railway / Fly sidecar** (or Fly Machine) | App talks to an internal sandbox API on a private network. Sandbox image: git + fixtures, **no** public ingress, egress off. | We own ops. Need network policy + kill loop. Fine for short sessions if concurrency stays low. |
-| **B. External sandbox provider** | Create/exec/kill via their API. We store only `provider_handle`. | Faster isolation; **new vendor, new secrets, new DPA**. Rate-limit still on our edge. |
+**Not options:** Docker socket from the web container; privileged DinD; `child_process` on the SQLite app; running git inside the aurora web service.
 
-**Not options:** Docker socket from the web container; privileged DinD; `child_process` on the SQLite app.
-
-Product + Security stamp **A or B** on the B3 PR. Backend does not start impl on a guess.
+B3 impl starts on the sidecar. Do not build the external-provider path in v1.
 
 ---
 
 ## Stamp order
 
-1. **This doc** — Product (order B1 → B2 → B3 and the wording above — **stamped**). Security (shared never-allow + B3 D5). QA (criteria testable).
+1. **This doc** — Product (order B1 → B2 → B3, wording, and **B3 Railway sidecar** — **stamped**). Security (shared never-allow + sidecar isolation). QA (criteria testable).
 2. **B1 impl PR** — AI in-browser practice (client-first; proxy only if separately stamped).
 3. **B2 impl PR** — Practice Engine auto-check (client-first on DuckDB / Pyodide).
-4. **B3 impl PR** — Git Practice VM, only after **D5** (A or B).
+4. **B3 impl PR** — Git Practice VM on the Railway sidecar (same project as aurora, separate service). External provider only if sidecar fails caps/isolation.
 
 Wave A content/labs can ship with all Wave B flags off.
