@@ -1,24 +1,23 @@
 ---
-slug: sf-databases-schemas-warehouses
+slug: sf-day0-objects
 track: snowflake
-title: "Databases, schemas & warehouses (day-0)"
+title: "Databases, schemas & warehouses"
 description: "True-zero Snowflake: databases vs schemas vs virtual warehouses, credits, and a safe first worksheet."
 level: beginner
 order: 0
 durationMinutes: 25
 topics: [snowflake]
 objectives:
-  - "Explain database vs schema vs virtual warehouse"
-  - "Pick a warehouse size and auto-suspend for a first worksheet"
-  - "Name objects with database.schema.table"
+  - "Explain database.schema.table nesting"
+  - "Separate storage (database/schema) from warehouse compute"
+  - "Set auto-suspend and right-size habits on day 0"
 updatedAt: "2026-09-12"
 cheatSheet:
-  - label: "Three-level name"
-    code: "SELECT current_database(), current_schema();\nUSE DATABASE analytics;\nUSE SCHEMA raw;\nSELECT * FROM analytics.raw.orders LIMIT 20;"
-    note: "Storage is database + schema. Compute is the warehouse."
-  - label: "Safe first warehouse"
-    code: "CREATE WAREHOUSE IF NOT EXISTS learn_wh\n  WAREHOUSE_SIZE = 'XSMALL'\n  AUTO_SUSPEND = 60\n  AUTO_RESUME = TRUE\n  INITIALLY_SUSPENDED = TRUE;"
-    note: "Suspend idle compute. XSMALL is enough for this lesson."
+  - label: "SHOW / USE / CREATE SCHEMA"
+    code: "SHOW DATABASES;\nSHOW SCHEMAS IN DATABASE analytics;\nUSE DATABASE analytics;\nCREATE SCHEMA IF NOT EXISTS analytics.raw;\nUSE SCHEMA analytics.raw;\nSHOW TABLES;"
+    note: "Nesting is database → schema → table. SHOW is your map."
+  - label: "Warehouse parameters (comment as you go)"
+    code: "CREATE WAREHOUSE IF NOT EXISTS learn_wh\n  WAREHOUSE_SIZE = 'XSMALL'   -- right-size; bump only if spilling\n  AUTO_SUSPEND = 60           -- seconds idle before stop\n  AUTO_RESUME = TRUE\n  INITIALLY_SUSPENDED = TRUE; -- do not start until first query"
 quiz:
   - question: "A Snowflake virtual warehouse primarily provides…"
     options:

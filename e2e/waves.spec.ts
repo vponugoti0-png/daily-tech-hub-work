@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-const W1_SQL = "/training/sql/sql-joins-set-logic";
+const W1_SQL = "/training/sql/sql-joins-set-logic-recap";
 const W1_DBX = "/training/databricks/dbx-workspace-cluster-basics";
-const W1_SF = "/training/snowflake/sf-databases-schemas-warehouses";
+const W1_SF = "/training/snowflake/sf-day0-objects";
 const CAPSTONE = "/training/sql/sql-shared-capstone-checklist";
 
 async function expectLessonChrome(
@@ -65,6 +65,7 @@ test.describe("W0–W4 training waves", () => {
     await page.goto(W1_DBX);
     await expectLessonChrome(page, /Workspace & cluster basics/i);
     await expect(page.getByText(/job cluster/i).first()).toBeVisible();
+    await expect(page.getByText(/day0-job-policy/i)).toBeVisible();
   });
 
   test("W1 Snowflake day-0 lesson shows TryIt and quiz", async ({ page }) => {

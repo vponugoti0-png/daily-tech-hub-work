@@ -41,7 +41,7 @@ export const TRACKS: TrackMeta[] = [
     difficulty: "Beginner → Advanced",
     estimatedHours: 8,
     orderNote:
-      "Recommended reading order (catalog numbers stay put): CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured. Start with the day-0 joins & set-logic recap if you want a true-zero warmup.",
+      "Recommended reading order (catalog numbers stay put): CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured. Start with DE joins & set-logic recap if you want a true-zero warmup.",
   },
   {
     id: "databricks",

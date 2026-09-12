@@ -17,9 +17,9 @@ const trainingRoot = path.join(__dirname, "..", "content", "training");
 /** @type {WaveLesson[]} */
 export const WAVE_LESSONS = [
   // W1 — true-zero
-  { wave: "W1", track: "sql", file: "00-joins-set-logic.md", slug: "sql-joins-set-logic", title: "DE joins & set-logic recap" },
-  { wave: "W1", track: "databricks", file: "00-workspace-cluster-basics.md", slug: "dbx-workspace-cluster-basics", title: "Workspace & cluster basics (day-0)" },
-  { wave: "W1", track: "snowflake", file: "00-databases-schemas-warehouses.md", slug: "sf-databases-schemas-warehouses", title: "Databases, schemas & warehouses (day-0)" },
+  { wave: "W1", track: "sql", file: "00-joins-set-logic.md", slug: "sql-joins-set-logic-recap", title: "DE joins & set-logic recap" },
+  { wave: "W1", track: "databricks", file: "00-workspace-cluster-basics.md", slug: "dbx-workspace-cluster-basics", title: "Workspace & cluster basics" },
+  { wave: "W1", track: "snowflake", file: "00-databases-schemas-warehouses.md", slug: "sf-day0-objects", title: "Databases, schemas & warehouses" },
   // W2 — ingestion
   { wave: "W2", track: "sql", file: "08-deduping-late-data.md", slug: "sql-deduping-late-data", title: "Deduping & late-data patterns" },
   { wave: "W2", track: "snowflake", file: "08-copy-stages-ingestion.md", slug: "sf-copy-stages-ingestion", title: "COPY, stages & ingestion" },

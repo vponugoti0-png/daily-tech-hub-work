@@ -1,24 +1,24 @@
 ---
 slug: dbx-workspace-cluster-basics
 track: databricks
-title: "Workspace & cluster basics (day-0)"
-description: "True-zero Databricks: workspace objects, all-purpose vs job clusters, notebooks vs repos, and what not to click in prod."
+title: "Workspace & cluster basics"
+description: "True-zero Databricks: navigate notebooks, repos, and catalogs; pick all-purpose vs jobs/serverless; three day-0 safety habits."
 level: beginner
 order: 0
 durationMinutes: 25
 topics: [databricks]
 objectives:
-  - "Name workspace vs cluster vs catalog objects"
-  - "Choose a job cluster over an all-purpose cluster for scheduled work"
-  - "Know when a notebook is exploration vs a Job task"
+  - "Navigate workspace notebooks, repos, and catalogs"
+  - "Choose all-purpose vs jobs / serverless compute"
+  - "Apply three day-0 safety habits (no shared always-on prod, pin runtime, terminate idle)"
 updatedAt: "2026-09-12"
 cheatSheet:
-  - label: "Job cluster habit"
-    code: "Use a job cluster (or serverless job) for scheduled pipelines.\nPin the runtime + libraries.\nTear down compute when the job ends."
-    note: "All-purpose clusters are for interactive exploration — they idle-cost."
-  - label: "Three-level name"
-    code: "catalog.schema.table   -- Unity Catalog\n# workspace notebook path is not a table name"
-    note: "Data lives in UC. Notebooks live in the workspace."
+  - label: "Day-0 safety checklist"
+    code: "1. Explore on all-purpose; schedule on a job cluster or serverless job.\n2. Pin runtime + libraries — do not 'latest' in prod.\n3. Auto-terminate idle all-purpose (30–60 min). Never share one cluster with BI + ETL."
+    note: "No live workspace on this site — copy the checklist into yours."
+  - label: "Sample cluster policy stub"
+    code: "{\n  \"name\": \"day0-job-policy\",\n  \"definition\": {\n    \"spark_version\": { \"type\": \"fixed\", \"value\": \"15.4.x-scala2.12\" },\n    \"node_type_id\": { \"type\": \"allowlist\", \"values\": [\"i3.xlarge\"] },\n    \"autotermination_minutes\": { \"type\": \"range\", \"maxValue\": 60 }\n  }\n}"
+    note: "Policy JSON is a stub to read, not a live apply."
 quiz:
   - question: "Scheduled production pipelines should primarily run on…"
     options:
@@ -28,14 +28,14 @@ quiz:
       - "A SQL warehouse named scratch"
     answer: 1
     explanation: "Job compute starts, runs the versioned task, and stops. All-purpose is for interactive work."
-  - question: "What is a Databricks workspace primarily?"
+  - question: "A day-0 safety habit is…"
     options:
-      - "The object-storage bucket that holds Delta files"
-      - "The UI + identity boundary for notebooks, repos, jobs, and access"
-      - "A synonym for Unity Catalog"
-      - "A Snowflake virtual warehouse"
+      - "Leave an all-purpose cluster on 24/7 for the team"
+      - "Pin runtime/libraries and auto-terminate idle interactive compute"
+      - "Use ACCOUNTADMIN on every notebook"
+      - "Skip Unity Catalog and write to /tmp"
     answer: 1
-    explanation: "Workspace = place you work. Catalog = place data is governed. Cluster = compute."
+    explanation: "Pin versions, terminate idle, isolate job compute. Always-on shared clusters are a cost and blast-radius smell."
 ---
 
 Day-0 Databricks: where things live, and which compute you turn on. No lakehouse theory yet — that is the next lesson.

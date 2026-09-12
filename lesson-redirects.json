@@ -436,12 +436,12 @@
   },
   {
     "source": "/training/sql/00-joins-set-logic",
-    "destination": "/training/sql/sql-joins-set-logic",
+    "destination": "/training/sql/sql-joins-set-logic-recap",
     "permanent": true
   },
   {
     "source": "/training/sql/joins-set-logic",
-    "destination": "/training/sql/sql-joins-set-logic",
+    "destination": "/training/sql/sql-joins-set-logic-recap",
     "permanent": true
   },
   {
@@ -456,12 +456,12 @@
   },
   {
     "source": "/training/snowflake/00-databases-schemas-warehouses",
-    "destination": "/training/snowflake/sf-databases-schemas-warehouses",
+    "destination": "/training/snowflake/sf-day0-objects",
     "permanent": true
   },
   {
     "source": "/training/snowflake/databases-schemas-warehouses",
-    "destination": "/training/snowflake/sf-databases-schemas-warehouses",
+    "destination": "/training/snowflake/sf-day0-objects",
     "permanent": true
   },
   {
@@ -632,6 +632,16 @@
   {
     "source": "/training/prompt-engineering/de-role-prompt-library",
     "destination": "/training/prompt-engineering/pe-de-role-prompt-library",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/sql-joins-set-logic",
+    "destination": "/training/sql/sql-joins-set-logic-recap",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/sf-databases-schemas-warehouses",
+    "destination": "/training/snowflake/sf-day0-objects",
     "permanent": true
   }
 ]

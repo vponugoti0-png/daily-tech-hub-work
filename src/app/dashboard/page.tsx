@@ -39,7 +39,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "python-capstone-cli-package",
   ],
   sql: [
-    "sql-joins-set-logic",
+    "sql-joins-set-logic-recap",
     "sql-window-functions-de",
     "sql-incremental-loads",
     "sql-performance-basics",
@@ -67,7 +67,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "dbx-liquid-clustering",
   ],
   snowflake: [
-    "sf-databases-schemas-warehouses",
+    "sf-day0-objects",
     "sf-architecture",
     "sf-time-travel-clones",
     "sf-streams-tasks",
