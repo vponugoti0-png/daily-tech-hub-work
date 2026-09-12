@@ -64,8 +64,8 @@ function LoginForm({ oauthConfigured }: { oauthConfigured: import("@/lib/auth/oa
           Sign in
         </h1>
         <p className="mt-2 text-sm text-[var(--muted)]">
-          Use email and password, or Continue with Google. Progress syncs when
-          you&apos;re logged in.
+          Guests can keep learning. Sign in with email or Google only if you want
+          progress on this account.
         </p>
       </div>
 

@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { FlaskConical, Keyboard, Sparkles, Table2 } from "lucide-react";
-import { JargonLegend, JargonTip } from "@/components/JargonTip";
+import { JargonChips, JargonTip } from "@/components/JargonTip";
 import { FIRST_LESSON_HREF, STARTER_PRACTICE_HREF } from "@/lib/learner-paths";
-import { findJargon } from "@/lib/jargon";
 
 const CHOICES = [
   {
@@ -30,10 +29,6 @@ const CHOICES = [
     chip: "Quick win",
   },
 ] as const;
-
-const STARTER_JARGON = ["DE", "DBX", "ETL", "SQL", "Pipeline"]
-  .map((term) => findJargon(term))
-  .filter((e): e is NonNullable<typeof e> => Boolean(e));
 
 export function StartHere() {
   return (
@@ -109,7 +104,10 @@ export function StartHere() {
         <span className="btn-primary shrink-0 self-start sm:self-center">Open practice →</span>
       </Link>
       <div className="plain-english-panel mt-4">
-        <JargonLegend entries={STARTER_JARGON} />
+        <p className="mb-2 font-display text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--sky)]">
+          Plain English
+        </p>
+        <JargonChips />
       </div>
     </section>
   );

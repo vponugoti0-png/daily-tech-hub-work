@@ -142,7 +142,7 @@ export function Hero({ digest }: { digest: DigestMeta }) {
             <p className="mt-1 font-display text-base font-bold text-[var(--ink-fg)]">
               Save your wins
             </p>
-            <p className="mt-1 text-xs text-[var(--muted)]">100% free — sign-in only syncs</p>
+            <p className="mt-1 text-xs text-[var(--muted)]">Guest-friendly — sign-in is optional</p>
           </Link>
         </motion.div>
       </div>

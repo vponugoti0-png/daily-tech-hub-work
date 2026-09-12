@@ -22,7 +22,7 @@ export function Footer({ lastUpdated }: { lastUpdated?: string }) {
             </Link>
             {" · "}
             <Link href="/signup" className="hover:text-[var(--coral)]">
-              Free signup
+              Optional account
             </Link>
             {" · "}
             <Link href="/shortcuts" className="hover:text-[var(--sky)]">

@@ -27,7 +27,7 @@ export function JargonTip({
     <span className={cn("relative inline-flex", className)}>
       <button
         type="button"
-        className="jargon-chip cursor-help rounded-md border border-dashed border-[var(--sky)]/45 bg-[var(--sky)]/10 px-1 py-0.5 font-semibold text-[var(--sky)] underline decoration-dotted underline-offset-2"
+        className="jargon-chip cursor-help rounded-full border border-dashed border-[var(--sky)]/45 bg-[var(--sky)]/10 px-2.5 py-1 text-xs font-semibold text-[var(--sky)] underline decoration-dotted underline-offset-2"
         aria-describedby={open ? tipId : undefined}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
@@ -70,11 +70,8 @@ export function JargonChips({
   return (
     <div data-testid="jargon-chips" aria-label="Plain English jargon" className="flex flex-wrap gap-2">
       {entries.map((e) => (
-        <JargonTip key={e.term} term={e.term} className="max-w-full">
-          <span className="jargon-chip inline-flex items-center gap-1.5 rounded-full border border-dashed border-[var(--sky)]/45 bg-[var(--sky)]/10 px-2.5 py-1 text-xs">
-            <span className="font-bold">{e.term}</span>
-            <span className="font-medium text-[var(--muted)]">= {e.plain}</span>
-          </span>
+        <JargonTip key={e.term} term={e.term}>
+          {e.term} = {e.plain}
         </JargonTip>
       ))}
     </div>

@@ -51,13 +51,14 @@ function SignupForm({ oauthConfigured }: { oauthConfigured: import("@/lib/auth/o
     <div className="mx-auto max-w-md space-y-6">
       <div>
         <p className="font-display text-xs font-bold uppercase tracking-[0.2em] text-[var(--signal)]">
-          Free account
+          Optional save
         </p>
         <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-[var(--ink-fg)]">
           Create account
         </h1>
         <p className="mt-2 text-sm text-[var(--muted)]">
-          No credit card. No paywalls. Create a free account with email, or tap Continue with Google.
+          You can keep learning as a guest. An account is optional — email or Continue with Google
+          if you want the same progress on another device.
         </p>
         <p className="mt-2 rounded-xl border border-[var(--ink-border)] bg-[var(--panel-2)] px-3 py-2 text-xs leading-relaxed text-[var(--muted)]">
           You&apos;ll be signed in right away. We don&apos;t send a confirmation email yet — save
@@ -128,7 +129,7 @@ function SignupForm({ oauthConfigured }: { oauthConfigured: import("@/lib/auth/o
             .
           </p>
           <button type="submit" disabled={busy} className="btn-primary w-full disabled:opacity-50">
-            {busy ? "Creating…" : "Sign up free"}
+            {busy ? "Creating…" : "Create optional account"}
           </button>
         </form>
       </div>

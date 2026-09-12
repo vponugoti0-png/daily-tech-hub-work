@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import type { QuizQuestion } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { upsertLessonProgress } from "@/lib/progress";
-import { whyWrongCopy } from "@/lib/quiz-copy";
+import { cheerCopy, whyWrongCopy } from "@/lib/quiz-copy";
 
 function tallyScore(questions: QuizQuestion[], answers: Record<number, number>) {
   return questions.reduce((acc, q, i) => acc + (answers[i] === q.answer ? 1 : 0), 0);
@@ -98,9 +98,14 @@ export function Quiz({
                 <span className="mt-0.5 block">{whyWrongCopy(q, answers[qi])}</span>
               </p>
             ) : null}
-            {submitted && answers[qi] === q.answer && q.explanation ? (
-              <p className="text-xs text-[var(--muted)]" data-testid="quiz-why-right">
-                {q.explanation}
+            {submitted && answers[qi] === q.answer ? (
+              <p
+                data-testid="quiz-cheer"
+                className="rounded-xl border border-[var(--mint)]/35 bg-[var(--mint)]/10 px-3 py-2 text-sm text-[var(--ink-fg)]"
+                role="status"
+              >
+                <span className="block font-bold text-[var(--mint)]">Nice one!</span>
+                <span className="mt-0.5 block">{cheerCopy(q)}</span>
               </p>
             ) : null}
           </fieldset>

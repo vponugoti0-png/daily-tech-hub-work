@@ -235,7 +235,7 @@ export default async function LessonPage({
         <div className="mt-10 space-y-3 border-t border-[var(--ink-border)] pt-6">
           <CompleteButton track={lesson.track} slug={lesson.slug} />
           <p className="text-xs text-[var(--muted)]">
-            Progress saves locally; signed-in users sync to the free SQLite store.
+            Progress saves on this device. Sign-in is optional.
           </p>
           {next ? (
             <Link

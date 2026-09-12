@@ -147,11 +147,12 @@ export default function HomePage() {
             Ready for the next checkpoint?
           </h2>
           <p className="mt-1 text-sm text-[var(--muted)]">
-            Free account syncs progress. No premium tiers — ever.
+            Keep going as a guest. A free account is optional if you want the same
+            progress on another device.
           </p>
         </div>
-        <Link href="/signup" className="btn-primary shrink-0">
-          Sign up free <ArrowRight className="h-4 w-4" />
+        <Link href="/signup" className="btn-ghost shrink-0">
+          Optional account <ArrowRight className="h-4 w-4" />
         </Link>
       </section>
     </div>

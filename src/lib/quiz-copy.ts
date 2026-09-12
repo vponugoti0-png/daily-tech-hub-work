@@ -13,3 +13,9 @@ export function whyWrongCopy(question: QuizQuestion, selected: number): string {
   }
   return "Not quite. Re-read the question and pick the option that matches the lesson.";
 }
+
+/** Short positive cheer when the pick is right. */
+export function cheerCopy(question: QuizQuestion): string {
+  if (question.explanation?.trim()) return question.explanation.trim();
+  return "Nice — that matches the lesson.";
+}
