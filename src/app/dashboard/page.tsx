@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { CERT_PATH, TRACKS } from "@/lib/tracks";
+import { CERT_PATH, META_DE_OVERLAY, TRACKS } from "@/lib/tracks";
 import { loadProgress, trackCompletion } from "@/lib/progress";
 import { loginHref, signupHref } from "@/lib/safe-path";
 
@@ -15,6 +15,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "pe-verify-answers",
     "pe-safety-privacy",
     "pe-prompts-for-learning",
+    "pe-de-role-prompt-library",
   ],
   "ai-data-eng": [
     "ai-de-copilot-mindset",
@@ -24,6 +25,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "ai-de-tools-workflow",
     "ai-de-review-changes",
     "ai-de-practice-agents",
+    "ai-de-practice-nonsf-agents",
   ],
   python: [
     "python-dataframe-contracts",
@@ -34,8 +36,10 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "python-orchestration-hooks",
     "python-performance-de",
     "python-packaging-de-libs",
+    "python-capstone-cli-package",
   ],
   sql: [
+    "sql-joins-set-logic-recap",
     "sql-window-functions-de",
     "sql-incremental-loads",
     "sql-performance-basics",
@@ -43,8 +47,13 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "sql-data-quality",
     "sql-ctes-readability",
     "sql-semi-structured",
+    "sql-deduping-late-data",
+    "sql-shared-capstone-checklist",
+    "sql-slowly-changing-dimensions",
+    "sql-explain-plan-lab",
   ],
   databricks: [
+    "dbx-workspace-cluster-basics",
     "dbx-lakehouse-fundamentals",
     "dbx-delta-lake-basics",
     "dbx-spark-sql-performance",
@@ -52,8 +61,13 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "dbx-jobs-workflows",
     "dbx-structured-streaming",
     "dbx-sql-warehouses",
+    "dbx-autoloader-ingestion",
+    "dbx-capstone-medallion-job",
+    "dbx-dlt-pipelines",
+    "dbx-liquid-clustering",
   ],
   snowflake: [
+    "sf-day0-objects",
     "sf-architecture",
     "sf-time-travel-clones",
     "sf-streams-tasks",
@@ -61,8 +75,18 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "sf-performance-cost",
     "sf-governance-rbac",
     "sf-snowpark-python",
+    "sf-copy-stages-ingestion",
+    "sf-capstone-dynamic-table-mart",
+    "sf-zero-copy-clone-dev",
+    "sf-cortex-vs-snowpark",
   ],
-  git: ["git-rebase-vs-merge", "git-commit-hygiene", "git-bisect-and-blame"],
+  git: [
+    "git-rebase-vs-merge",
+    "git-commit-hygiene",
+    "git-bisect-and-blame",
+    "git-branching-dbt-sql",
+    "git-pr-templates-data-diffs",
+  ],
 };
 
 const TRACK_HUE: Record<string, string> = {
@@ -127,6 +151,10 @@ export default function DashboardPage() {
           <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
             Lessons you complete are saved on this device. There are no paid plans — a free
             account only syncs your training across devices.
+          </p>
+          <p className="mt-3 max-w-2xl text-xs text-[var(--muted)]">
+            <span className="font-semibold text-[var(--sky)]">{META_DE_OVERLAY.eyebrow}.</span>{" "}
+            {META_DE_OVERLAY.blurb}
           </p>
         </div>
 
@@ -218,6 +246,10 @@ export default function DashboardPage() {
         <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
           Free learning progress across your tracks — coral = go, mint = done, sun = reward. No paid
           plans.
+        </p>
+        <p className="mt-3 max-w-2xl text-xs text-[var(--muted)]">
+          <span className="font-semibold text-[var(--sky)]">{META_DE_OVERLAY.eyebrow}.</span>{" "}
+          {META_DE_OVERLAY.blurb}
         </p>
       </div>
 

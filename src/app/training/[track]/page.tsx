@@ -52,6 +52,14 @@ export default async function TrackPage({
             {meta.title}
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--muted)]">{meta.blurb}</p>
+          {meta.orderNote ? (
+            <p className="mt-3 max-w-2xl rounded-xl border border-[var(--sky)]/30 bg-[var(--sky)]/10 px-3 py-2 text-sm leading-relaxed text-[var(--ink-fg)]">
+              <span className="font-display text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--sky)]">
+                Recommended order
+              </span>
+              <span className="mt-1 block">{meta.orderNote}</span>
+            </p>
+          ) : null}
           <p className="mt-4 text-xs text-[var(--muted)]">
             {lessons.length} lessons · ~{meta.estimatedHours}h · {meta.difficulty}
           </p>

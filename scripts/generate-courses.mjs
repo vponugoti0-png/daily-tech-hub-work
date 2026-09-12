@@ -6,6 +6,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { WAVE_FILES_BY_TRACK } from "./wave-lessons.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..", "content", "training");
@@ -1483,11 +1484,13 @@ Port one pandas transform from the Python track into Snowpark or SQL with tests 
   ],
 };
 
-// wipe regenerable tracks (keep git)
+// wipe regenerable core files; keep W1–W4 wave markdown (see wave-lessons.mjs)
 for (const track of Object.keys(courses)) {
   const dir = path.join(root, track);
   fs.mkdirSync(dir, { recursive: true });
+  const keep = WAVE_FILES_BY_TRACK[track] ?? new Set();
   for (const f of fs.readdirSync(dir).filter((x) => x.endsWith(".md"))) {
+    if (keep.has(f)) continue;
     fs.unlinkSync(path.join(dir, f));
   }
   for (const lesson of courses[track]) {

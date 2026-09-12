@@ -3,6 +3,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { WAVE_FILES_BY_TRACK } from "./wave-lessons.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
@@ -12,6 +13,11 @@ const shortcutsPath = path.join(root, "content", "shortcuts", "items.json");
 function writeLesson(track, filename, fm, body) {
   const dir = path.join(training, track);
   fs.mkdirSync(dir, { recursive: true });
+  const waveKeep = WAVE_FILES_BY_TRACK[track];
+  if (waveKeep?.has(filename) && fs.existsSync(path.join(dir, filename))) {
+    // W1–W4 markdown is the source of truth — do not clobber.
+    return;
+  }
   const yaml = Object.entries(fm)
     .map(([k, v]) => {
       if (Array.isArray(v)) {
@@ -437,6 +443,46 @@ Struggle builds skill. Use AI after you try, or to unblock a stuck 10 minutes �
 1. Write a quiz-me prompt for window functions.
 2. Paste a wrong mental model on purpose and ask AI to correct it gently.
 `,
+  },
+  {
+    file: "07-de-role-prompt-library.md",
+    fm: {
+      slug: "pe-de-role-prompt-library",
+      track: "prompt-engineering",
+      title: "DE role prompt library (on-call / PR / incident)",
+      description:
+        "Copy-ready prompts for on-call triage, data-diff PR reviews, and incident write-ups — with constraints and verification asks.",
+      level: "beginner",
+      order: 7,
+      durationMinutes: 30,
+      topics: ["general"],
+      objectives: [
+        "Use a four-line prompt for on-call, PR review, and incidents",
+        "Demand evidence and forbid secrets",
+        "Reuse these cards instead of inventing a /practice chat",
+      ],
+      updatedAt: "2026-09-12",
+      cheatSheet: [
+        {
+          label: "On-call triage",
+          code: "Role: You are a calm data-engineering on-call pair.\\nGoal: Rank likely causes for orders_daily being 0 rows for today.",
+          note: "Paste into Claude, Copilot Chat, or Grok. You run the checks.",
+        },
+      ],
+      quiz: [
+        {
+          question: "An on-call prompt should always include…",
+          options: [
+            "Production passwords so the model can log in",
+            "Goal, context, constraints (no secrets), and the next human check",
+            "A request to disable RBAC",
+            "A new primary nav item",
+          ],
+          answer: 1,
+        },
+      ],
+    },
+    body: `A **role library**, not a chatbot product. See content/training/prompt-engineering/07-de-role-prompt-library.md (wave source of truth).`,
   },
 ];
 
@@ -933,6 +979,46 @@ Browse all packs at [Shortcuts](/shortcuts).
 3. Sketch a two-step pipeline: \\\`TRANSLATE\\\` notes to English, then \\\`SUMMARIZE\\\`. Keep it \\\`SELECT\\\`-only.
 4. Open the [Cortex Shortcuts pack](/shortcuts/snowflake-cortex-ai) and star two tips that are **not** already on this page (Search or guardrails).
 `,
+  },
+  {
+    file: "08-practice-nonsf-agents.md",
+    fm: {
+      slug: "ai-de-practice-nonsf-agents",
+      track: "ai-data-eng",
+      title: "Practice with generic agents & Databricks Assistant",
+      description:
+        "Tool-calling practice that is not Snowflake Cortex: generic warehouse tools and a Databricks Assistant-shaped prompt you can paste today.",
+      level: "beginner",
+      order: 8,
+      durationMinutes: 30,
+      topics: ["databricks", "general"],
+      objectives: [
+        "Write a tool-calling plan that names tools and JSON args (no Cortex required)",
+        "Shape a Databricks Assistant / notebook-agent prompt with evidence steps",
+        "Keep the same guest progress model — no /practice simulator",
+      ],
+      updatedAt: "2026-09-12",
+      cheatSheet: [
+        {
+          label: "Generic tool call — inspect_job_run",
+          code: "You are a data-engineering agent (not Snowflake-specific).\\n\\nGoal: Explain why the orders_daily job ran 3x longer today.",
+          note: "Paste into Claude, Copilot Chat, Grok, or a workspace assistant. You still run the tool.",
+        },
+      ],
+      quiz: [
+        {
+          question: "Generic tool-calling beats plain chat when…",
+          options: [
+            "You want to skip all review",
+            "You need named tools and JSON args, then you run the call",
+            "You must use Snowflake Cortex or nothing",
+            "You paste production passwords",
+          ],
+          answer: 1,
+        },
+      ],
+    },
+    body: `Non-Snowflake sibling of the Cortex practice lesson. See content/training/ai-data-eng/08-practice-nonsf-agents.md (wave source of truth).`,
   },
 ];
 

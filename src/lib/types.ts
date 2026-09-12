@@ -142,4 +142,6 @@ export interface TrackMeta {
   difficulty: string;
   estimatedHours: number;
   badge?: string;
+  /** Optional reading-path note (W0). Catalog `order` stays as-is. */
+  orderNote?: string;
 }

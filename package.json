@@ -13,6 +13,7 @@
     "generate:shortcuts": "node scripts/generate-shortcuts.mjs",
     "seed:demo": "node -e \"require('./src/lib/db.ts')\" 2>/dev/null || node scripts/seed-demo.mjs",
     "generate:v3": "node scripts/generate-v3-content.mjs",
+    "generate:waves": "node scripts/wave-lessons.mjs",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui"
   },
