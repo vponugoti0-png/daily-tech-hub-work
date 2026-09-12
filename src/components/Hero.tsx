@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { formatDate, formatDateTime, relativeTime } from "@/lib/dates";
 import type { DigestMeta } from "@/lib/types";
@@ -11,15 +11,12 @@ import { BookOpen, CalendarDays, Keyboard, RefreshCw, Sparkles } from "lucide-re
 function RelativeUpdated({ value }: { value: string }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  // First paint matches SSR (absolute); relative time only after mount.
+  const absolute = formatDateTime(value);
+  // Absolute UTC string is identical on server and client; relative time after mount.
   return (
     <>
-      <span suppressHydrationWarning>
-        {mounted ? relativeTime(value) : formatDateTime(value)}
-      </span>
-      {mounted ? (
-        <span className="hidden sm:inline"> · {formatDateTime(value)}</span>
-      ) : null}
+      <span>{mounted ? relativeTime(value) : absolute}</span>
+      {mounted ? <span className="hidden sm:inline"> · {absolute}</span> : null}
     </>
   );
 }
@@ -33,7 +30,6 @@ const HeroScene = dynamic(
 );
 
 export function Hero({ digest }: { digest: DigestMeta }) {
-  const reduceMotion = useReducedMotion();
   const [allow3d, setAllow3d] = useState(false);
 
   useEffect(() => {
@@ -48,16 +44,14 @@ export function Hero({ digest }: { digest: DigestMeta }) {
   }, []);
 
   // `initial: false` keeps the first (SSR / no-JS) paint visible. Starting at
-  // opacity 0 hid the headline until hydration — in-app browsers and blocked
-  // JS then look like a blank / unopenable page.
-  const fade = (delay = 0) =>
-    reduceMotion
-      ? {}
-      : {
-          initial: false as const,
-          animate: { opacity: 1, y: 0 },
-          transition: { duration: 0.35, delay },
-        };
+  // opacity 0 hid the headline until hydration — in-app browsers, blocked JS,
+  // and prefers-reduced-motion then look like a blank / unopenable page.
+  // Same props on server and client — do not branch on useReducedMotion (null vs bool).
+  const fade = (delay = 0) => ({
+    initial: false as const,
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.35, delay },
+  });
 
   return (
     <section className="relative overflow-hidden rounded-[1.5rem] border border-[var(--ink-border)] bg-[var(--panel)] p-6 sm:p-9">
@@ -70,7 +64,6 @@ export function Hero({ digest }: { digest: DigestMeta }) {
       <div className="pointer-events-none absolute -right-10 -top-10 h-44 w-44 rounded-full bg-[var(--violet)]/25 blur-3xl" aria-hidden />
       <div className="pointer-events-none absolute bottom-0 left-1/3 h-36 w-36 rounded-full bg-[var(--coral)]/20 blur-3xl" aria-hidden />
       <div className="pointer-events-none absolute -left-8 top-1/2 h-28 w-28 rounded-full bg-[var(--sky)]/20 blur-2xl" aria-hidden />
-      <div className="pointer-events-none absolute right-1/4 top-6 h-16 w-16 rotate-12 rounded-2xl bg-[var(--sun)]/30" aria-hidden />
 
       <div className="relative grid gap-6 lg:grid-cols-[1.4fr_0.8fr] lg:items-center">
         <div>

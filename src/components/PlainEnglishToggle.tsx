@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 export function PlainEnglishToggle({ compact = false }: { compact?: boolean }) {
   const [on, setOn] = useState(false);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     try {
@@ -14,16 +15,18 @@ export function PlainEnglishToggle({ compact = false }: { compact?: boolean }) {
     } catch {
       /* ignore */
     }
+    setReady(true);
   }, []);
 
   useEffect(() => {
+    if (!ready) return;
     document.documentElement.dataset.plainEnglish = on ? "on" : "off";
     try {
       localStorage.setItem(PLAIN_ENGLISH_KEY, on ? "1" : "0");
     } catch {
       /* ignore */
     }
-  }, [on]);
+  }, [on, ready]);
 
   return (
     <button

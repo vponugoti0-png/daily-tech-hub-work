@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   description: "Search across news, training, releases, and shortcuts.",
 };
 
+export const dynamic = "force-dynamic";
+
 function SearchResults({ q }: { q: string }) {
   const results = q ? searchContent(q) : [];
 

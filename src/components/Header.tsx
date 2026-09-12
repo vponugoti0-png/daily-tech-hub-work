@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, Search, X, Hexagon, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./ThemeToggle";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { PlainEnglishToggle } from "@/components/PlainEnglishToggle";
+import { loginHref, signupHref } from "@/lib/safe-path";
 
 const NAV = [
   { href: "/", label: "Today" },
@@ -19,13 +20,23 @@ const NAV = [
 ];
 
 export function Header() {
-  const pathname = usePathname();
+  const rawPath = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const { user, logout, loading } = useAuth();
+  // Defer pathname-dependent UI until after mount so SSR HTML matches hydrate
+  // (usePathname can be null/"/" at generate time vs the real path in the browser).
+  const [pathname, setPathname] = useState("");
+  const { user, logout } = useAuth();
+
+  useEffect(() => {
+    setPathname(rawPath || "");
+  }, [rawPath]);
+
   const onAuthPage = pathname === "/login" || pathname === "/signup";
   const account = user;
   const showAccount = Boolean(account) && !onAuthPage;
+  const signInHref = loginHref(pathname);
+  const signUpHref = signupHref(pathname);
 
   async function handleLogout() {
     setOpen(false);
@@ -106,13 +117,13 @@ export function Header() {
             <>
               <div className="hidden items-center gap-1.5 sm:flex">
                 <Link
-                  href="/login"
+                  href={signInHref}
                   className="rounded-lg px-2.5 py-1.5 text-sm font-semibold text-[var(--muted)] hover:text-[var(--ink-fg)]"
                 >
                   Sign in
                 </Link>
                 <Link
-                  href="/signup"
+                  href={signUpHref}
                   className="inline-flex min-h-[44px] items-center gap-2 rounded-[14px] bg-[var(--coral)] px-3.5 py-2 text-sm font-bold text-[#1a1430] shadow-[0_3px_0_color-mix(in_oklab,var(--coral)_55%,#000)] sm:px-4"
                 >
                   <UserRound className="h-4 w-4" aria-hidden />
@@ -120,7 +131,7 @@ export function Header() {
                 </Link>
               </div>
               <Link
-                href="/signup"
+                href={signUpHref}
                 className="inline-flex min-h-[44px] items-center rounded-[14px] bg-[var(--coral)] px-3 py-2 text-sm font-bold text-[#1a1430] sm:hidden"
               >
                 Sign up
@@ -175,7 +186,7 @@ export function Header() {
               </>
             ) : (
               <Link
-                href="/signup"
+                href={signUpHref}
                 onClick={() => setOpen(false)}
                 className="rounded-lg px-3 py-2.5 text-sm font-semibold text-[var(--coral)]"
               >
