@@ -49,13 +49,13 @@ export const SNOWFLAKE_LAB_SLUGS = [
 
 export const SQL_LAB_SLUGS = [
   "sql-select-filter-nulls",
-  "sql-dml-write-path",
-  "sql-aggregates-group-having",
   "sql-patterns-aliases-case",
+  "sql-aggregates-group-having",
+  "sql-joins-set-logic-recap",
   "sql-exists-any-all",
   "sql-ddl-constraints",
+  "sql-dml-write-path",
   "sql-dates-injection",
-  "sql-joins-set-logic-recap",
   "sql-catalog-views-metrics",
 ] as const;
 

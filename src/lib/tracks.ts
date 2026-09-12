@@ -59,7 +59,7 @@ export const TRACKS: TrackMeta[] = [
     estimatedHours: 12,
     pathLevel: "L1 SQL",
     orderNote:
-      "Recommended reading order (catalog numbers stay put): SELECT/filters → DML → Aggregates → Patterns/CASE → EXISTS → DDL → Dates/injection → Joins recap. Then CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL → Catalogs/views/metrics. Local Practice lab lives on the exercise-path lessons, the joins recap, and the catalog lesson.",
+      "Recommended reading order (catalog numbers stay put): SELECT/filters → Patterns/CASE → Aggregates → Joins recap → EXISTS → DDL → DML → Dates/injection. Then CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL → Catalogs/views/metrics. Local Practice lab lives on the L1 closed-loop lessons, the joins recap, and the catalog lesson. Windows, SCD, and ETL builders stay off the L1 path.",
   },
   {
     id: "databricks",

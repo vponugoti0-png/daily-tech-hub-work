@@ -72,6 +72,25 @@ quiz:
 
 DDL is how you **name the contract**. This is not a catalog of every `CREATE DATABASE` dialect, and it is not a stored-procedure course. You will: create a staging table, constrain the grain, alter it when a column arrives late, index the filter you already use, and drop only what you can rebuild.
 
+### Seed demo (5 rows)
+
+These five rows are a slice of `aurora_customers` in the local lab — the same seed the Practice editor runs. No second dataset.
+
+| customer_id | region | status | email | signup_date |
+|-------------|--------|--------|-------|-------------|
+| 1 | west | active | ada@aurora.dev | 2026-01-04 |
+| 2 | east | active | NULL | 2026-02-11 |
+| 3 | west | churned | kai@aurora.dev | 2025-11-20 |
+| 4 | latam | active | luz@aurora.dev | 2026-03-01 |
+| 5 | north | active | rio@aurora.dev | 2026-04-15 |
+
+```sql
+SELECT customer_id, region, status, email, signup_date
+FROM aurora_customers
+ORDER BY customer_id
+LIMIT 5;
+```
+
 The **local practice lab** inspects `information_schema` for the `aurora_*` seed. Run CREATE/ALTER/DROP in a real warehouse.
 
 ## CREATE TABLE as a contract

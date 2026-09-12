@@ -94,6 +94,65 @@ export const ZERO_TO_HERO_SPINE: PathSpineStep[] = [
   },
 ];
 
+/** Prompt D L1 closed loop — display / next-route order only. Slugs and files stay put. */
+export const L1_SQL_SLUGS = [
+  "sql-select-filter-nulls",
+  "sql-patterns-aliases-case",
+  "sql-aggregates-group-having",
+  "sql-joins-set-logic-recap",
+  "sql-exists-any-all",
+  "sql-ddl-constraints",
+  "sql-dml-write-path",
+  "sql-dates-injection",
+] as const;
+
+export type L1SqlSlug = (typeof L1_SQL_SLUGS)[number];
+
+export const L1_SQL_SPINE: PathSpineStep[] = ZERO_TO_HERO_SPINE.filter((s) => s.level === "L1");
+
+export function isL1SqlSlug(slug: string): slug is L1SqlSlug {
+  return (L1_SQL_SLUGS as readonly string[]).includes(slug);
+}
+
+export function spineLessonHref(step: PathSpineStep): string {
+  return `/training/${step.track}/${step.slug}${step.lab ? "#lab" : ""}`;
+}
+
+/** Prev/next inside the L1 SQL loop. Last L1 continues to L2 Python — not windows / SCD / ETL. */
+export function l1SqlNeighbors(slug: string): {
+  prev?: PathSpineStep;
+  next?: PathSpineStep;
+} {
+  const idx = L1_SQL_SPINE.findIndex((s) => s.slug === slug);
+  if (idx < 0) return {};
+  return {
+    prev: idx > 0 ? L1_SQL_SPINE[idx - 1] : undefined,
+    next:
+      idx < L1_SQL_SPINE.length - 1
+        ? L1_SQL_SPINE[idx + 1]
+        : ZERO_TO_HERO_SPINE.find((s) => s.level === "L2"),
+  };
+}
+
+/** SQL track cards / outline: L1 pedagogical block first, then remaining catalog `order`. */
+export function sortLessonsForDisplay<T extends { track: string; slug: string; order: number }>(
+  lessons: T[],
+): T[] {
+  if (lessons.length === 0) return [];
+  if (lessons[0].track !== "sql") {
+    return [...lessons].sort((a, b) => a.order - b.order);
+  }
+  const rank = new Map<string, number>(L1_SQL_SLUGS.map((s, i) => [s, i]));
+  return [...lessons].sort((a, b) => {
+    const ar = rank.get(a.slug);
+    const br = rank.get(b.slug);
+    if (ar !== undefined && br !== undefined) return ar - br;
+    if (ar !== undefined) return -1;
+    if (br !== undefined) return 1;
+    return a.order - b.order;
+  });
+}
+
 export type ZeroToHeroLevel = {
   id: string;
   name: string;

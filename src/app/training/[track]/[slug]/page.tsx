@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllLessons, getLesson, getLessonsByTrack } from "@/lib/content";
+import { isL1SqlSlug, l1SqlNeighbors } from "@/lib/learner-paths";
 import { getTrackMeta } from "@/lib/tracks";
 import { Markdown } from "@/components/Markdown";
 import { SoftBadge, TopicBadge } from "@/components/Badge";
@@ -51,8 +52,48 @@ export default async function LessonPage({
 
   const siblings = getLessonsByTrack(lesson.track);
   const idx = siblings.findIndex((l) => l.slug === lesson.slug);
-  const prev = idx > 0 ? siblings[idx - 1] : undefined;
-  const next = idx >= 0 && idx < siblings.length - 1 ? siblings[idx + 1] : undefined;
+  const catalogPrev = idx > 0 ? siblings[idx - 1] : undefined;
+  const catalogNext = idx >= 0 && idx < siblings.length - 1 ? siblings[idx + 1] : undefined;
+  const l1Nav =
+    lesson.track === "sql" && isL1SqlSlug(lesson.slug)
+      ? l1SqlNeighbors(lesson.slug)
+      : { prev: undefined, next: undefined };
+  const prev = l1Nav.prev
+    ? {
+        track: l1Nav.prev.track,
+        slug: l1Nav.prev.slug,
+        title: l1Nav.prev.title,
+        lab: Boolean(l1Nav.prev.lab),
+      }
+    : catalogPrev
+      ? {
+          track: catalogPrev.track,
+          slug: catalogPrev.slug,
+          title: catalogPrev.title,
+          lab: isLabLesson(catalogPrev.track, catalogPrev.slug),
+        }
+      : undefined;
+  const next = l1Nav.next
+    ? {
+        track: l1Nav.next.track,
+        slug: l1Nav.next.slug,
+        title: l1Nav.next.title,
+        lab: Boolean(l1Nav.next.lab),
+      }
+    : catalogNext
+      ? {
+          track: catalogNext.track,
+          slug: catalogNext.slug,
+          title: catalogNext.title,
+          lab: isLabLesson(catalogNext.track, catalogNext.slug),
+        }
+      : undefined;
+  const prevHref = prev
+    ? `/training/${prev.track}/${prev.slug}${prev.lab ? "#lab" : ""}`
+    : undefined;
+  const nextHref = next
+    ? `/training/${next.track}/${next.slug}${next.lab ? "#lab" : ""}`
+    : undefined;
   const isAiTrack =
     lesson.track === "prompt-engineering" || lesson.track === "ai-data-eng";
   const isFdeTrack = lesson.track === "forward-deployed";
@@ -201,13 +242,19 @@ export default async function LessonPage({
         ) : null}
 
         <div className="mt-10 space-y-3 border-t border-[var(--ink-border)] pt-6">
-          <CompleteButton track={lesson.track} slug={lesson.slug} />
+          <CompleteButton
+            track={lesson.track}
+            slug={lesson.slug}
+            nextHref={nextHref}
+            nextTitle={next?.title}
+          />
           <p className="text-xs text-[var(--muted)]">
             Progress saves on this device. Sign-in is optional.
           </p>
-          {next ? (
+          {next && nextHref ? (
             <Link
-              href={`/training/${next.track}/${next.slug}`}
+              href={nextHref}
+              data-testid="lesson-next-cta"
               className="inline-flex min-h-[44px] items-center rounded-[14px] border border-[var(--coral)]/40 bg-[var(--coral)]/10 px-4 py-2 text-sm font-bold text-[var(--ink-fg)] hover:bg-[var(--coral)]/20"
             >
               Next checkpoint: {next.title} →
@@ -216,9 +263,10 @@ export default async function LessonPage({
         </div>
 
         <nav className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-between">
-          {prev ? (
+          {prev && prevHref ? (
             <Link
-              href={`/training/${prev.track}/${prev.slug}`}
+              href={prevHref}
+              data-testid="lesson-prev-cta"
               className="text-sm text-[var(--muted)] hover:text-[var(--ink-fg)]"
             >
               ← {prev.title}
@@ -226,9 +274,10 @@ export default async function LessonPage({
           ) : (
             <span />
           )}
-          {next ? (
+          {next && nextHref ? (
             <Link
-              href={`/training/${next.track}/${next.slug}`}
+              href={nextHref}
+              data-testid="lesson-next-footer"
               className="text-sm text-[var(--muted)] hover:text-[var(--ink-fg)] sm:text-right"
             >
               {next.title} →
