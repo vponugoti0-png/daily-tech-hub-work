@@ -16,7 +16,12 @@ test.describe("Phase 3 richer lab datasets", () => {
 
     const lab = page.locator("#lab");
     await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
+    await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
     await expect(page.locator(".tryit").first()).toBeVisible();
+    await expect(page.getByRole("link", { name: /How to practice/i }).first()).toHaveAttribute(
+      "href",
+      "#lab",
+    );
     await expect(page.getByText(/lab_catalog_objects|metric-view/i).first()).toBeVisible();
 
     await lab.getByRole("button", { name: "Run SQL sample" }).click();
@@ -44,6 +49,7 @@ test.describe("Phase 3 richer lab datasets", () => {
 
     const lab = page.locator("#lab");
     await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
+    await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
     await expect(page.getByText(/lab_catalog_objects|silver.ok_orders|metrics.orders_daily/i).first()).toBeVisible();
 
     const select = lab.getByLabel("SQL sample", { exact: true });
@@ -64,6 +70,7 @@ test.describe("Phase 3 richer lab datasets", () => {
 
     const lab = page.locator("#lab");
     await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
+    await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
     await expect(page.getByText(/lab_catalog_objects|analytics.paid_orders|sf_daily_revenue/i).first()).toBeVisible();
 
     await lab.getByRole("button", { name: "Run SQL sample" }).click();
@@ -83,6 +90,7 @@ test.describe("Phase 3 richer lab datasets", () => {
 
     const lab = page.locator("#lab");
     await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
+    await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
     await expect(page.getByText(/aurora_orders/i).first()).toBeVisible();
 
     await lab.getByRole("button", { name: "Run SQL sample" }).click();
@@ -95,7 +103,14 @@ test.describe("Phase 3 richer lab datasets", () => {
     await page.goto("/training/python/python-none-dicts-rows");
     await expect(page.locator("#lab")).toHaveCount(0);
     await expect(page.getByRole("link", { name: /Open local practice lab/i })).toHaveCount(0);
-    await expect(page.getByText(/Coming soon · live Run/i).first()).toBeVisible();
+    await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
+    const tryit = page.locator(".tryit").first();
+    await expect(tryit).toBeVisible();
+    await expect(tryit.getByText(/Copy to practice/i).first()).toBeVisible();
+    await expect(tryit.getByRole("button", { name: /Copy to practice/i })).toBeVisible();
+    await expect(tryit.getByRole("button", { name: /How to practice/i })).toBeVisible();
+    await expect(tryit.getByRole("link", { name: /How to practice/i })).toHaveCount(0);
+    await expect(tryit.getByRole("button", { name: /Run SQL sample|Run sample/i })).toHaveCount(0);
   });
 
   test("search indexes catalog/metrics lessons; no Lab nav", async ({ page }) => {
