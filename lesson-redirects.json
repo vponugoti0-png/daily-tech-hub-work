@@ -625,6 +625,11 @@
     "permanent": true
   },
   {
+    "source": "/training/git/00-git-play-lab",
+    "destination": "/training/git/git-play-lab",
+    "permanent": true
+  },
+  {
     "source": "/training/prompt-engineering/07-de-role-prompt-library",
     "destination": "/training/prompt-engineering/pe-de-role-prompt-library",
     "permanent": true

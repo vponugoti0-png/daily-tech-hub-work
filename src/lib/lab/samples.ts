@@ -67,6 +67,7 @@ export function labEntrySlug(track: string): string | undefined {
   if (track === "databricks") return DATABRICKS_LAB_ENTRY_SLUG;
   if (track === "snowflake") return SNOWFLAKE_LAB_ENTRY_SLUG;
   if (track === "sql") return SQL_LAB_ENTRY_SLUG;
+  if (track === "git") return "git-play-lab";
   return undefined;
 }
 

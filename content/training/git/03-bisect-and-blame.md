@@ -11,7 +11,14 @@ objectives:
   - Run git bisect with a test command
   - Use blame to understand a line's origin
   - Combine with dbt/pytest smoke tests
-updatedAt: "2026-09-11"
+updatedAt: "2026-09-12"
+cheatSheet:
+  - label: "Move HEAD back one commit"
+    code: "git reset --hard HEAD~1"
+    note: "Play Lab stand-in for walking history. Real bisect still needs a test oracle on a real repo."
+  - label: "Inspect the current tip"
+    code: "git log --oneline\ngit status"
+    note: "Honest: this lab is not git bisect run. Use it to read the graph, then bisect on your laptop."
 quiz:
   - question: "What does git bisect run pytest … do?"
     options:
@@ -31,6 +38,8 @@ quiz:
 ---
 
 # Bisect & blame for broken pipelines
+
+The Git Play Lab on this page is a **graph + undo** trainer, not `git bisect run`. Use it to see how tips move, then run bisect in a real clone.
 
 ## Bisect with a script
 

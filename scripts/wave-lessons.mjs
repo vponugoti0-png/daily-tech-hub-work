@@ -39,6 +39,7 @@ export const WAVE_LESSONS = [
   { wave: "W4", track: "ai-data-eng", file: "08-practice-nonsf-agents.md", slug: "ai-de-practice-nonsf-agents", title: "Practice with generic agents & Databricks Assistant" },
   { wave: "W4", track: "git", file: "04-branching-dbt-sql.md", slug: "git-branching-dbt-sql", title: "Branching for dbt/SQL repos" },
   { wave: "W4", track: "git", file: "05-pr-templates-data-diffs.md", slug: "git-pr-templates-data-diffs", title: "PR templates for data diffs" },
+  { wave: "W7", track: "git", file: "00-git-play-lab.md", slug: "git-play-lab", title: "Git Play Lab — commit tree & sandbox CLI" },
   { wave: "W4", track: "prompt-engineering", file: "07-de-role-prompt-library.md", slug: "pe-de-role-prompt-library", title: "DE role prompt library (on-call / PR / incident)" },
   // W5 — ETL builders (one per major tool track)
   { wave: "W5", track: "python", file: "12-etl-pipeline-builder.md", slug: "python-etl-pipeline-builder", title: "Build an ETL job — extract, transform, load" },
@@ -96,8 +97,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.error("Missing wave lesson files:\n" + missing.map((m) => `  - ${m}`).join("\n"));
     process.exit(1);
   }
-  console.log(`✓ ${WAVE_LESSONS.length} W1–W6 lessons present`);
-  for (const wave of ["W1", "W2", "W3", "W4", "W5", "W6"]) {
+  console.log(`✓ ${WAVE_LESSONS.length} wave lessons present`);
+  for (const wave of ["W1", "W2", "W3", "W4", "W5", "W6", "W7"]) {
     const rows = WAVE_LESSONS.filter((l) => l.wave === wave);
     console.log(`  ${wave}: ${rows.map((r) => r.slug).join(", ")}`);
   }

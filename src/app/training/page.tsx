@@ -21,6 +21,7 @@ export default function TrainingPage() {
     getLesson("databricks", "dbx-medallion-etl-builder"),
     getLesson("snowflake", "sf-warehouse-etl-builder"),
   ].filter((l): l is NonNullable<typeof l> => Boolean(l));
+  const gitPlayLab = getLesson("git", "git-play-lab");
   return (
     <div className="space-y-10">
       <SectionHeader
@@ -99,6 +100,27 @@ export default function TrainingPage() {
             </p>
           </div>
           <span className="btn-ghost shrink-0 self-start sm:self-center">Open checklist →</span>
+        </Link>
+      ) : null}
+
+      {gitPlayLab ? (
+        <Link
+          href={`/training/${gitPlayLab.track}/${gitPlayLab.slug}#lab`}
+          className="panel glass-hover flex flex-col gap-3 rounded-3xl border-2 border-[var(--violet)]/35 p-5 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div>
+            <p className="font-display text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--violet)]">
+              Git Play Lab · Product A
+            </p>
+            <h2 className="mt-1 font-display text-xl font-bold text-[var(--ink-fg)]">
+              {gitPlayLab.title}
+            </h2>
+            <p className="mt-1 max-w-2xl text-sm text-[var(--muted)]">
+              {gitPlayLab.description} Visual commit tree + sandbox CLI in the browser — not a
+              Practice VM, not a real remote.
+            </p>
+          </div>
+          <span className="btn-ghost shrink-0 self-start sm:self-center">Open Git Play Lab →</span>
         </Link>
       ) : null}
 

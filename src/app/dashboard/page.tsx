@@ -104,6 +104,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "fde-capstone-engagement",
   ],
   git: [
+    "git-play-lab",
     "git-rebase-vs-merge",
     "git-commit-hygiene",
     "git-bisect-and-blame",

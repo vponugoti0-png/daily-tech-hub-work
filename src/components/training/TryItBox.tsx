@@ -11,13 +11,15 @@ export function TryItBox({
   hint,
   dialect,
   labHref,
+  labKind,
 }: {
   title?: string;
   code: string;
   hint?: string;
   dialect?: string;
-  /** In-lesson local lab (Databricks / Snowflake / SQL). Not a top-level nav item. */
+  /** In-lesson local lab (Databricks / Snowflake / SQL / Git Play Lab). Not a top-level nav item. */
   labHref?: string;
+  labKind?: "sql" | "git";
 }) {
   const [showHint, setShowHint] = useState(false);
   return (
@@ -48,9 +50,9 @@ export function TryItBox({
             <a
               href={labHref}
               className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--coral)]/40 bg-[var(--coral)]/10 px-2.5 py-1 text-xs font-bold text-[var(--ink-fg)]"
-              aria-label="Open local practice lab"
+              aria-label={labKind === "git" ? "Open Git Play Lab" : "Open local practice lab"}
             >
-              Run in local lab
+              {labKind === "git" ? "Run in Git Play Lab" : "Run in local lab"}
             </a>
           ) : null}
           <CopyButton text={code} />
@@ -70,7 +72,9 @@ export function TryItBox({
       {showHint ? (
         <div className="border-t border-[var(--ink-border)] bg-[var(--panel-2)] px-3 py-2 text-xs text-[var(--muted)]">
           {labHref
-            ? "Copy if you want, or run a SQL sample in the local practice lab below."
+            ? labKind === "git"
+              ? "Copy if you want, or run the commands in the Git Play Lab below."
+              : "Copy if you want, or run a SQL sample in the local practice lab below."
             : "Live Run isn't ready yet — copy this into Snowflake, Databricks, or your AI chat to practice."}
           {hint ? <span className="mt-1 block font-semibold text-[var(--mint)]">{hint}</span> : null}
         </div>
@@ -79,8 +83,12 @@ export function TryItBox({
           {labHref ? (
             <>
               Tip:{" "}
-              <strong className="text-[var(--ink-fg)]">Run in local lab</strong> opens the DuckDB
-              practice surface on this page.
+              <strong className="text-[var(--ink-fg)]">
+                {labKind === "git" ? "Run in Git Play Lab" : "Run in local lab"}
+              </strong>{" "}
+              {labKind === "git"
+                ? "opens the in-browser git model on this page."
+                : "opens the DuckDB practice surface on this page."}
             </>
           ) : (
             <>

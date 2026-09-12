@@ -11,7 +11,14 @@ objectives:
   - Know when to rebase personal branches
   - Avoid rebasing shared history
   - Resolve conflicts with intent
-updatedAt: "2026-09-11"
+updatedAt: "2026-09-12"
+cheatSheet:
+  - label: "Rebase a personal branch"
+    code: "git fetch origin\ngit rebase origin/main"
+    note: "Run this in Git Play Lab (rebase hygiene level). Never rebase shared history."
+  - label: "Merge into a shared branch"
+    code: "git checkout main\ngit merge feat/late-events"
+    note: "Shared long-lived branches merge. Fast-forward is honest when the feature is already based on main."
 quiz:
   - question: "When is rebasing onto main usually appropriate?"
     options:
@@ -31,6 +38,8 @@ quiz:
 ---
 
 # Rebase vs merge for analytics repos
+
+Practice the **rebase hygiene** and **merge the mart slice** levels in the Git Play Lab on this page (in-browser model — not a VM).
 
 ## Default recommendation
 

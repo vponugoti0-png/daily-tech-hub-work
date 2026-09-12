@@ -76,7 +76,7 @@ export default async function TrackPage({
                 href={`/training/${track}/${labEntrySlug(track)}#lab`}
                 className="btn-ghost"
               >
-                Practice · local lab →
+                {track === "git" ? "Practice · Git Play Lab →" : "Practice · local lab →"}
               </Link>
             ) : null}
           </div>

@@ -81,9 +81,9 @@ npm run seed:demo   # prints credentials
 | Databricks | 7 | Lakehouse, Delta, Spark SQL, Unity Catalog, Jobs, Streaming, warehouses |
 | Snowflake | 7 | Architecture, Time Travel, Streams/Tasks, Dynamic Tables, cost, RBAC, Snowpark |
 | Forward Deployed Engineer | 10 | Customer-facing DE/AI delivery: discover, scope, integrate, deploy, secure, hand off |
-| Git (bonus) | 3 | Rebase, hygiene, bisect |
+| Git (bonus) | 6 | **Git Play Lab** (in-browser tree + CLI) · rebase · hygiene · bisect · dbt/SQL branches · PR templates |
 
-Lessons include objectives, try-it shells, **Databricks + Snowflake + SQL local practice labs** (DuckDB-WASM in-browser SQL samples — not live workspaces), quizzes, outlines (mobile disclosure), and progress (localStorage + SQLite when signed in).
+Lessons include objectives, try-it shells, **Databricks + Snowflake + SQL local practice labs** (DuckDB-WASM in-browser SQL samples — not live workspaces), **Git Play Lab** (client commit-tree + sandbox CLI — not a Practice VM), quizzes, outlines (mobile disclosure), and progress (localStorage + SQLite when signed in). See [`docs/git-play-lab.md`](./docs/git-play-lab.md).
 
 ### Shortcuts
 

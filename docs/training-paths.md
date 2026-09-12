@@ -17,6 +17,7 @@ W3  Shared + tool capstones (orders → daily revenue mart)
 W4  Depth (SCD, DLT, clones, Cortex vs Snowpark, …)
       ↓
 Practice labs   Databricks + Snowflake + SQL local labs (DuckDB-WASM)
+                Git Play Lab (A) — in-browser commit tree + CLI (not a Practice VM)
                 Honest: not a live workspace / warehouse. Python lab = team hold (do not build).
       ↓
 Build ETL       One builder lesson per major tool track (W5)
@@ -58,3 +59,4 @@ A **Forward Deployed Engineer** track (`/training/forward-deployed`, 10 lessons)
 - Register new wave files in `scripts/wave-lessons.mjs` so `generate:courses` does not wipe them.
 - Keep slugs/orders unique (`order: 12` for this wave).
 - Guest progress + Aurora tokens unchanged. No Railway deploy required for content.
+- Git Play Lab (A) uses existing progress `stepIndex` only. No CSP change. Practice VM (B) is out of scope.

@@ -19,6 +19,9 @@ cheatSheet:
   - label: "Small PR slice"
     code: "# one story per branch\nmodels/silver/orders.sql\nmodels/gold/orders_daily.sql\ntests/assert_unique_order_id.sql"
     note: "If you must touch 20 models, split landing vs mart."
+  - label: "Practice in Git Play Lab"
+    code: "git checkout -b feat/orders-daily\ngit commit -m \"feat(marts): late events on orders_daily\""
+    note: "Run these in the lab on this page — in-browser model, not a VM."
 quiz:
   - question: "A good branch name for the shared capstone looks like…"
     options:
@@ -38,7 +41,7 @@ quiz:
     explanation: "Short-lived branches off main. Merge when the mart slice is reviewable."
 ---
 
-Analytics repos (dbt, SQLX, warehouse SQL) fail reviews when the branch is a junk drawer.
+Analytics repos (dbt, SQLX, warehouse SQL) fail reviews when the branch is a junk drawer. Cut `feat/orders-daily` in the **Git Play Lab** on this page.
 
 ## Defaults
 

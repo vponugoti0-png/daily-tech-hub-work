@@ -46,7 +46,7 @@ Requires a session. `401` if logged out.
 }
 ```
 
-`quizScore`, `quizTotal`, and `stepIndex` are omitted when null. DBX/SF practice labs write `stepIndex` (currently `1`) after a successful local run; that does **not** mark the lesson complete.
+`quizScore`, `quizTotal`, and `stepIndex` are omitted when null. DBX/SF/SQL practice labs and **Git Play Lab** write `stepIndex` (currently `1`) after a successful local run / passed level; that does **not** mark the lesson complete.
 
 ### POST `/api/progress` — single row
 

@@ -19,6 +19,9 @@ cheatSheet:
   - label: "Count diff sketch"
     code: "SELECT event_date, COUNT(*) AS cnt, SUM(amount) AS revenue\nFROM gold.orders_daily\nGROUP BY 1\nORDER BY 1;"
     note: "Paste before/after for the backfill window — not the whole history if it is huge."
+  - label: "Update from origin (Play Lab mock)"
+    code: "git fetch\ngit merge origin/main"
+    note: "The lab remote is same-origin mock://aurora/git-play-lab — no GitHub egress."
 quiz:
   - question: "A data PR should always state…"
     options:
@@ -38,7 +41,7 @@ quiz:
     explanation: "The shared capstone fails if silver keys collide."
 ---
 
-Data diffs are not app diffs. A 20-line SQL change can double revenue. Make that visible.
+Data diffs are not app diffs. A 20-line SQL change can double revenue. Make that visible. Fetch the uniqueness-test commit in the **Git Play Lab** remotes level on this page.
 
 ## Template
 

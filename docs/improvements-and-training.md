@@ -54,6 +54,7 @@
 |------|------------------|-------|
 | Databricks Practice Lab v1 | W3Schools SQL Tryit + DataLab SQL cell | DuckDB-WASM, Local practice lab, no real DBX creds (Product AC) |
 | Entry from TryIt / track Practice CTA | Codecademy “Start exercise” | No new top-level nav |
+| **Git Play Lab (A)** | Learn Git Branching | Client commit-tree + sandbox CLI; DE levels; no Practice VM (B). See [`docs/git-play-lab.md`](./git-play-lab.md) |
 
 ### P1 — next after lab v1 ships
 | Item | Peer inspiration | Owner hint |
@@ -80,6 +81,7 @@
 - Collaboration / multiplayer notebooks
 - FDE v1 live cloud deploy / CRM / paid cert (lessons + quizzes only)
 - FDE v1 DuckDB Practice Lab expansion (reuse DBX/SF labs; Python runtime still deferred)
+- **Practice VM / real git sandbox (Product B)** — Git Play Lab is the client model only
 
 ---
 

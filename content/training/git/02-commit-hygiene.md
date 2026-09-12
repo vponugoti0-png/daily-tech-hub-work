@@ -11,7 +11,14 @@ objectives:
   - Write actionable commit messages
   - Use fixup/autosquash before review
   - Keep secrets out of history
-updatedAt: "2026-09-11"
+updatedAt: "2026-09-12"
+cheatSheet:
+  - label: "Atomic mart commit"
+    code: "git commit -m \"feat(marts): add orders_daily grain\""
+    note: "Say what changed and why. Run it in Git Play Lab — there is no staging area in the model."
+  - label: "Undo the last commit (not pushed)"
+    code: "git reset --hard HEAD~1"
+    note: "Drops the tip. If you already pushed a secret, rotate credentials — reset will not save you."
 quiz:
   - question: "Which commit message best fits a dbt incremental change?"
     options:
@@ -31,6 +38,8 @@ quiz:
 ---
 
 # Commit hygiene for data PRs
+
+Use the **undo a secret commit** level in the Git Play Lab on this page. The model moves the branch pointer; it does not rewrite a real object database.
 
 ## Message style
 
