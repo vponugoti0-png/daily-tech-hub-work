@@ -102,9 +102,9 @@ test.describe("Phase 1 Prompt A — IA / door & navigation", () => {
     await expect(index.getByRole("heading", { name: "Python for Data Engineers" })).toBeVisible();
 
     const electives = page.getByTestId("learn-electives");
-    await expect(electives.getByRole("heading", { name: "Prompt Engineering" })).toBeVisible();
-    await expect(electives.getByRole("heading", { name: "AI for Data Engineers" })).toBeVisible();
-    await expect(electives.getByRole("heading", { name: "Forward Deployed Engineer" })).toBeVisible();
+    await expect(electives.getByRole("heading", { name: "Prompt Engineering", exact: true })).toBeVisible();
+    await expect(electives.getByRole("heading", { name: "AI for Data Engineers", exact: true })).toBeVisible();
+    await expect(electives.getByRole("heading", { name: "Forward Deployed Engineer", exact: true })).toBeVisible();
     await expect(electives.getByText("Elective", { exact: true })).toHaveCount(3);
 
     await expect(page.getByText(/Coming soon/i)).toHaveCount(0);

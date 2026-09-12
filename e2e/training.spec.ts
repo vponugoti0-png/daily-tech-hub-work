@@ -18,7 +18,7 @@ test.describe("training catalog", () => {
     await expect(
       page.getByRole("heading", { name: /Practice with agents & Cortex functions/i }),
     ).toBeVisible();
-    await expect(page.getByText(/practice with agents and Cortex functions/i)).toBeVisible();
+    await expect(page.getByText(/practice agent prompts locally/i)).toBeVisible();
   });
 
   test("practice lesson shows TryIt, quiz, Shortcuts, and back-to-track", async ({ page }) => {

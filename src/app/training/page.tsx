@@ -146,7 +146,7 @@ export default function TrainingPage() {
             Electives
           </p>
           <h3 className="mt-1 font-display text-lg font-bold text-[var(--ink-fg)]">
-            Prompt Engineering, AI, and FDE
+            Optional after you can read a query
           </h3>
           <p className="mt-1 max-w-3xl text-sm text-[var(--muted)]">
             Useful — not the front door. Take them after you can read a query, or whenever you
