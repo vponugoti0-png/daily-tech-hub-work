@@ -44,7 +44,7 @@ export default async function LessonPage({
   const isAiTrack =
     lesson.track === "prompt-engineering" || lesson.track === "ai-data-eng";
   const trackTitle = getTrackMeta(lesson.track)?.title ?? lesson.track;
-  const tryItLimit = isAiTrack ? 4 : 2;
+  const tryItLimit = isAiTrack ? 4 : 3;
   const tryItEntries = (lesson.cheatSheet ?? []).filter((e) => e.code).slice(0, tryItLimit);
   const tryItDialect =
     lesson.track === "sql"
