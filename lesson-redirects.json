@@ -753,5 +753,215 @@
     "source": "/training/sql/dates-injection",
     "destination": "/training/sql/sql-dates-injection",
     "permanent": true
+  },
+  {
+    "source": "/training/databricks/13-spark-select-nulls",
+    "destination": "/training/databricks/dbx-spark-select-nulls",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/spark-select-nulls",
+    "destination": "/training/databricks/dbx-spark-select-nulls",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/14-delta-write-preview",
+    "destination": "/training/databricks/dbx-delta-write-preview",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/delta-write-preview",
+    "destination": "/training/databricks/dbx-delta-write-preview",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/15-gold-aggregates",
+    "destination": "/training/databricks/dbx-gold-aggregates",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/gold-aggregates",
+    "destination": "/training/databricks/dbx-gold-aggregates",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/16-silver-patterns-case",
+    "destination": "/training/databricks/dbx-silver-patterns-case",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/silver-patterns-case",
+    "destination": "/training/databricks/dbx-silver-patterns-case",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/17-semi-joins-leftovers",
+    "destination": "/training/databricks/dbx-semi-joins-leftovers",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/semi-joins-leftovers",
+    "destination": "/training/databricks/dbx-semi-joins-leftovers",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/18-delta-table-contracts",
+    "destination": "/training/databricks/dbx-delta-table-contracts",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/delta-table-contracts",
+    "destination": "/training/databricks/dbx-delta-table-contracts",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/19-dates-partition-filters",
+    "destination": "/training/databricks/dbx-dates-partition-filters",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/dates-partition-filters",
+    "destination": "/training/databricks/dbx-dates-partition-filters",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/13-select-filter-nulls",
+    "destination": "/training/snowflake/sf-select-filter-nulls",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/select-filter-nulls",
+    "destination": "/training/snowflake/sf-select-filter-nulls",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/14-dml-write-path",
+    "destination": "/training/snowflake/sf-dml-write-path",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/dml-write-path",
+    "destination": "/training/snowflake/sf-dml-write-path",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/15-aggregates-group-having",
+    "destination": "/training/snowflake/sf-aggregates-group-having",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/aggregates-group-having",
+    "destination": "/training/snowflake/sf-aggregates-group-having",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/16-patterns-aliases-case",
+    "destination": "/training/snowflake/sf-patterns-aliases-case",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/patterns-aliases-case",
+    "destination": "/training/snowflake/sf-patterns-aliases-case",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/17-exists-semi-joins",
+    "destination": "/training/snowflake/sf-exists-semi-joins",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/exists-semi-joins",
+    "destination": "/training/snowflake/sf-exists-semi-joins",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/18-ddl-constraints",
+    "destination": "/training/snowflake/sf-ddl-constraints",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/ddl-constraints",
+    "destination": "/training/snowflake/sf-ddl-constraints",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/19-dates-injection",
+    "destination": "/training/snowflake/sf-dates-injection",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/dates-injection",
+    "destination": "/training/snowflake/sf-dates-injection",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/13-none-dicts-rows",
+    "destination": "/training/python/python-none-dicts-rows",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/none-dicts-rows",
+    "destination": "/training/python/python-none-dicts-rows",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/14-functions-pure-transforms",
+    "destination": "/training/python/python-functions-pure-transforms",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/functions-pure-transforms",
+    "destination": "/training/python/python-functions-pure-transforms",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/15-pathlib-extracts",
+    "destination": "/training/python/python-pathlib-extracts",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/pathlib-extracts",
+    "destination": "/training/python/python-pathlib-extracts",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/16-exceptions-retries",
+    "destination": "/training/python/python-exceptions-retries",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/exceptions-retries",
+    "destination": "/training/python/python-exceptions-retries",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/17-datetimes-watermarks",
+    "destination": "/training/python/python-datetimes-watermarks",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/datetimes-watermarks",
+    "destination": "/training/python/python-datetimes-watermarks",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/18-comprehensions-chunks",
+    "destination": "/training/python/python-comprehensions-chunks",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/comprehensions-chunks",
+    "destination": "/training/python/python-comprehensions-chunks",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/19-logging-not-print",
+    "destination": "/training/python/python-logging-not-print",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/logging-not-print",
+    "destination": "/training/python/python-logging-not-print",
+    "permanent": true
   }
 ]

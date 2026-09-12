@@ -53,6 +53,28 @@ export const WAVE_LESSONS = [
   { wave: "W6", track: "sql", file: "17-exists-any-all.md", slug: "sql-exists-any-all", title: "EXISTS, ANY, and ALL as set filters" },
   { wave: "W6", track: "sql", file: "18-ddl-constraints.md", slug: "sql-ddl-constraints", title: "Tables, constraints, and indexes" },
   { wave: "W6", track: "sql", file: "19-dates-injection.md", slug: "sql-dates-injection", title: "Warehouse dates and injection-safe filters" },
+  // W7 — sibling exercise paths (DBX + SF + Python; original DE copy)
+  { wave: "W7", track: "databricks", file: "13-spark-select-nulls.md", slug: "dbx-spark-select-nulls", title: "Spark SQL SELECT, NULLs, and LIMIT" },
+  { wave: "W7", track: "databricks", file: "14-delta-write-preview.md", slug: "dbx-delta-write-preview", title: "Delta write preview — MERGE without mutating" },
+  { wave: "W7", track: "databricks", file: "15-gold-aggregates.md", slug: "dbx-gold-aggregates", title: "Gold aggregates — GROUP BY and HAVING" },
+  { wave: "W7", track: "databricks", file: "16-silver-patterns-case.md", slug: "dbx-silver-patterns-case", title: "Silver cleaning — LIKE, IN, CASE" },
+  { wave: "W7", track: "databricks", file: "17-semi-joins-leftovers.md", slug: "dbx-semi-joins-leftovers", title: "Semi-joins — leftover bronze keys" },
+  { wave: "W7", track: "databricks", file: "18-delta-table-contracts.md", slug: "dbx-delta-table-contracts", title: "Delta table contracts and schema" },
+  { wave: "W7", track: "databricks", file: "19-dates-partition-filters.md", slug: "dbx-dates-partition-filters", title: "Dates, partition filters, injection-safe SQL" },
+  { wave: "W7", track: "snowflake", file: "13-select-filter-nulls.md", slug: "sf-select-filter-nulls", title: "SELECT, filters, NULLs on SAMPLE" },
+  { wave: "W7", track: "snowflake", file: "14-dml-write-path.md", slug: "sf-dml-write-path", title: "INSERT, UPDATE, MERGE on staging" },
+  { wave: "W7", track: "snowflake", file: "15-aggregates-group-having.md", slug: "sf-aggregates-group-having", title: "Aggregates, GROUP BY, HAVING for marts" },
+  { wave: "W7", track: "snowflake", file: "16-patterns-aliases-case.md", slug: "sf-patterns-aliases-case", title: "LIKE, IN, BETWEEN, aliases, CASE" },
+  { wave: "W7", track: "snowflake", file: "17-exists-semi-joins.md", slug: "sf-exists-semi-joins", title: "EXISTS and leftover SAMPLE keys" },
+  { wave: "W7", track: "snowflake", file: "18-ddl-constraints.md", slug: "sf-ddl-constraints", title: "Tables, constraints, clustering keys" },
+  { wave: "W7", track: "snowflake", file: "19-dates-injection.md", slug: "sf-dates-injection", title: "Dates, Time Travel windows, bind-safe filters" },
+  { wave: "W7", track: "python", file: "13-none-dicts-rows.md", slug: "python-none-dicts-rows", title: "None, dicts, and pipeline rows" },
+  { wave: "W7", track: "python", file: "14-functions-pure-transforms.md", slug: "python-functions-pure-transforms", title: "Functions — pure transforms, I/O at the edges" },
+  { wave: "W7", track: "python", file: "15-pathlib-extracts.md", slug: "python-pathlib-extracts", title: "pathlib extracts — land files on purpose" },
+  { wave: "W7", track: "python", file: "16-exceptions-retries.md", slug: "python-exceptions-retries", title: "Exceptions and retry-shaped handling" },
+  { wave: "W7", track: "python", file: "17-datetimes-watermarks.md", slug: "python-datetimes-watermarks", title: "datetimes and incremental watermarks" },
+  { wave: "W7", track: "python", file: "18-comprehensions-chunks.md", slug: "python-comprehensions-chunks", title: "Comprehensions and chunked extracts" },
+  { wave: "W7", track: "python", file: "19-logging-not-print.md", slug: "python-logging-not-print", title: "logging — not print — for ETL jobs" },
 ];
 
 export const WAVE_FILES_BY_TRACK = WAVE_LESSONS.reduce((acc, l) => {
@@ -96,8 +118,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.error("Missing wave lesson files:\n" + missing.map((m) => `  - ${m}`).join("\n"));
     process.exit(1);
   }
-  console.log(`✓ ${WAVE_LESSONS.length} W1–W6 lessons present`);
-  for (const wave of ["W1", "W2", "W3", "W4", "W5", "W6"]) {
+  console.log(`✓ ${WAVE_LESSONS.length} W1–W7 lessons present`);
+  for (const wave of ["W1", "W2", "W3", "W4", "W5", "W6", "W7"]) {
     const rows = WAVE_LESSONS.filter((l) => l.wave === wave);
     console.log(`  ${wave}: ${rows.map((r) => r.slug).join(", ")}`);
   }
