@@ -1,5 +1,6 @@
 export const DATABRICKS_LAB_ENTRY_SLUG = "dbx-workspace-cluster-basics";
 export const SNOWFLAKE_LAB_ENTRY_SLUG = "sf-day0-objects";
+export const SQL_LAB_ENTRY_SLUG = "sql-select-filter-nulls";
 
 export const DATABRICKS_LAB_SLUGS = [
   "dbx-workspace-cluster-basics",
@@ -17,8 +18,20 @@ export const SNOWFLAKE_LAB_SLUGS = [
   "sf-performance-cost",
 ] as const;
 
+export const SQL_LAB_SLUGS = [
+  "sql-select-filter-nulls",
+  "sql-dml-write-path",
+  "sql-aggregates-group-having",
+  "sql-patterns-aliases-case",
+  "sql-exists-any-all",
+  "sql-ddl-constraints",
+  "sql-dates-injection",
+  "sql-joins-set-logic-recap",
+] as const;
+
 export type DatabricksLabSlug = (typeof DATABRICKS_LAB_SLUGS)[number];
 export type SnowflakeLabSlug = (typeof SNOWFLAKE_LAB_SLUGS)[number];
+export type SqlLabSlug = (typeof SQL_LAB_SLUGS)[number];
 
 /** stepIndex written after a successful local lab run (does not complete the lesson). */
 export const LAB_STEP_INDEX = 1;
@@ -38,13 +51,22 @@ export function isSnowflakeLabLesson(track: string, slug: string): boolean {
   return track === "snowflake" && (SNOWFLAKE_LAB_SLUGS as readonly string[]).includes(slug);
 }
 
+export function isSqlLabLesson(track: string, slug: string): boolean {
+  return track === "sql" && (SQL_LAB_SLUGS as readonly string[]).includes(slug);
+}
+
 export function isLabLesson(track: string, slug: string): boolean {
-  return isDatabricksLabLesson(track, slug) || isSnowflakeLabLesson(track, slug);
+  return (
+    isDatabricksLabLesson(track, slug) ||
+    isSnowflakeLabLesson(track, slug) ||
+    isSqlLabLesson(track, slug)
+  );
 }
 
 export function labEntrySlug(track: string): string | undefined {
   if (track === "databricks") return DATABRICKS_LAB_ENTRY_SLUG;
   if (track === "snowflake") return SNOWFLAKE_LAB_ENTRY_SLUG;
+  if (track === "sql") return SQL_LAB_ENTRY_SLUG;
   return undefined;
 }
 
@@ -170,9 +192,143 @@ GROUP BY region
 ORDER BY n DESC;`,
     note: "Filter early — same habit as reading a Snowflake query profile.",
   },
+  {
+    id: "aurora-paid-select",
+    label: "Paid orders (SELECT + LIMIT)",
+    sql: `SELECT o.order_id, c.region, o.status, o.amount, o.promo_code
+FROM aurora_orders o
+JOIN aurora_customers c ON c.customer_id = o.customer_id
+WHERE o.status = 'paid'
+ORDER BY o.amount DESC
+LIMIT 5;`,
+    note: "Projection + filter + LIMIT. aurora_lane SKUs live on the items table — this sample stays at order grain.",
+  },
+  {
+    id: "aurora-distinct-nulls",
+    label: "DISTINCT promos & NULL gaps",
+    sql: `SELECT
+  COUNT(*) AS order_cnt,
+  COUNT(promo_code) AS promo_present,
+  COUNT(*) - COUNT(promo_code) AS promo_nulls
+FROM aurora_orders
+WHERE order_date >= DATE '2026-09-01';`,
+    note: "COUNT(col) skips NULLs. COUNT(*) counts rows. DISTINCT is a later sample — do not DISTINCT a fact before you know the grain.",
+  },
+  {
+    id: "aurora-null-promo",
+    label: "Unmatched promo (IS NULL)",
+    sql: `SELECT order_id, status, amount, promo_code
+FROM aurora_orders
+WHERE promo_code IS NULL
+ORDER BY order_id;`,
+    note: "IS NULL is a predicate, not a value. promo_code = NULL never matches.",
+  },
+  {
+    id: "aurora-agg-revenue",
+    label: "Region revenue + HAVING",
+    sql: `SELECT c.region, COUNT(*) AS paid_orders, ROUND(SUM(o.amount), 2) AS revenue
+FROM aurora_orders o
+JOIN aurora_customers c ON c.customer_id = o.customer_id
+WHERE o.status = 'paid'
+GROUP BY c.region
+HAVING SUM(o.amount) >= 20
+ORDER BY revenue DESC;`,
+    note: "WHERE filters rows before the group. HAVING filters groups. Do not SUM(o.amount) after joining items.",
+  },
+  {
+    id: "aurora-like-in",
+    label: "LIKE / IN / BETWEEN",
+    sql: `SELECT order_id, promo_code, amount
+FROM aurora_orders
+WHERE promo_code LIKE 'F%'
+   OR promo_code IN ('VIP', 'FLASH')
+   OR amount BETWEEN 15 AND 50
+ORDER BY order_id;`,
+    note: "LIKE is for patterns. IN is a set. BETWEEN is inclusive. Prefer these over OR-chains of equality.",
+  },
+  {
+    id: "aurora-case-bucket",
+    label: "CASE size buckets",
+    sql: `SELECT
+  order_id,
+  amount,
+  CASE
+    WHEN amount >= 80 THEN 'large'
+    WHEN amount >= 20 THEN 'mid'
+    ELSE 'small'
+  END AS size_bucket
+FROM aurora_orders
+WHERE status <> 'cancelled'
+ORDER BY amount DESC;`,
+    note: "CASE is an expression, not a stored procedure. Keep buckets in one SELECT so reviewers can see the grain.",
+  },
+  {
+    id: "aurora-exists-paid",
+    label: "Customers with a paid order (EXISTS)",
+    sql: `SELECT c.customer_id, c.region, c.email
+FROM aurora_customers c
+WHERE EXISTS (
+  SELECT 1
+  FROM aurora_orders o
+  WHERE o.customer_id = c.customer_id
+    AND o.status = 'paid'
+)
+ORDER BY c.customer_id;`,
+    note: "EXISTS is a semi-join. It does not fan out customers when a buyer has many paid orders.",
+  },
+  {
+    id: "aurora-any-threshold",
+    label: "ANY / ALL stand-in",
+    sql: `SELECT o.order_id, o.amount, c.region
+FROM aurora_orders o
+JOIN aurora_customers c ON c.customer_id = o.customer_id
+WHERE o.amount > (
+  SELECT AVG(amount) FROM aurora_orders WHERE status = 'paid'
+)
+ORDER BY o.amount DESC;`,
+    note: "DuckDB stand-in for amount > ANY (SELECT …). Compare to a scalar subquery first — ANY/ALL are easy to misread in review.",
+  },
+  {
+    id: "aurora-join-lane",
+    label: "Items × Aurora Lane",
+    sql: `SELECT o.order_id, p.product_name, i.qty, i.unit_price
+FROM aurora_orders o
+INNER JOIN aurora_order_items i ON i.order_id = o.order_id
+INNER JOIN aurora_products p ON p.sku = i.sku
+WHERE p.sku = 'SKU-LANE'
+ORDER BY o.order_id;`,
+    note: "Item grain. Sum unit_price * qty here — never SUM(order.amount) after this join.",
+  },
+  {
+    id: "aurora-dml-preview",
+    label: "Rows a write would touch",
+    sql: `SELECT order_id, status, amount, order_date
+FROM aurora_orders
+WHERE status = 'pending' AND order_date <= DATE '2026-09-02'
+ORDER BY order_id;`,
+    note: "The local lab is read-only. Preview the set an UPDATE/DELETE would hit before you run it in a warehouse.",
+  },
+  {
+    id: "aurora-schema",
+    label: "Inspect aurora_* columns",
+    sql: `SELECT table_name, column_name, data_type
+FROM information_schema.columns
+WHERE table_schema = 'main' AND table_name LIKE 'aurora%'
+ORDER BY table_name, ordinal_position;`,
+    note: "Read the contract before ALTER/DROP. This lab does not run DDL — inspect, then copy CREATE/ALTER into your warehouse.",
+  },
+  {
+    id: "aurora-date-window",
+    label: "Inclusive date window",
+    sql: `SELECT order_id, order_date, status, amount
+FROM aurora_orders
+WHERE order_date BETWEEN DATE '2026-09-02' AND DATE '2026-09-04'
+ORDER BY order_date, order_id;`,
+    note: "BETWEEN on a DATE column is inclusive. Do not glue a user string into this predicate — bind a date parameter in app SQL.",
+  },
 ];
 
-const BY_LESSON: Record<DatabricksLabSlug | SnowflakeLabSlug, string[]> = {
+const BY_LESSON: Record<DatabricksLabSlug | SnowflakeLabSlug | SqlLabSlug, string[]> = {
   "dbx-workspace-cluster-basics": ["catalog-objects", "medallion-counts"],
   "dbx-lakehouse-fundamentals": ["medallion-counts", "silver-quality", "gold-revenue"],
   "dbx-delta-lake-basics": ["upsert-shape", "silver-quality", "medallion-counts"],
@@ -183,6 +339,14 @@ const BY_LESSON: Record<DatabricksLabSlug | SnowflakeLabSlug, string[]> = {
   "sf-time-travel-clones": ["sf-time-travel", "sf-orders-customers"],
   "sf-dynamic-tables": ["sf-daily-mart", "sf-orders-customers"],
   "sf-performance-cost": ["sf-prune-filter", "sf-warehouses", "sf-daily-mart"],
+  "sql-select-filter-nulls": ["aurora-paid-select", "aurora-distinct-nulls", "aurora-null-promo"],
+  "sql-dml-write-path": ["aurora-dml-preview", "aurora-null-promo", "aurora-paid-select"],
+  "sql-aggregates-group-having": ["aurora-agg-revenue", "aurora-distinct-nulls", "aurora-paid-select"],
+  "sql-patterns-aliases-case": ["aurora-like-in", "aurora-case-bucket", "aurora-paid-select"],
+  "sql-exists-any-all": ["aurora-exists-paid", "aurora-any-threshold", "aurora-join-lane"],
+  "sql-ddl-constraints": ["aurora-schema", "aurora-paid-select"],
+  "sql-dates-injection": ["aurora-date-window", "aurora-like-in", "aurora-paid-select"],
+  "sql-joins-set-logic-recap": ["aurora-join-lane", "aurora-exists-paid", "aurora-paid-select"],
 };
 
 export function samplesForLesson(slug: string): LabSample[] {
@@ -266,4 +430,42 @@ SELECT * FROM (VALUES
   (102, 2, DATE '2026-09-01', 40.00, 1),
   (102, 2, DATE '2026-09-01', 40.00, 2)
 ) AS t(order_id, customer_id, order_date, amount, as_of_version);
+
+CREATE OR REPLACE TABLE aurora_customers AS
+SELECT * FROM (VALUES
+  (1, 'west', 'active', 'ada@aurora.dev', DATE '2026-01-04'),
+  (2, 'east', 'active', NULL, DATE '2026-02-11'),
+  (3, 'west', 'churned', 'kai@aurora.dev', DATE '2025-11-20'),
+  (4, 'latam', 'active', 'luz@aurora.dev', DATE '2026-03-01')
+) AS t(customer_id, region, status, email, signup_date);
+
+CREATE OR REPLACE TABLE aurora_orders AS
+SELECT * FROM (VALUES
+  (1001, 1, DATE '2026-09-01', 'paid', 42.50, 'FALL26'),
+  (1002, 2, DATE '2026-09-01', 'paid', 18.00, NULL),
+  (1003, 1, DATE '2026-09-02', 'pending', 99.00, 'FALL26'),
+  (1004, 3, DATE '2026-09-02', 'cancelled', 12.00, 'WIN25'),
+  (1005, 2, DATE '2026-09-03', 'paid', 64.25, 'VIP'),
+  (1006, 4, DATE '2026-09-04', 'returned', 22.00, NULL),
+  (1007, 1, DATE '2026-09-10', 'paid', 7.50, 'FLASH')
+) AS t(order_id, customer_id, order_date, status, amount, promo_code);
+
+CREATE OR REPLACE TABLE aurora_order_items AS
+SELECT * FROM (VALUES
+  (1001, 'SKU-LANE', 2, 12.50),
+  (1001, 'SKU-HUB', 1, 17.50),
+  (1002, 'SKU-LANE', 1, 18.00),
+  (1003, 'SKU-CORE', 1, 99.00),
+  (1005, 'SKU-HUB', 1, 40.00),
+  (1005, 'SKU-LANE', 1, 24.25),
+  (1006, 'SKU-LANE', 2, 11.00),
+  (1007, 'SKU-HUB', 1, 7.50)
+) AS t(order_id, sku, qty, unit_price);
+
+CREATE OR REPLACE TABLE aurora_products AS
+SELECT * FROM (VALUES
+  ('SKU-LANE', 'compute', 'Aurora Lane'),
+  ('SKU-HUB', 'platform', 'Aurora Hub'),
+  ('SKU-CORE', 'compute', 'Aurora Core')
+) AS t(sku, category, product_name);
 `;

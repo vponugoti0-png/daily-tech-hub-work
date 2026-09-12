@@ -1,40 +1,43 @@
 import { expect, test } from "@playwright/test";
 
-const TRACK = "/training/databricks";
-const DAY0 = "/training/databricks/dbx-workspace-cluster-basics";
-const LAKEHOUSE = "/training/databricks/dbx-lakehouse-fundamentals";
+const TRACK = "/training/sql";
+const SELECT = "/training/sql/sql-select-filter-nulls";
+const AGG = "/training/sql/sql-aggregates-group-having";
 const PROGRESS_KEY = "dth-progress-v3";
 
-test.describe("Databricks local practice lab v1", () => {
-  test("track Practice CTA opens the day-0 local lab", async ({ page }) => {
+test.describe("SQL local practice lab + exercise path", () => {
+  test("track Practice CTA opens the SELECT local lab", async ({ page }) => {
     await page.goto(TRACK);
 
-    await expect(page.getByRole("heading", { name: "Databricks (DBX)" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "SQL for Analytics Engineering" })).toBeVisible();
     const practice = page.getByRole("link", { name: /Practice · local lab/i });
     await expect(practice).toBeVisible();
     await practice.click();
 
-    await expect(page).toHaveURL(/\/training\/databricks\/dbx-workspace-cluster-basics#lab/);
+    await expect(page).toHaveURL(/\/training\/sql\/sql-select-filter-nulls#lab/);
     const lab = page.locator("#lab");
     await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
     await expect(lab.getByText(/Coming soon: connect workspace/i)).toBeVisible();
-    await expect(lab.getByText(/Not a live Databricks workspace/i)).toBeVisible();
+    await expect(lab.getByText(/Not a live warehouse/i)).toBeVisible();
   });
 
   test("open lab → run sample → see result → guest progress persists", async ({ page }) => {
     test.setTimeout(90_000);
-    await page.goto(`${DAY0}#lab`);
+    await page.goto(`${SELECT}#lab`);
 
     const lab = page.locator("#lab");
     await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
     await expect(page.locator(".tryit").first()).toBeVisible();
-    await expect(page.getByText(/day0-job-policy/i).first()).toBeVisible();
+    await expect(page.getByText(/aurora_orders/i).first()).toBeVisible();
+    await expect(page.getByText(/aurora_lane/i).first()).toBeVisible();
 
     await lab.getByRole("button", { name: "Run SQL sample" }).click();
 
     const table = lab.getByRole("table", { name: "Query result" });
     await expect(table).toBeVisible({ timeout: 45_000 });
-    await expect(table.getByRole("columnheader", { name: /catalog|layer|row_count|table_name/i }).first()).toBeVisible();
+    await expect(
+      table.getByRole("columnheader", { name: /order_id|region|status|amount|promo_code/i }).first(),
+    ).toBeVisible();
     await expect(table.locator("tbody tr").first()).toBeVisible();
     await expect(lab.getByText(/Lab step saved on this device/i)).toBeVisible();
 
@@ -43,34 +46,49 @@ test.describe("Databricks local practice lab v1", () => {
     const parsed = JSON.parse(stored!) as {
       lessons: Record<string, { stepIndex?: number; completed?: boolean }>;
     };
-    const lesson = parsed.lessons["databricks:dbx-workspace-cluster-basics"];
+    const lesson = parsed.lessons["sql:sql-select-filter-nulls"];
     expect(lesson?.stepIndex).toBe(1);
     expect(lesson?.completed).not.toBe(true);
 
     await page.reload();
     await expect(page.locator("#lab").getByText(/Lab step saved on this device/i)).toBeVisible();
     const storedAgain = await page.evaluate((key) => localStorage.getItem(key), PROGRESS_KEY);
-    expect(storedAgain).toContain("dbx-workspace-cluster-basics");
+    expect(storedAgain).toContain("sql-select-filter-nulls");
   });
 
-  test("lakehouse lesson also hosts the lab; reading is not gated", async ({ page }) => {
-    await page.goto(LAKEHOUSE);
+  test("aggregates lesson also hosts the lab; reading is not gated", async ({ page }) => {
+    await page.goto(AGG);
 
-    await expect(page.locator("#learn")).toHaveText(/Lakehouse fundamentals/i);
+    await expect(page.locator("#learn")).toHaveText(/Aggregates, GROUP BY, and HAVING/i);
     await expect(page.getByRole("heading", { name: "Objectives" })).toBeVisible();
     await expect(page.locator("#lab").getByRole("heading", { name: "Local practice lab" })).toBeVisible();
     await expect(page.locator("#quiz").getByRole("heading", { name: "Check your understanding" })).toBeVisible();
     await expect(page.getByRole("button", { name: /Mark complete/i })).toBeEnabled();
   });
 
-  test("does not add a top-level Lab nav item or a Python-track lab", async ({ page }) => {
+  test("training → SQL track → new SELECT lesson", async ({ page }) => {
+    await page.goto("/training");
+    await expect(page.getByRole("heading", { name: "Interactive course tracks" })).toBeVisible();
+    await page.getByRole("link", { name: /SQL for Analytics Engineering/i }).click();
+
+    await expect(page).toHaveURL(/\/training\/sql\/?$/);
+    await expect(page.getByRole("heading", { name: "SQL for Analytics Engineering" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /SELECT, filters, NULLs, and LIMIT/i })).toBeVisible();
+
+    await page.getByRole("link", { name: /SELECT, filters, NULLs, and LIMIT/i }).click();
+    await expect(page).toHaveURL(/\/training\/sql\/sql-select-filter-nulls/);
+    await expect(page.locator("#learn")).toHaveText(/SELECT, filters, NULLs, and LIMIT/i);
+    await expect(page.getByRole("link", { name: /Run in local lab/i }).first()).toBeVisible();
+    await page.getByRole("link", { name: /Run in local lab/i }).first().click();
+    await expect(page.locator("#lab").getByRole("heading", { name: "Local practice lab" })).toBeVisible();
+  });
+
+  test("does not add a top-level Lab nav or a Python-track lab", async ({ page }) => {
     await page.goto("/");
     const nav = page.getByRole("navigation", { name: "Primary" });
-    await expect(nav.getByRole("link", { name: "Training" })).toBeVisible();
     await expect(nav.getByRole("link", { name: /^Lab$/i })).toHaveCount(0);
 
     await page.goto("/training/python/python-dataframe-contracts");
     await expect(page.locator("#lab")).toHaveCount(0);
-    await expect(page.getByText("Local practice lab")).toHaveCount(0);
   });
 });

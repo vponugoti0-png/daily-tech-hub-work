@@ -36,12 +36,12 @@ export const TRACKS: TrackMeta[] = [
     id: "sql",
     title: "SQL for Analytics Engineering",
     blurb:
-      "Joins recap, windows, incrementals, DQ gates, and a Build staging→mart ETL. Recommended order: CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL.",
+      "Aurora SQL exercise path (SELECT through DDL/dates), joins recap, windows, incrementals, DQ gates, and a Build staging→mart ETL. Practice SQL in the local lab on the exercise-path lessons.",
     accent: "from-[#2EE59D] to-[#4CC9F0]",
     difficulty: "Beginner → Advanced",
-    estimatedHours: 8.5,
+    estimatedHours: 11.5,
     orderNote:
-      "Recommended reading order (catalog numbers stay put): CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL. Start with DE joins & set-logic recap if you want a true-zero warmup.",
+      "Recommended reading order (catalog numbers stay put): SELECT/filters → DML → Aggregates → Patterns/CASE → EXISTS → DDL → Dates/injection → Joins recap. Then CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL. Local Practice lab lives on the exercise-path lessons and the joins recap.",
   },
   {
     id: "databricks",
@@ -109,9 +109,9 @@ export const META_DE_OVERLAY = {
   eyebrow: "Meta DE path · optional overlay",
   title: "Suggested cert-style order (no new nav)",
   blurb:
-    "Use the tracks you already have. Overnight spine: W0 recommended-order overlay → W1–W4 waves → Practice labs (Databricks + Snowflake) → Build ETL on each tool track → Forward Deployed Engineer. Suggested cert-style order: Prompt Engineering → AI for DE → Python → SQL → Snowflake → Databricks → Forward Deployed Engineer → Git.",
+    "Use the tracks you already have. Overnight spine: W0 recommended-order overlay → W1–W4 waves → Practice labs (Databricks + Snowflake + SQL) → Build ETL on each tool track → Forward Deployed Engineer. Suggested cert-style order: Prompt Engineering → AI for DE → Python → SQL → Snowflake → Databricks → Forward Deployed Engineer → Git.",
   sqlOrder:
-    "CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL",
+    "SELECT/filters → DML → Aggregates → Patterns/CASE → EXISTS → DDL → Dates/injection → Joins recap. Then CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL",
   pythonOrder:
     "contracts → config/secrets → typing → testing → writers → orchestration → perf → packaging → Build ETL",
   databricksOrder:

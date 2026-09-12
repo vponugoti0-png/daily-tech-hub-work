@@ -117,7 +117,7 @@ export default function TrainingPage() {
             Extract → transform → load on each major track
           </h2>
           <p className="mt-1 max-w-3xl text-sm text-[var(--muted)]">
-            After W0–W4 and the Databricks / Snowflake Practice labs, build one ETL per tool.
+            After W0–W4 and the Databricks / Snowflake / SQL Practice labs, build one ETL per tool.
             Same Training routes — not a new nav item. Forward Deployed Engineer is a separate
             card on this page (after the tool tracks, before Git).
           </p>

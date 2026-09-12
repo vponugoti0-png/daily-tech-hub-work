@@ -77,13 +77,13 @@ npm run seed:demo   # prints credentials
 | Prompt Engineering | 6 | Ask, structure, iterate, verify, safety, learning prompts |
 | AI for Data Engineers | 6 | Copilot mindset, debug, safe codegen, docs/tests, tools, review |
 | Python | 8 | DE contracts, typing, testing, writers, config, orchestration, perf, packaging |
-| SQL | 7 | Windows, incrementals, perf, modeling, DQ, CTEs, semi-structured |
+| SQL | 20 | Exercise path (SELECT→DDL/dates), windows, incrementals, perf, modeling, DQ, CTEs, semi-structured, ETL builder |
 | Databricks | 7 | Lakehouse, Delta, Spark SQL, Unity Catalog, Jobs, Streaming, warehouses |
 | Snowflake | 7 | Architecture, Time Travel, Streams/Tasks, Dynamic Tables, cost, RBAC, Snowpark |
 | Forward Deployed Engineer | 10 | Customer-facing DE/AI delivery: discover, scope, integrate, deploy, secure, hand off |
 | Git (bonus) | 3 | Rebase, hygiene, bisect |
 
-Lessons include objectives, try-it shells, **Databricks + Snowflake local practice labs** (DuckDB-WASM in-browser SQL samples — not live workspaces), quizzes, outlines (mobile disclosure), and progress (localStorage + SQLite when signed in).
+Lessons include objectives, try-it shells, **Databricks + Snowflake + SQL local practice labs** (DuckDB-WASM in-browser SQL samples — not live workspaces), quizzes, outlines (mobile disclosure), and progress (localStorage + SQLite when signed in).
 
 ### Shortcuts
 
