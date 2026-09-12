@@ -1,5 +1,7 @@
 # Training paths — overnight spine
 
+> Product north star (IA, career path, unified practice, feature halt): [`docs/aurora-master-plan.md`](./aurora-master-plan.md). This page stays a **tactical inventory** of the overnight overlay on `main`.
+
 **Audience:** Learners, Product, content authors  
 **Date:** 2026-09-12  
 **Status:** In-app overlay + track `orderNote`s (no new top-level nav). FDE (#18), ETL builders (#19), SQL exercise path (#22), and sibling spines (#23) are on `main`. Phase 3 richer lab datasets (catalogs / schemas / views / metric-style tables) follow #23.
