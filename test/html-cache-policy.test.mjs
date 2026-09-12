@@ -8,7 +8,12 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 test("next.config overrides HTML Cache-Control without touching hashed /_next/static", () => {
   const src = readFileSync(join(root, "next.config.ts"), "utf8");
-  assert.match(src, /HTML_DOCUMENT_CACHE_CONTROL/);
+  assert.match(src, /s-maxage=0, stale-while-revalidate=60/);
+  assert.doesNotMatch(
+    src,
+    /from ["'].*src\/lib\/http-cache/,
+    "next.config must not import src/ — Docker runner does not copy src/",
+  );
   assert.match(src, /expireTime:\s*120/);
   assert.match(src, /\/\(\(\?!_next\/static\|_next\/image\)\.\*\)/);
   assert.doesNotMatch(

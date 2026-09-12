@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 import lessonRedirects from "./lesson-redirects.json";
-import { HTML_DOCUMENT_CACHE_CONTROL } from "./src/lib/http-cache";
+
+/**
+ * Inline — do not import from src/. The Docker runner copies next.config.ts
+ * (and lesson-redirects.json) but not src/, and `next start` reloads this file.
+ */
+const HTML_DOCUMENT_CACHE_CONTROL = "s-maxage=0, stale-while-revalidate=60";
 
 const isDev = process.env.NODE_ENV !== "production";
 
