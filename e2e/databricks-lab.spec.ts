@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { expectCleanLabCells } from "./lab-result";
 
 const TRACK = "/training/databricks";
 const DAY0 = "/training/databricks/dbx-workspace-cluster-basics";
@@ -41,6 +42,7 @@ test.describe("Databricks local practice lab v1", () => {
     await expect(table).toBeVisible({ timeout: 45_000 });
     await expect(table.getByRole("columnheader", { name: /catalog|layer|row_count|table_name/i }).first()).toBeVisible();
     await expect(table.locator("tbody tr").first()).toBeVisible();
+    await expectCleanLabCells(table, ["bronze", "orders"]);
     await expect(lab.getByText(/Lab step saved on this device/i)).toBeVisible();
 
     const stored = await page.evaluate((key) => localStorage.getItem(key), PROGRESS_KEY);
