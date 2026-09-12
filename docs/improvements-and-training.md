@@ -1,10 +1,10 @@
 # Aurora / Daily Tech Hub — Training & Practice Improvements
 
-> **Superseded for IA / vision / nav / paths.** Product north star is [`docs/aurora-master-plan.md`](./aurora-master-plan.md). That plan freezes feature work until Product + user stamp it. This file remains a **tactical lab/P1 backlog and older peer notes** — do not ship new Training chrome from here while the master plan is unstamped.
+> **Superseded for IA / vision / nav / paths.** Product north star is [`docs/aurora-master-plan.md`](./aurora-master-plan.md). Product **ACCEPT** 2026-09-12 (Q1–Q18 + Tryit AC). Feature freeze continues until the **user** stamps Acceptance (§15). **B1 is already on `main` (#42)** — grandfathered; no further B1/B2/B3 until the Phase 1 Unified Editor shell ships. This file remains a **tactical lab/P1 backlog and older peer notes**.
 
 **Audience:** Product, Frontend, Backend, QA, Security  
 **Date:** 2026-09-12  
-**Status:** Research draft (not AC until Product stamps). IA/nav/path decisions live on the master plan.  
+**Status:** Tactical backlog. IA/nav/path/Tryit AC live on the master plan.  
 **Sources:** DataCamp DataLab, W3Schools Tryit / SQL Tryit, Databricks Academy, Codecademy DBX intro patterns; compared to current Aurora (W0–W4 content live, Databricks + Snowflake Practice Labs shipped, W5 ETL builders on each major tool track). See also [`docs/training-paths.md`](./training-paths.md).
 
 ---

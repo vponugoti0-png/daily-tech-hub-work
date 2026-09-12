@@ -2,17 +2,19 @@
 
 **Audience:** Product, UX, Frontend, Backend, Security, Content, QA  
 **Date:** 2026-09-12  
-**Status:** Product + user review. Plan stamp is still §14. **Product Tryit AC is locked in §15** (layout, runtimes, progress, no auto-grade).  
+**Status:** **Product ACCEPT 2026-09-12** — direction + Q1–Q18 bold defaults + Tryit AC. **Awaiting user stamp** on Acceptance (§15).  
 **Scope of this PR:** this document (and a pointer from [`docs/improvements-and-training.md`](./improvements-and-training.md)). No app code.  
-**Addendum:** §7 / §11 = Tryit vision. §8 = Backend keep/held. **§15 = locked Product AC + stampable QA / Security / Backend** (stubs for those owners to fill when the Editor impl PR opens).
+**Addendum:** §7.0 = locked W3 Tryit Product AC. §8 = Backend room AC. §9 = Security room AC. §16 = QA/Security/Backend stampable AC + stubs for the Editor impl PR.
 
 ---
 
 ## Halt rule (read first)
 
-The site feels messy because we shipped tracks, labs, overlays, and “no new nav” workarounds faster than we designed the product. **Stop merging feature / content / lab PRs** until Product and the user **accept this document** (stamp §14).
+The site feels messy because we shipped tracks, labs, overlays, and “no new nav” workarounds faster than we designed the product. **Product accepted this direction** (2026-09-12). **Stop merging feature / content / lab PRs** until the **user** stamps Acceptance (§15).
 
-Phase 0 is this freeze. Exceptions: production incidents, security, and doc-only revisions of this plan. Wave B (`docs/wave-b-backend-ac.md`): **B1 (AI Local practice) already on `main` is OK** (#42). **B2 / B3 stay held** — this plan does not unlock them.
+Phase 0 remains a freeze on *new* school features. Exceptions: production incidents, security, and doc-only revisions of this plan.
+
+**Wave B reconcile:** **B1 (AI Local practice) is already on `main`** (#42) — **grandfathered**. Do **not** revert it. Do **not** write as if B1 is unshipped. **No further B1 / B2 / B3 work** until the Phase 1 Unified Editor shell ships. **B2** (auto-check) and **B3** (Git VM) stay **held** — source of truth: [`docs/wave-b-backend-ac.md`](./wave-b-backend-ac.md).
 
 Tactical inventories in [`docs/training-paths.md`](./training-paths.md) and [`docs/improvements-and-training.md`](./improvements-and-training.md) remain useful as *what exists*. This file is the *what we become*. When they conflict, **this file wins** after stamp.
 
@@ -26,15 +28,16 @@ Tactical inventories in [`docs/training-paths.md`](./training-paths.md) and [`do
 4. [Information architecture](#4-information-architecture)
 5. [Career paths](#5-career-paths)
 6. [Course model](#6-course-model)
-7. [Unified Practice Editor](#7-unified-practice-editor) — [Tryit shell](#71-one-shell-tryit-shaped) · [in line with the DB](#73-practice-in-line-with-the-database-mandate)
+7. [Unified Practice Editor](#7-unified-practice-editor) — [**Product AC (locked)**](#70-product-ac--w3-tryit-locked) · [Tryit shell](#71-one-shell-tryit-shaped) · [in line with the DB](#73-practice-in-line-with-the-database-mandate)
 8. [Backend — auth, progress, sandboxes](#8-backend--auth-progress-sandboxes)
-9. [UI cleanup backlog](#9-ui-cleanup-backlog)
-10. [Phased rollout](#10-phased-rollout)
-11. [Competitive review](#11-competitive-review) — [Tryit teardown](#113-w3schools-tryit-ux-teardown-what-feel-similar-means) · [copy vs not](#114-what-to-copy-vs-what-not-to-copy-explicit)
-12. [Risks](#12-risks)
-13. [Open questions for Product / UX](#13-open-questions-for-product--ux)
-14. [Acceptance of this doc](#14-acceptance-of-this-doc)
-15. [Locked AC — Tryit Phase 1](#15-locked-acceptance-criteria--tryit-phase-1) — [Product (locked)](#151-product-ac--locked) · [QA](#152-qa-ac--stampable) · [Security](#153-security-ac) · [Backend](#154-backend-ac) · [Stubs](#155-stubs--fill-when-the-editor-impl-pr-opens)
+9. [Security — Phase 1 Tryit](#9-security--phase-1-tryit)
+10. [UI cleanup backlog](#10-ui-cleanup-backlog)
+11. [Phased rollout](#11-phased-rollout)
+12. [Competitive review](#12-competitive-review) — [Tryit teardown](#123-w3schools-tryit-ux-teardown-what-feel-similar-means) · [copy vs not](#124-what-to-copy-vs-what-not-to-copy-explicit)
+13. [Risks](#13-risks)
+14. [Open questions for Product / UX](#14-open-questions-for-product--ux) — **Q1–Q18 Product-stamped**
+15. [Acceptance of this doc](#15-acceptance-of-this-doc) — **awaiting user**
+16. [Locked AC — Tryit Phase 1](#16-locked-acceptance-criteria--tryit-phase-1) — [Product](#161-product-ac--locked) · [QA](#162-qa-ac--stampable) · [Security](#163-security-ac) · [Backend](#164-backend-ac) · [Stubs](#165-stubs--fill-when-the-editor-impl-pr-opens)
 
 ---
 
@@ -76,7 +79,7 @@ Result: the learner sees Lesson 13 as “SELECT, filters, NULLs” and Lesson 01
 | Git Play Lab | `GitPlayLab` | In-memory git engine + graph | Levels, CLI, goal tree |
 | PE / AI / FDE | TryItBox + StepCards | Clipboard | “Paste into Claude / ticket” |
 
-A lesson can show **cheat-sheet cards**, then **up to four TryItBoxes**, then a **lab**, then the **markdown body**, then a **quiz**. The Learn → Practice loop is inverted: chrome first, teaching text last. Different tracks advertise different honesty labels (“Local practice lab”, “Play Lab”, “Copy to practice”) which is correct — and still feels like four apps. Worse: many SQL / Databricks / Snowflake **depth** lessons have no lab at all (copy-to-warehouse only). Practice is not *in line with the database* — it is a bolted-on widget on a subset of slugs. The target is the W3Schools Tryit feeling: **one editor, one Run, one result table, schema beside you, reset when you break it** — on **every** DB lesson, against seeded tables. See §7.3 and §11.3.
+A lesson can show **cheat-sheet cards**, then **up to four TryItBoxes**, then a **lab**, then the **markdown body**, then a **quiz**. The Learn → Practice loop is inverted: chrome first, teaching text last. Different tracks advertise different honesty labels (“Local practice lab”, “Play Lab”, “Copy to practice”) which is correct — and still feels like four apps. Worse: many SQL / Databricks / Snowflake **depth** lessons have no lab at all (copy-to-warehouse only). Practice is not *in line with the database* — it is a bolted-on widget on a subset of slugs. The target is the W3Schools Tryit feeling: **one editor, one Run, one result table, schema beside you, reset when you break it** — on **every** DB lesson, against seeded tables. See §7.3 and §12.3.
 
 ### 2.5 Shortcuts sit beside Training with no contract
 
@@ -107,7 +110,7 @@ Do **not** restyle into cyan-glass SaaS. Keep **Aurora Play Lab** tokens: coral 
 
 ### 3.3 Learner jobs-to-be-done
 
-In priority order (stamp or reorder in §13):
+In priority order (Product stamped Q1–Q18; reorder only with a doc revision):
 
 1. **Become hireable as a data engineer** without buying DataCamp / Academy compute — Zero→Hero path, projects, interview later.
 2. **Practice the thing I just read** in the browser in under 60 seconds — one editor, one Run, one result.
@@ -336,6 +339,19 @@ Current (`TrainingLesson` in `src/lib/types.ts`): `slug`, `track`, `title`, `des
 
 **North-star feel:** W3Schools SQL Tryit — *edit the statement, hit Run, see a table, peek the sample DB, restore when you wreck it* — but on the **same lesson page**, against **Aurora’s seeded DE databases**, with Aurora Play Lab chrome. Not a new-tab Tryit. Not a second “Local practice lab” card under a pile of TryItBoxes.
 
+### 7.0 Product AC — W3 Tryit (**LOCKED**)
+
+Product ACCEPT 2026-09-12. Same lock as §16.1. Do not reopen without a revision of this doc.
+
+| Locked | Wording |
+|--------|---------|
+| **Layout** | **Lesson left \| editor + results right.** Teaching stays in the left column. Practice desk (editor, Run, result table, schema, Restore, next) stays right. Mobile stacks lesson → editor → Run → table. Not a new tab. |
+| **Loop** | **Run → table.** **Restore seed.** **Next exercise** (next sample on this lesson). Empty state before first run. No auto-run. |
+| **Runtimes** | **Same-origin DuckDB** for SQL / Databricks-flavored SQL / Snowflake-flavored SQL. **Python VFS** (same-origin Pyodide). |
+| **Content** | **Original Aurora exercises only.** No W3Schools curriculum copy (`Customers` / Alfreds Futterkiste is not our pack). |
+| **Progress** | **Guest progress unchanged** (`dth-progress-v3` / `track:slug`). Run may write `stepIndex` only. |
+| **Auto-grade** | **Held (Wave B2).** Omit Check. No “Coming soon.” |
+
 ### 7.1 One shell (Tryit-shaped)
 
 Desktop (SQL / DBX / SF — this is the default mental model):
@@ -350,7 +366,7 @@ Desktop (SQL / DBX / SF — this is the default mental model):
 +---------------------------+--------------------------------------+
 ```
 
-**Product-locked layout (§15.1):** lesson column left, editor + results right. Not a new-tab Tryit. Mobile stacks lesson → editor → Run → table.
+**Product-locked layout (§7.0 / §16.1):** lesson column left, editor + results right. Not a new-tab Tryit. Mobile stacks lesson → editor → Run → table.
 
 That is the W3Schools SQL Tryit map, folded **into** the lesson instead of `trysql.asp` in a new window:
 
@@ -478,7 +494,18 @@ Phase 1 = one shell that *looks* like Tryit on lessons that already have labs. P
 
 ## 8. Backend — auth, progress, sandboxes
 
-Backend does **not** become a new product in this plan. Phase 1 Unified Editor and the school IA reuse what is already on `main`. New APIs, cookies, or sandboxes wait for a stamp — Wave B AC for B2/B3, this file for Product non-goals. Detail for sessions and progress: [`docs/auth-and-progress.md`](./auth-and-progress.md). Wave B AC: [`docs/wave-b-backend-ac.md`](./wave-b-backend-ac.md).
+Backend does **not** become a new product in this plan. Phase 1 Unified Editor and the school IA reuse what is already on `main`. Detail: [`docs/auth-and-progress.md`](./auth-and-progress.md). Wave B B2/B3: [`docs/wave-b-backend-ac.md`](./wave-b-backend-ac.md) (**held**). **B1 is shipped on `main` (#42)** — grandfathered; no further B1 work until the Editor shell ships.
+
+### 8.0 Room AC (docs — Product ACCEPT)
+
+| Locked | Rule |
+|--------|------|
+| **Guest progress + `/api/progress`** | Unchanged for Tryit practice. Guests: `dth-progress-v3`. Signed-in: existing `GET` / `POST /api/progress` (`track:slug`). **No new progress model.** |
+| **Seeded DBs** | **Client DuckDB fixtures** (`src/lib/lab/seed.ts`). Restore = in-browser re-seed. **No remote DB.** |
+| **Auto-check grading** | **Wave B2 later**, not Phase 1. Do not add `/api/practice/grade` or Check chrome. |
+| **Auth / CSRF vs HTML cache** | Cookies (`dth_access`, `dth_refresh`, `dth_csrf`) **must not** depend on year-long HTML/RSC cache. Incident **#39 / #44 closed** — HTML stays `s-maxage=0, stale-while-revalidate=60`. Do not reintroduce long CDN cache on documents that mint CSRF. |
+
+Backend fills the §16.5 stub when the Editor impl PR opens.
 
 ### 8.1 Keep (already shipped)
 
@@ -500,7 +527,7 @@ v1 practice stays **client-side**. DuckDB-WASM, Pyodide, the Git Play Lab engine
 |------------|------|
 | **Progress** | Reuse `track` / `slug` + `stepIndex` / quiz fields. **No new progress tables** for v1 Tryit. |
 | **Seeds** | Same-origin fixtures. Restore = client seed reset. **No remote DB.** |
-| **Run → results** | W3-style loop does **not** need new APIs in Phase 1. Locked: existing `GET`/`POST /api/progress` only — **no new progress model** (§15.4). |
+| **Run → results** | W3-style loop does **not** need new APIs in Phase 1. Locked: existing `GET`/`POST /api/progress` only — **no new progress model** (§8.0 / §16.4). |
 
 Phase 1 Editor work is Frontend + Content. Backend’s job is: do not invent a grade / proxy / sandbox to “support” the shell.
 
@@ -508,14 +535,14 @@ Phase 1 Editor work is Frontend + Content. Backend’s job is: do not invent a g
 
 | Item | Status |
 |------|--------|
-| **B1 AI Local practice** | **Shipped** (#42). Client rubric. Kill-switch `NEXT_PUBLIC_AI_LAB=0`. Already on `main` is OK; this plan does not ask to revert it. |
-| **B2 Practice Engine auto-check** | **Held.** Client preferred. If an API exists later: CSRF + rate-limit; fixed fixtures only; no LLM grading in v1. |
-| **B3 Git Practice VM** | **Held.** D5 locked to **Railway sidecar** (separate service, deny-egress, short TTL). Never `spawn('git')` on the web/SQLite service. |
+| **B1 AI Local practice** | **Shipped on `main` (#42) — grandfathered.** Client rubric. Kill-switch `NEXT_PUBLIC_AI_LAB=0`. **Not unshipped.** No further B1 work until Phase 1 Editor shell ships. |
+| **B2 Practice Engine auto-check** | **Held** — [`docs/wave-b-backend-ac.md`](./wave-b-backend-ac.md). Not Phase 1. |
+| **B3 Git Practice VM** | **Held** — same Wave B doc. D5 Railway sidecar. Never `spawn('git')` on the web/SQLite service. |
 | **Cloud warehouses** | Still omit real Snowflake / Databricks credential connect. |
 
-This plan does **not** unlock B2 or B3.
+This plan does **not** unlock B2 or B3 and does **not** schedule more B1.
 
-### 8.4 Explicit non-goals until plan stamp
+### 8.4 Explicit non-goals until user stamp
 
 Do not start these from an IA-cleanup or Editor PR:
 
@@ -526,14 +553,38 @@ Do not start these from an IA-cleanup or Editor PR:
 
 ### 8.5 Backend open questions for Product
 
-Not in the UX list (§13). Defaults until stamp:
+Not in the UX list (§14). Product already stamped Q1–Q18; these stay B3/Phase-3 decisions:
 
 1. **Guest vs signed-in caps if B3 ever unlocks?** **Default: decide in the B3 impl stamp**, not here. Guests stay local-only until then.  
 2. **Path certificates — server-issued records (Phase 3) vs client-only badges?** **Default: wait for Phase 3.** If server-issued, reuse `readSession` + existing progress keys; do not invent a second transcript store in Phase 1.
 
 ---
 
-## 9. UI cleanup backlog
+## 9. Security — Phase 1 Tryit
+
+Docs-only room AC (Product ACCEPT 2026-09-12). Security fills the §16.5 stub (CSP snapshot, guard review) when the Editor impl PR opens.
+
+| Locked | Rule |
+|--------|------|
+| **Same-origin DuckDB** | SQL / DBX / SF Run stays in-browser WASM. Learner SQL is **SELECT / WITH** only against **seeded tables/views** (`sql-guard.ts`). |
+| **Results** | Table cells are **text** via `cellText` (`src/lib/lab/render.ts`) — no raw HTML in cells. |
+| **No remote DB** | No warehouse connect, no learner URL, no catalog over the network. |
+| **No CSP widen** | Phase 1 Editor does not add CDNs or new `connect-src` hosts. Pyodide / DuckDB stay same-origin. |
+| **Restore** | **Local seed reset** only — re-apply `src/lib/lab/seed.ts`. Not a server restore. |
+| **Python VFS** | Same-origin Pyodide + existing `python-guard.ts`. No network modules, no JS bridge, no user keys. |
+
+**Held (do not build in Phase 1):**
+
+- Real cloud workspaces (Databricks / Snowflake login, PATs)
+- Unconstrained grading / B2 Check / LLM-as-judge
+- User API keys in the browser
+- Further B1 / B2 / B3 work before the Unified Editor shell ships
+
+**Never allow:** grading against `data/dth.sqlite`; `AUTH_*` in the lab runtime; silent CSP sneak-widen.
+
+---
+
+## 10. UI cleanup backlog
 
 **Plan only. No implementation in this PR.** Priority is “feels messy,” not new features.
 
@@ -575,11 +626,11 @@ Out of this backlog: new tracks, B2/B3 (B1 already on main), XP/leaderboards, ma
 
 ---
 
-## 10. Phased rollout
+## 11. Phased rollout
 
 ```
 Phase 0  Docs / IA freeze          ← you are here
-    ↓  Product + user stamp §14
+    ↓  User stamp Acceptance (§15); Product already ACCEPTed 2026-09-12
 Phase 1  IA + nav + Unified Editor shell
 Phase 2  Content reorder + in-line Tryit on every DB lesson
 Phase 3  Paths complete + Aurora cert overlay
@@ -588,16 +639,16 @@ Phase 3  Paths complete + Aurora cert overlay
 ### Phase 0 — docs / IA freeze (this PR)
 
 - Ship this plan.  
-- **No feature merge** (no new tracks, labs, overlays, Wave A content, Wave B **B2/B3** impl) until §14 is stamped.  
+- **No feature merge** (no new tracks, labs, overlays, Wave A content, **further B1 / B2 / B3**) until the **user** stamps §15. B1 already on `main` stays.  
 - Allowed: incident/security fixes; revisions to this doc.
 
 ### Phase 1 — IA + nav + unified editor shell
 
 - Implement §4 nav and Learn hub.  
-- Mount one **Tryit-shaped** Practice layout per **§15.1** (lesson left / editor+results right; Run → table; Restore seed; next exercise). Same-origin DuckDB (SQL/DBX/SF) + Python VFS. No new labs on depth slugs yet. Auto-grade stays held (B2).  
+- Mount one **Tryit-shaped** Practice layout per **§7.0 / §16.1** (lesson left / editor+results right; Run → table; Restore seed; next exercise). Same-origin DuckDB (SQL/DBX/SF) + Python VFS. No new labs on depth slugs yet. Auto-grade stays held (B2). **No further B1/B2/B3** until this shell ships.  
 - Add `/paths` stub with Zero→Hero outline + skip-ahead questions (can point at **existing slugs**).  
 - Redirects: none required if we keep `/training` as Learn. Add `/practice` and `/paths` as new.  
-- **No** filename renames. **No** new lessons. **No** B2/B3. B1 already on `main` is OK.
+- **No** filename renames. **No** new lessons. **No further B1 / B2 / B3.** B1 already on `main` (#42) is grandfathered.
 
 ### Phase 2 — content reorder
 
@@ -614,22 +665,23 @@ Phase 3  Paths complete + Aurora cert overlay
 - Aurora-issued path certificate (honest: “completed Aurora Zero→Hero DE,” not SnowPro).  
 - L7 Interview **if** content is written.  
 - Revisit `CERT_PATH` as an optional “collect all tracks” overlay.  
-- Wave B **B2/B3** may start **only** if Wave B AC is still stamped and this plan’s editor shell is the only chrome. B1 already on `main` is OK.
+- Wave B **B2/B3** may start **only** after the Phase 1 Editor shell ships **and** [`docs/wave-b-backend-ac.md`](./wave-b-backend-ac.md) is still stamped. **No further B1** until that shell ships. B1 already on `main` (#42) stays grandfathered.
 
 ### Merge gate
 
 ```
-if (PR adds features or training content) and (this doc is not stamped):
+if (PR adds features or training content) and (user has not stamped §15):
     do not merge
+# B1 on main is grandfathered. No further B1/B2/B3 until Phase 1 Editor ships.
 ```
 
 ---
 
-## 11. Competitive review
+## 12. Competitive review
 
 Public sources, high-level. **No scraped curriculum.** We copy *interaction patterns*, not lesson text. W3Schools Tryit is the **practice-desk** reference; the others stay path / pedagogy / vendor context.
 
-### 11.1 What each product is (cited)
+### 12.1 What each product is (cited)
 
 | Product | What we looked at | Sources |
 |---------|-------------------|---------|
@@ -641,11 +693,11 @@ Public sources, high-level. **No scraped curriculum.** We copy *interaction patt
 | **Databricks Academy** | Role paths (Data Engineer, Analyst, ML, GenAI). Demo + Lab pairing in paid/ILT-style courses; labs need workspace / Free Edition / Vocareum-class compute. Some Fundamentals / badge quizzes are cheap or free; role pathways are free for customers and **paid for the public**. Cert exams are vendor credentials. | [Training home](https://www.databricks.com/learn/training/home), [Academy FAQ (PDF)](https://www.databricks.com/sites/default/files/2023-11/databricks-academy-faq.pdf), [Lakehouse Fundamentals / Business Leader notes](https://www.databricks.com/learn/certification/lakehouse-platform-fundamentals) |
 | **Snowflake University** | On-demand Uni + **Hands-On Essentials** badge track (Warehousing → Marketplace/cost → Apps → Data Lake → Data Engineering → Data Science). Free workshops; **DORA** grades work in a real trial account. Separate SnowPro cert track (exam + ILT). | [Hands-On Essentials](https://learn.snowflake.com/en/pages/hands-on-essentials-track/), [SnowPro track](https://learn.snowflake.com/en/pages/snowpro-track) |
 
-### 11.2 Copy / avoid / Aurora difference
+### 12.2 Copy / avoid / Aurora difference
 
 | Product | Copy | Avoid | How Aurora differs |
 |---------|------|-------|--------------------|
-| **W3Schools Tryit** | Instant **Run**. Problem text + editable code + results pane. Visible sample DB. Restore/reset. Prev/next. Dense, preloaded exercises. Empty state before first run. One primary button. | Ads, Spaces / “Get your own SQL server” upsell. Shallow `Customers` / Alfreds Futterkiste 101 as the *curriculum*. WebSQL → silent read-only downgrade. Fill-in-the-blank Exercises as a second product. New-tab Tryit that leaves the lesson. Auto-run. XP. | **DE seeds** (`aurora_orders`, bronze/silver/gold, `analytics.*`, metric tables) — not tourist Northwind. **In-line** on the lesson (Mode’s page union Tryit’s loop). DuckDB-WASM stays **writable**. See §11.3–§11.4 and §7. |
+| **W3Schools Tryit** | Instant **Run**. Problem text + editable code + results pane. Visible sample DB. Restore/reset. Prev/next. Dense, preloaded exercises. Empty state before first run. One primary button. | Ads, Spaces / “Get your own SQL server” upsell. Shallow `Customers` / Alfreds Futterkiste 101 as the *curriculum*. WebSQL → silent read-only downgrade. Fill-in-the-blank Exercises as a second product. New-tab Tryit that leaves the lesson. Auto-run. XP. | **DE seeds** (`aurora_orders`, bronze/silver/gold, `analytics.*`, metric tables) — not tourist Northwind. **In-line** on the lesson (Mode’s page union Tryit’s loop). DuckDB-WASM stays **writable**. See §12.3–§12.4 and §7. |
 | **DataCamp** | Instruction → run → hint → check. Career **paths**. Curated datasets. Schema browser. | Paywalls, XP as the product, cloud IDE cost, AI tutor as default. Notebook-everything. | **Free forever**, guest progress, lakehouse/warehouse vocabulary, honest local runtime. No DataLab clone. |
 | **Mode SQL Tutorial** | Lesson and editor on **one page**. Analyst-plain language. “See the answer” after trying. | Analyst-only scope (no MERGE/DQ/ETL). Username-schema confusion for DE. Product-led BI funnel. | We teach **loads and contracts**, not only SELECT for charts. Same-page editor is the Mode lesson; Tryit density is the W3Schools lesson. |
 | **Codecademy** | Tiny steps. Immediate feedback. Projects as first-class, not an appendix. Two doors (new vs experienced) on career paths. | Generic CS catalog gravity. Completion-cert paywall. AI assistant as a crutch before the learner runs code. | DE-focused path. Projects = marts and ETL builders we already have. AI track is elective, not the spine. |
@@ -653,7 +705,7 @@ Public sources, high-level. **No scraped curriculum.** We copy *interaction patt
 | **Databricks Academy** | Demo + Lab pairing. Role path (Data Engineer). Capstone-shaped jobs. | Account/compute requirement. Public paywall on the real path. Vendor cert cosplay. Workspace screenshots as the only lab. | **No login to practice Spark-flavored SQL.** Tryit against `bronze.orders`, not a cluster. Link out for official certs. |
 | **Snowflake University** | Badge sequence with proof-of-work. Warehouse → engineering ladder. Short workshops. | Requiring a trial account + DORA to learn SELECT. Marketplace/native-apps distraction for L1. Impersonating SnowPro. | Local DuckDB Tryit for L1–L4 mechanics; copy-to-trial for Streams/Tasks/DT that DuckDB cannot honor. Badges, if any, are Aurora path certs. |
 
-### 11.3 W3Schools Tryit UX teardown (what “feel similar” means)
+### 12.3 W3Schools Tryit UX teardown (what “feel similar” means)
 
 W3Schools split **teaching** and **doing** across two URLs. The SELECT chapter ([sql_select.asp](https://www.w3schools.com/sql/sql_select.asp)) is short: syntax, a **Demo Database** HTML table of `Customers` rows, then “Try it Yourself.” The Tryit ([trysql.asp](https://www.w3schools.com/sql/trysql.asp?filename=trysql_editor)) is almost *only* doing: statement, Run, result, database list, Restore.
 
@@ -679,7 +731,7 @@ That is the whole product feeling. If a learner cannot do those six things witho
 
 **Density:** W3Schools wins because every topic has a preloaded statement that *already works*, and the next topic is one click. Aurora should feel the same on `sql-select-filter-nulls` → `sql-dml-write-path` → … and on DBX/SF twins — not “go back to Training and find the lab card.”
 
-### 11.4 What to copy vs what not to copy (explicit)
+### 12.4 What to copy vs what not to copy (explicit)
 
 **Copy (do these):**
 
@@ -710,13 +762,13 @@ That is the whole product feeling. If a learner cannot do those six things witho
 | XP / points / “W3Schooler” progress theater | Guest `stepIndex` + quiz is enough |
 | Claiming Spark/Snowflake fidelity we do not have | Honest dialect badges |
 
-### 11.5 Positioning line
+### 12.5 Positioning line
 
 **Aurora is the free, DE-first school with a W3Schools-simple Tryit against a real-feeling DE database.** Peers are either generalist and paid (DataCamp, Codecademy), vendor and account-gated (Academy, Uni), analyst-SQL (Mode), or single-mechanic toys (W3Schools’ shallow catalog, LearnGitBranching). We steal the Tryit loop and the path, we keep practice **in line with the seeded DB**, and we refuse the paywall, the ads, and the fake cloud.
 
 ---
 
-## 12. Risks
+## 13. Risks
 
 | Risk | How it shows up | Mitigation |
 |------|-----------------|------------|
@@ -729,15 +781,17 @@ That is the whole product feeling. If a learner cannot do those six things witho
 | **Brand split** | “Daily Tech Hub” and “Aurora” compete in every headline. | §3.2. Wordmark Aurora; Hub = digest. |
 | **Vendor cert confusion** | Marketing says “cert path” next to Snowflake/DBX logos. | Aurora path cert ≠ SnowPro / Databricks Certified. Link out. |
 | **Skip-ahead shame** | Placement feels like an exam. | Six yes/not-yet lines. No score. |
-| **Wave B temptation** | Unified Editor PR “just adds Check + AI.” | Editor shell first. B1 is already on `main` (#42). B2/B3 stay separate stamped PRs. |
+| **Wave B temptation** | Unified Editor PR “just adds Check” or more B1 chrome | Editor shell first. **B1 already on `main` (#42) — grandfathered, not unshipped.** No further B1/B2/B3 until that shell ships. B2/B3: [`docs/wave-b-backend-ac.md`](./wave-b-backend-ac.md). |
 | **Tryit without the DB** | Pretty editor on a page with no seed / copy-only depth lessons | §7.3 mandate. Phase 1 restyles existing labs; Phase 2 wires every SQL/DBX/SF slug. |
-| **W3Schools clone relapse** | Generic Customers 101, ads-adjacent density, new-tab Tryit | §11.4 do-not-copy list. DE seeds only. In-line only. |
+| **W3Schools clone relapse** | Generic Customers 101, ads-adjacent density, new-tab Tryit | §12.4 do-not-copy list. DE seeds only. In-line only. |
 
 ---
 
-## 13. Open questions for Product / UX
+## 14. Open questions for Product / UX
 
-Stamp answers in §14 or a short follow-up comment. Until then, the **bold** line is the plan’s default.
+**Product ACCEPT 2026-09-12:** all **Q1–Q18 bold defaults are stamped** (room brief called this “§12”). Q19–Q21 follow §7.0 (no auto-run; “Your database”; Phase 2 in-line labs). Reopen only with a doc revision.
+
+**Awaiting user stamp** on Acceptance (§15) — room brief “§13”.
 
 1. **Today in the header?** **Default: no** — logo goes home. Reopen if digest traffic is the primary job.  
 2. **Practice as its own nav item?** **Default: yes** (JTBD #2). Alternative: Learn-only header + persistent “Practice” button.  
@@ -753,7 +807,7 @@ Stamp answers in §14 or a short follow-up comment. Until then, the **bold** lin
 12. **Dark mode:** keep toggle, or lock Play Lab dark? **Default: keep toggle; P2 contrast pass.**  
 13. **Three.js TrackScene** on track pages — keep, reduce, or kill for a11y/perf? **Default: keep, `prefers-reduced-motion` off.**  
 14. **Guest vs signup:** any change to “optional account”? **Default: no. Progress guest-first stays.**  
-15. **Wave B vs Phase 1:** may B2 start in parallel after this stamp? **Default: no. Editor shell ships first.** B1 already on `main` is OK.  
+15. **Wave B vs Phase 1:** may B2 (or further B1) start before the Editor shell? **Stamped default: no.** Editor shell ships first. B1 already on `main` (#42) is grandfathered — not unshipped.  
 16. **Display numbers on track cards** during Phase 1 (before `pathOrder` exists)? **Default: hide numbers; show “Beginner path” / “Depth.”**  
 17. **FDE required for Hero?** **Default: no — L6 elective.**  
 18. **Rename Training → Learn in the UI only, keep `/training`?** **Default: yes.**  
@@ -763,34 +817,34 @@ Stamp answers in §14 or a short follow-up comment. Until then, the **bold** lin
 
 ---
 
-## 14. Acceptance of this doc
+## 15. Acceptance of this doc
 
-Product + user stamp required before Phase 1 work is scheduled.
+**Product ACCEPT 2026-09-12.** Phase 1 Editor work waits on the **user** stamp in this table (room brief: “awaiting user on §13”).
 
 | Role | Asks | Stamp (name / date) |
 |------|------|---------------------|
-| **User** | Halt features; this plan matches the “messy” feeling; Zero→Hero is the north star | |
-| **Product** | JTBD + nav (Q1–Q4). **Tryit AC in §15.1 is locked** — confirm, do not reopen layout/runtime without a new revision | |
-| **UX** | Four-item nav; lesson loop; lesson-left / editor+results-right | |
-| **QA** | §15.2 checklists are testable on the Editor impl PR | |
-| **Security** | §15.3 SELECT/WITH + seed only; no remote DB; no CSP widen | |
-| **Backend** | §15.4 existing `/api/progress` only; no new progress model | |
+| **User** | Halt features; this plan matches the “messy” feeling; Zero→Hero is the north star; Tryit direction is the practice desk | |
+| **Product** | Direction + **Q1–Q18 bold defaults** + §7.0 / §16.1 Tryit AC | **ACCEPT 2026-09-12** |
+| **UX** | Four-item nav; lesson loop; lesson-left / editor+results-right | follows Product |
+| **QA** | §16.2 checklists are testable on the Editor impl PR | |
+| **Security** | §9 + §16.3: SELECT/WITH + seed; `cellText`; no remote DB; no CSP widen | room AC recorded; impl stub §16.5 |
+| **Backend** | §8.0 + §16.4: `/api/progress` unchanged; client DuckDB fixtures; B2 later; cache #39/#44 | room AC recorded; impl stub §16.5 |
 | **Frontend** | Feasible without CSP/runtime change in Phase 1 | |
 | **Content** | Original Aurora exercises only (no W3 copy). Path fields in Phase 2 | |
 
-**Stamped means:** Phase 0 ends; Phase 1 Editor work is ticketed against **§15**. **Unstamped means:** this file is the argument, not a license to build. §15.1 Product AC is already **locked wording** — later roles fill the §15.5 stubs on the impl PR.
+**User stamp** ends Phase 0 and tickets Phase 1 against **§7.0 / §16**. Product Tryit AC is **locked**. Owners fill §16.5 stubs on the Editor impl PR.
 
 ---
 
-## 15. Locked acceptance criteria — Tryit Phase 1
+## 16. Locked acceptance criteria — Tryit Phase 1
 
-**This section is the Product AC for the Unified Practice Editor.** Vision/IA above may still be debated (§13). The bullets in §15.1 are **locked** unless Product files a revision of this doc.
+**This section is the Product AC for the Unified Practice Editor** (same lock as §7.0). Q1–Q18 are Product-stamped. The bullets in §16.1 are **locked** unless Product files a revision of this doc.
 
 Applies to the **Editor impl PR** (Phase 1 shell on lessons that already have labs). Phase 2 “every DB slug” is out of this AC. **Docs-only this PR** — no app code here.
 
-Related: [`docs/wave-b-backend-ac.md`](./wave-b-backend-ac.md) (B2 held), [`docs/auth-and-progress.md`](./auth-and-progress.md), `src/lib/lab/sql-guard.ts`, `src/lib/lab/python-guard.ts`, `src/lib/lab/render.ts` (`cellText`).
+Related: [`docs/wave-b-backend-ac.md`](./wave-b-backend-ac.md) (**B2/B3 held**; B1 grandfathered on `main` #42), [`docs/auth-and-progress.md`](./auth-and-progress.md), `src/lib/lab/sql-guard.ts`, `src/lib/lab/python-guard.ts`, `src/lib/lab/render.ts` (`cellText`).
 
-### 15.1 Product AC — **LOCKED**
+### 16.1 Product AC — **LOCKED**
 
 | ID | Locked decision | Meaning |
 |----|-----------------|---------|
@@ -807,7 +861,7 @@ Related: [`docs/wave-b-backend-ac.md`](./wave-b-backend-ac.md) (B2 held), [`docs
 
 **Explicitly not locked here:** header IA (Learn/Practice/Paths), Zero→Hero content reorder, wiring labs onto every remaining depth slug (Phase 2), Monaco, B3 Git VM.
 
-### 15.2 QA AC — stampable
+### 16.2 QA AC — stampable
 
 QA stamps these on the **Editor impl PR**. All must pass without a new backend.
 
@@ -826,9 +880,9 @@ QA stamps these on the **Editor impl PR**. All must pass without a new backend.
 
 - Auto-grade / Check shipped. New progress table or cookie. Remote warehouse. CSP sneak-widen. W3Schools exercise text pasted in. “Coming soon.” Result cells injecting HTML.
 
-### 15.3 Security AC
+### 16.3 Security AC
 
-Locked constraints for the Editor impl PR. **Security fills §15.5** (CSP snapshot, guard review) when that PR opens.
+Locked constraints for the Editor impl PR (same as §9). **Security fills §16.5** (CSP snapshot, guard review) when that PR opens.
 
 | Rule | Locked |
 |------|--------|
@@ -841,9 +895,9 @@ Locked constraints for the Editor impl PR. **Security fills §15.5** (CSP snapsh
 
 **Never allow:** live Snowflake/Databricks login; grading against `data/dth.sqlite`; shell; `docker.sock`.
 
-### 15.4 Backend AC
+### 16.4 Backend AC
 
-Locked for Phase 1. **Backend fills §15.5** (route diff note) when the Editor impl PR opens.
+Locked for Phase 1 (same as §8.0). **Backend fills §16.5** (route diff note) when the Editor impl PR opens.
 
 | Rule | Locked |
 |------|--------|
@@ -851,8 +905,9 @@ Locked for Phase 1. **Backend fills §15.5** (route diff note) when the Editor i
 | **No new progress model** | No `practice_submissions` table. No new cookies. Guest stays `dth-progress-v3`. |
 | **No execute API** | Run is client DuckDB-WASM / Pyodide. Do not add `/api/practice/grade` here (that is B2, held). |
 | **Sessions** | `readSession` as today. Editor works for guests. |
+| **Auth / CSRF vs HTML cache** | Cookies (`dth_access`, `dth_refresh`, `dth_csrf`) **must not** depend on year-long HTML/RSC cache. Incident **#39 / #44 closed**. Do not reintroduce long CDN cache on documents that mint CSRF. |
 
-### 15.5 Stubs — fill when the Editor impl PR opens
+### 16.5 Stubs — fill when the Editor impl PR opens
 
 Leave these blank in **this** docs PR. Owners paste into the impl PR (or a follow-up edit of this file) after the Editor work exists.
 
@@ -860,7 +915,7 @@ Leave these blank in **this** docs PR. Owners paste into the impl PR (or a follo
 
 - Date / PR: _tbd_
 - Copy deck (honest dialect labels): _tbd_
-- Any P-AC exception requested: _none unless Product revises §15.1_
+- Any P-AC exception requested: _none unless Product revises §7.0 / §16.1_
 
 #### Backend (impl PR)
 
@@ -890,13 +945,13 @@ Leave these blank in **this** docs PR. Owners paste into the impl PR (or a follo
 | Shortcuts | Header peer | Reference rail + `/shortcuts` |
 | News / Releases | Header peers | Today digest + permalinks |
 | Feature policy | Ship waves | **No merge until stamp** |
-| Tryit AC | Lab pieces scattered | **§15.1 locked:** lesson left / editor+results right; Run → table; Restore; next; DuckDB + Python VFS; no W3 copy; guest progress same; B2 held |
+| Tryit AC | Lab pieces scattered | **§7.0 / §16.1 locked:** lesson left / editor+results right; Run → table; Restore; next; DuckDB + Python VFS; no W3 copy; guest progress same; B2 held |
 
 ## Appendix B — related docs
 
 | Doc | Role after stamp |
 |-----|------------------|
-| This file | Product north star. **§15.1 Product Tryit AC locked.** QA/Security/Backend stamp §15.2–§15.4; stubs in §15.5 |
+| This file | Product north star. **§7.0 / §16.1 Product Tryit AC locked.** QA/Security/Backend stamp §16.2–§16.4; stubs in §16.5 |
 | [`training-paths.md`](./training-paths.md) | Inventory of W0–W7 / labs / FDE / Git (tactical) |
 | [`improvements-and-training.md`](./improvements-and-training.md) | Older peer notes; P0/P1 lab items fold into §7–§9 |
 | [`wave-b-backend-ac.md`](./wave-b-backend-ac.md) | B1 shipped (#42); B2/B3 held. See §8.3. |
@@ -904,4 +959,4 @@ Leave these blank in **this** docs PR. Owners paste into the impl PR (or a follo
 
 ---
 
-*Original product writing for Aurora / Daily Tech Hub. Not a substitute for vendor curricula. Product Tryit AC is locked in §15.1. The rest of the plan is not scheduled until §14 is stamped.*
+*Original product writing for Aurora / Daily Tech Hub. Not a substitute for vendor curricula. Product Tryit AC is locked in §7.0 / §16.1. Product stamped Q1–Q18 (§14). Awaiting **user** stamp on Acceptance (§15).*
