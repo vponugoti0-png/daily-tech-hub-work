@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import lessonRedirects from "./lesson-redirects.json";
+import { HTML_DOCUMENT_CACHE_CONTROL } from "./src/lib/http-cache";
 
 const isDev = process.env.NODE_ENV !== "production";
 
@@ -93,8 +94,22 @@ const nextConfig: NextConfig = {
   transpilePackages: ["three", "@react-three/fiber", "@react-three/drei", "@duckdb/duckdb-wasm"],
   serverExternalPackages: ["better-sqlite3"],
   devIndicators: false,
+  // Cap Next.js ISR stale-while-revalidate if its own Cache-Control wins
+  // (`s-maxage={revalidate}, stale-while-revalidate={expireTime - revalidate}`).
+  expireTime: 120,
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      {
+        source: "/:path*",
+        headers: securityHeaders,
+      },
+      {
+        // Documents + RSC. Do not match /_next/static — Next.js already
+        // sends `public, max-age=31536000, immutable` for hashed assets.
+        source: "/((?!_next/static|_next/image).*)",
+        headers: [{ key: "Cache-Control", value: HTML_DOCUMENT_CACHE_CONTROL }],
+      },
+    ];
   },
   async redirects() {
     return [

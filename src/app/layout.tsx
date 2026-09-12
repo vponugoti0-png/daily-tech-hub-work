@@ -42,6 +42,13 @@ function siteUrl(): URL {
 const description =
   "Aurora — Daily Tech Hub for data engineers: prompt engineering, AI for DE, Snowflake, Databricks, Python, SQL, Forward Deployed Engineer, and Claude/Copilot/Grok shortcuts.";
 
+/**
+ * Time-based ISR so Next.js does not emit the default static
+ * `Cache-Control: s-maxage=31536000` on HTML/RSC. CDN policy for documents
+ * is overridden in next.config.ts to `s-maxage=0, stale-while-revalidate=60`.
+ */
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   metadataBase: siteUrl(),
   title: {
