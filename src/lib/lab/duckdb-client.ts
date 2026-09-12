@@ -73,6 +73,21 @@ function fieldDecimalScale(field: { type?: { scale?: unknown } }): number | unde
   return typeof scale === "number" && Number.isInteger(scale) && scale > 0 ? scale : undefined;
 }
 
+/** Tear down the in-browser engine and re-seed the sample database. */
+export async function restoreLabDb(): Promise<void> {
+  const pending = dbPromise;
+  dbPromise = null;
+  if (pending) {
+    try {
+      const db = await pending;
+      await db.terminate();
+    } catch {
+      // Previous engine may already be gone.
+    }
+  }
+  await getDb();
+}
+
 export async function runLabSql(sql: string): Promise<LabQueryResult> {
   const safe = assertSafeLabSql(sql);
   const wrapped = `SELECT * FROM (${safe}) AS lab_q LIMIT ${LAB_RESULT_ROW_LIMIT + 1}`;

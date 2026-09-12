@@ -132,6 +132,21 @@ export function labEntrySlug(track: string): string | undefined {
   return undefined;
 }
 
+/** In-page Practice CTA (not a header nav item). */
+export function practiceLabHref(track: string): string | undefined {
+  const slug = labEntrySlug(track);
+  return slug ? `/training/${track}/${slug}#lab` : undefined;
+}
+
+export function practiceLabCtaLabel(track: string): string | undefined {
+  if (track === "sql") return "Practice · SQL lab";
+  if (track === "databricks") return "Practice · Databricks lab";
+  if (track === "snowflake") return "Practice · Snowflake lab";
+  if (track === "python") return "Practice · Python lab";
+  if (track === "git") return "Practice · Git Play Lab";
+  return undefined;
+}
+
 const SHARED: LabSample[] = [
   {
     id: "catalog-objects",
