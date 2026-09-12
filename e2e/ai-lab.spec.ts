@@ -67,7 +67,7 @@ test.describe("Wave B1 — AI Local practice", () => {
     await page.goto(PE_L1);
 
     const example = page.locator("#example");
-    await expect(example.getByText(/Local practice below/i)).toBeVisible();
+    await expect(example.getByText(/Local practice below/i).first()).toBeVisible();
     await expect(example.locator("textarea")).toHaveCount(0);
     await example.getByRole("button", { name: "Run in local practice" }).click();
 

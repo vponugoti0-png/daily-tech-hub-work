@@ -27,7 +27,7 @@ test.describe("training catalog", () => {
     await expect(page.locator("#learn")).toHaveText(/Practice with agents & Cortex functions/i);
     await expect(page.locator(".tryit").first()).toBeVisible();
     await expect(page.getByText("SNOWFLAKE.CORTEX.COMPLETE").first()).toBeVisible();
-    await expect(page.getByText("SNOWFLAKE.CORTEX.SUMMARIZE").first()).toBeVisible();
+    await expect(page.getByTestId("lesson-reference").getByText("SNOWFLAKE.CORTEX.SUMMARIZE")).toBeVisible();
 
     const quiz = page.locator("#quiz");
     await quiz.scrollIntoViewIfNeeded();
