@@ -18,13 +18,13 @@ W4  Depth (SCD, DLT, clones, Cortex vs Snowpark, …)
       ↓
 Practice labs   Databricks + Snowflake + SQL local labs (DuckDB-WASM)
                 Same-origin seeds: tables, views, schemas, catalogs, metric-view–style tables.
-                Honest: not a live workspace / warehouse. Python = copyable examples only (no runtime lab).
+                Honest: not a live workspace / warehouse. Python exercise-path + contracts use an in-browser Pyodide lab (same chrome). ETL builder stays copy-to-repo.
       ↓
 Exercise paths  Clustered beginner lessons on SQL (#22) + DBX / SF / Python siblings.
-                DBX/SF TryIt → #lab on the existing DuckDB labs. Python stays copy-only.
+                DBX/SF TryIt → #lab on the existing DuckDB labs. Python TryIt → #lab on the Pyodide lab.
       ↓
 Richer datasets Catalogs / schemas / views / metric-style tables on the same DuckDB labs
-                (sample packs + short SQL / DBX / SF lessons). No remote catalogs, no CSP widen.
+                (sample packs + short SQL / DBX / SF lessons). No remote catalogs, no CSP widen. Python lab is same-origin Pyodide (no CDN).
       ↓
 Build ETL       One builder lesson per major tool track (W5)
       ↓
@@ -43,24 +43,24 @@ Header nav is unchanged: News · Training · Releases · Shortcuts · Dashboard.
 | Databricks | `dbx-medallion-etl-builder` | Autoloader bronze → silver MERGE → DQ → gold (Job-shaped) |
 | Snowflake | `sf-warehouse-etl-builder` | COPY/stages → Stream/Task MERGE → Dynamic Table gold |
 
-Each lesson: objectives, DE body, cheat-sheet TryIt cards, 3 quiz questions, ~30 min. Copy cards are honest (`Copy to practice` where no lab is wired). DBX/SF builders point at the existing Practice labs on day-0 / lakehouse / architecture lessons. SQL / Databricks / Snowflake exercise-path lessons host the same **Local practice lab** shell; Python exercise-path and all ETL builders stay copy-to-repo / copy-to-warehouse.
+Each lesson: objectives, DE body, cheat-sheet TryIt cards, 3 quiz questions, ~30 min. Copy cards are honest (`Copy to practice` where no lab is wired). DBX/SF builders point at the existing Practice labs on day-0 / lakehouse / architecture lessons. SQL / Databricks / Snowflake exercise-path lessons host the DuckDB **Local practice lab**; Python exercise-path + contracts host the Pyodide lab. All ETL builders stay copy-to-repo / copy-to-warehouse.
 
 ## Exercise paths (W6 SQL · W7 siblings)
 
 Clustered beginner lessons (catalog `13`–`19`, negative `order` so they list first). Original DE copy — not a W3Schools / external clone.
 
-| Track | Hosts DuckDB lab? | First lesson |
+| Track | Hosts local lab? | First lesson |
 |-------|-------------------|--------------|
-| SQL (W6) | Yes — Practice CTA → `sql-select-filter-nulls#lab` | SELECT / filters / NULLs |
-| Databricks (W7) | Yes — TryIt → `#lab` on new + existing day-0 / lakehouse labs | Spark SQL SELECT / NULLs |
-| Snowflake (W7) | Yes — TryIt → `#lab` on new + existing day-0 / architecture labs | SELECT on SAMPLE |
-| Python (W7) | **No** — copyable examples only (team hold) | None / dicts / rows |
+| SQL (W6) | Yes — DuckDB · Practice CTA → `sql-select-filter-nulls#lab` | SELECT / filters / NULLs |
+| Databricks (W7) | Yes — DuckDB · TryIt → `#lab` on new + existing day-0 / lakehouse labs | Spark SQL SELECT / NULLs |
+| Snowflake (W7) | Yes — DuckDB · TryIt → `#lab` on new + existing day-0 / architecture labs | SELECT on SAMPLE |
+| Python (W7) | Yes — Pyodide · Practice CTA → `python-none-dicts-rows#lab` (ETL builder stays copy-only) | None / dicts / rows |
 
 DBX/SF add more sample packs on the existing DuckDB seed (bronze/silver/gold + `sf_*`). Phase 3 adds local schemas (`bronze` / `silver` / `gold` / `aurora` / `analytics` / `metrics`), views (`silver.ok_orders`, `aurora.paid_orders`, …), a `lab_catalog_objects` inventory, and metric-view–style tables (`metrics.orders_daily`, …). Optional in-memory catalogs via same-origin `ATTACH ':memory:'` (learner SQL still cannot ATTACH). No new top-level nav, no server grading, no CSP widen, no remote catalogs.
 
 ## Richer lab datasets (after #23)
 
-Short lessons (`sql-catalog-views-metrics`, `dbx-catalog-views-metrics`, `sf-catalog-views-metrics`) plus extra sample packs on day-0 / DDL / gold / Unity Catalog labs. Guest progress still writes `stepIndex` only (does not complete the lesson). Seeds stay in-module (`src/lib/lab/seed.ts`) — small enough for `/public` if we ever split fixtures. **Python runtime lab stays out.**
+Short lessons (`sql-catalog-views-metrics`, `dbx-catalog-views-metrics`, `sf-catalog-views-metrics`) plus extra sample packs on day-0 / DDL / gold / Unity Catalog labs. Guest progress still writes `stepIndex` only (does not complete the lesson). Seeds stay in-module (`src/lib/lab/seed.ts`) — small enough for `/public` if we ever split fixtures. **Python lab is same-origin Pyodide on the exercise-path + contracts lessons.**
 
 ## Where the path shows up in the app
 

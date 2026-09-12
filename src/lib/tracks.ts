@@ -25,12 +25,12 @@ export const TRACKS: TrackMeta[] = [
     id: "python",
     title: "Python for Data Engineers",
     blurb:
-      "Exercise path (None/dicts → functions → pathlib → exceptions → datetimes → chunks → logging) plus ETL utilities, typing, testing, and a Build ETL job. Copyable examples only — no Python runtime lab.",
+      "Exercise path (None/dicts → functions → pathlib → exceptions → datetimes → chunks → logging) plus ETL utilities, typing, testing, and a Build ETL job. Practice Python in the local (Pyodide) lab on the exercise-path and contracts lessons.",
     accent: "from-[#FFD166] to-[#FF6B4A]",
     difficulty: "Beginner → Advanced",
     estimatedHours: 10,
     orderNote:
-      "Recommended reading order (catalog numbers stay put): None/dicts → functions → pathlib extracts → exceptions → datetimes → chunks → logging → then contracts → config/secrets → typing → testing → writers → orchestration → perf → packaging → Build ETL. Copyable examples only — no Python runtime lab.",
+      "Recommended reading order (catalog numbers stay put): None/dicts → functions → pathlib extracts → exceptions → datetimes → chunks → logging → then contracts → config/secrets → typing → testing → writers → orchestration → perf → packaging → Build ETL. Local practice lab (Pyodide) lives on the exercise-path lessons and DataFrame contracts. Build ETL stays copy-to-repo.",
   },
   {
     id: "sql",

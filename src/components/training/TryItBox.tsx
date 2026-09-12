@@ -16,14 +16,16 @@ export function TryItBox({
   hint,
   dialect,
   labHref,
+  labKind,
   anchor = false,
 }: {
   title?: string;
   code: string;
   hint?: string;
   dialect?: string;
-  /** In-lesson local lab (Databricks / Snowflake / SQL). Not a top-level nav item. */
+  /** In-lesson local lab (Databricks / Snowflake / SQL / Python). Not a top-level nav item. */
   labHref?: string;
+  labKind?: "sql" | "python";
   /** First TryIt on the page gets id="tryit" for layout order + outline. */
   anchor?: boolean;
 }) {
@@ -64,7 +66,7 @@ export function TryItBox({
               className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--coral)]/40 bg-[var(--coral)]/10 px-2.5 py-1 text-xs font-bold text-[var(--ink-fg)]"
               aria-label="Run in local lab"
               onClick={() => {
-                if (looksRunnableSql(draft)) dispatchTryItRun(draft);
+                if (labKind === "python" || looksRunnableSql(draft)) dispatchTryItRun(draft);
               }}
             >
               Run
@@ -111,7 +113,7 @@ export function TryItBox({
           {labHref ? (
             <>
               Tip: edit this pane, then <strong className="text-[var(--ink-fg)]">Run</strong> opens the
-              DuckDB lab on this page and executes your text.
+              local lab on this page and executes your text.
             </>
           ) : (
             <>

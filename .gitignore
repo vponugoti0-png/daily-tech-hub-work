@@ -17,8 +17,9 @@
 /blob-report/
 /playwright/.cache/
 
-# DuckDB-WASM assets copied from node_modules (see scripts/copy-duckdb-wasm.mjs)
+# WASM lab assets copied from node_modules (see scripts/copy-*.mjs)
 /public/duckdb/
+/public/pyodide/
 
 # next.js
 /.next/

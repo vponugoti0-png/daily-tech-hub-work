@@ -3,8 +3,16 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { FlaskConical, Play } from "lucide-react";
 import { getLessonProgress, upsertLessonProgress } from "@/lib/progress";
-import { LAB_ENGINE_LABEL, LAB_HEADING, labHonestyLine } from "@/lib/lab/chrome";
 import {
+  LAB_HEADING,
+  labEditorLabel,
+  labEngineLabel,
+  labHonestyLine,
+  labRunAria,
+  labSampleLabel,
+} from "@/lib/lab/chrome";
+import {
+  isPythonLabLesson,
   LAB_STEP_INDEX,
   samplesForLesson,
   type LabSample,
@@ -13,6 +21,7 @@ import { TRYIT_RUN_EVENT, type TryItRunDetail } from "@/lib/lab/tryit-run";
 import type { LabQueryResult } from "@/lib/lab/duckdb-client";
 
 export function LocalPracticeLab({ track, slug }: { track: string; slug: string }) {
+  const isPython = isPythonLabLesson(track, slug);
   const samples = useMemo(() => samplesForLesson(slug), [slug]);
   const titleId = useId();
   const [sampleId, setSampleId] = useState(samples[0]?.id ?? "");
@@ -46,8 +55,9 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
       setError(null);
       setSql(nextSql);
       try {
-        const { runLabSql } = await import("@/lib/lab/duckdb-client");
-        const next = await runLabSql(nextSql);
+        const next = isPython
+          ? await (await import("@/lib/lab/python-client")).runLabPython(nextSql)
+          : await (await import("@/lib/lab/duckdb-client")).runLabSql(nextSql);
         setResult(next);
         upsertLessonProgress(track, slug, { stepIndex: LAB_STEP_INDEX });
         setLabSaved(true);
@@ -60,7 +70,7 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
         setBusy(false);
       }
     },
-    [track, slug],
+    [track, slug, isPython],
   );
 
   useEffect(() => {
@@ -91,7 +101,7 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
             {LAB_HEADING}
           </h2>
           <span className="rounded-md bg-[var(--sky)]/15 px-1.5 py-0.5 text-[10px] font-semibold text-[var(--sky)]">
-            {LAB_ENGINE_LABEL}
+            {labEngineLabel(track)}
           </span>
         </div>
         {labSaved ? (
@@ -106,11 +116,11 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
 
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
           <label className="min-w-0 flex-1 text-xs font-semibold text-[var(--ink-fg)]">
-            SQL sample
+            {labSampleLabel(track)}
             <select
               className="field mt-1 w-full text-sm"
               value={sampleId}
-              aria-label="SQL sample"
+              aria-label={labSampleLabel(track)}
               onChange={(e) => {
                 const next = samples.find((s) => s.id === e.target.value);
                 if (next) applySample(next);
@@ -128,7 +138,7 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
             className="btn-primary shrink-0"
             onClick={() => void executeSql(sql)}
             disabled={busy}
-            aria-label="Run SQL sample"
+            aria-label={labRunAria(track)}
             aria-busy={busy}
           >
             <Play className="h-4 w-4" aria-hidden />
@@ -137,12 +147,12 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
         </div>
 
         <label className="block text-xs font-semibold text-[var(--ink-fg)]">
-          SQL to run
+          {labEditorLabel(track)}
           <textarea
             className="field mt-1 min-h-[140px] w-full resize-y font-mono text-[12px] leading-relaxed"
             value={sql}
             spellCheck={false}
-            aria-label="SQL to run"
+            aria-label={labEditorLabel(track)}
             onChange={(e) => setSql(e.target.value)}
           />
         </label>
@@ -150,7 +160,7 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
 
         {busy ? (
           <p className="text-sm text-[var(--sky)]" role="status">
-            Starting local engine…
+            {isPython ? "Starting local Python…" : "Starting local engine…"}
           </p>
         ) : null}
 

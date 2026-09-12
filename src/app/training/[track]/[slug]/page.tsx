@@ -166,6 +166,7 @@ export default async function LessonPage({
               dialect={dialect}
               hint={entry.note ?? defaultHint}
               labHref={showLab ? "#lab" : undefined}
+              labKind={lesson.track === "python" ? "python" : showLab ? "sql" : undefined}
               anchor={i === 0}
             />
           );

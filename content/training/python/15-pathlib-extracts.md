@@ -2,7 +2,7 @@
 slug: python-pathlib-extracts
 track: python
 title: "pathlib extracts — land files on purpose"
-description: "Treat incoming files as a landing contract: Path, glob, suffix, and stem. Do not concatenate cwd strings. Copyable only — no Python lab."
+description: "Treat incoming files as a landing contract: Path, glob, suffix, and stem. Do not concatenate cwd strings. Practice in the local Pyodide lab."
 level: beginner
 order: -5
 durationMinutes: 25
@@ -15,7 +15,7 @@ updatedAt: "2026-09-12"
 cheatSheet:
   - label: "Landing glob"
     code: "from pathlib import Path\n\nLANDING = Path(\"/data/landing/orders\")\n\ndef list_order_files(day: str) -> list[Path]:\n    folder = LANDING / day\n    return sorted(folder.glob(\"*.json\"))\n\n# list_order_files(\"2026-09-12\")"
-    note: "Path / part is the join. glob is an allow-list. Copy into your repo — no Python runtime on this page."
+    note: "Path / part is the join. glob is an allow-list. The lab seeds /data/landing/orders."
   - label: "Stem contract"
     code: "from pathlib import Path\n\ndef assert_orders_stem(path: Path) -> str:\n    # orders_2026-09-12.json\n    stem = path.stem  # orders_2026-09-12\n    prefix, _, day = stem.partition(\"_\")\n    if prefix != \"orders\" or len(day) != 10:\n        raise ValueError(f\"unexpected landing name: {path.name}\")\n    return day"
     note: "Autoloader / COPY have the same idea: only files that match the pattern. A random .json is not an incremental."
@@ -51,7 +51,7 @@ quiz:
 
 Extract starts on **disk** (or object storage that looks like disk). `pathlib` is how you name the landing without inventing a mini-parser.
 
-**Copy the examples.** There is no Python runtime lab.
+Run the landing glob in the **local practice lab** — the lab seeds `/data/landing/orders`.
 
 ## Path is the join
 

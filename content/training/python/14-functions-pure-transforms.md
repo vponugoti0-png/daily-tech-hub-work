@@ -15,7 +15,7 @@ updatedAt: "2026-09-12"
 cheatSheet:
   - label: "Pure status filter"
     code: "def paid_only(rows: list[dict]) -> list[dict]:\n    return [r for r in rows if r.get(\"status\") == \"paid\"]\n\nraw = [{\"order_id\": 1, \"status\": \"paid\"}, {\"order_id\": 2, \"status\": \"pending\"}]\nprint(paid_only(raw))"
-    note: "Same input → same output. No file, no SQL, no global. Copy into a REPL — no Python lab here."
+    note: "Same input → same output. No file, no SQL, no global. Run it in the local practice lab."
   - label: "I/O stays in extract / load"
     code: "def extract_orders(read_rows, start: str, end: str) -> list[dict]:\n    return list(read_rows(start, end))\n\ndef load_staging(write_rows, rows: list[dict]) -> int:\n    write_rows(rows)\n    return len(rows)"
     note: "Pass the reader/writer in. Tests can fake them. Do not import a warehouse client inside paid_only."

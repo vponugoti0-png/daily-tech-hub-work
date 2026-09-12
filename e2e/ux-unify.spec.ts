@@ -3,9 +3,10 @@ import { expect, test, type Page } from "@playwright/test";
 const SQL = "/training/sql/sql-select-filter-nulls";
 const DBX = "/training/databricks/dbx-workspace-cluster-basics";
 const SF = "/training/snowflake/sf-day0-objects";
-const PYTHON = "/training/python/python-dataframe-contracts";
+const PYTHON = "/training/python/python-none-dicts-rows";
 const FDE = "/training/forward-deployed/fde-what-an-fde-is";
 const AI = "/training/ai-data-eng/ai-de-practice-agents";
+const PY_ETL = "/training/python/python-etl-pipeline-builder";
 
 async function top(locator: ReturnType<Page["locator"]>) {
   const box = await locator.boundingBox();
@@ -66,6 +67,16 @@ test.describe("UX unify — lesson layout, TryIt editor, lab chrome", () => {
     await expectLessonOrder(page);
     await expectLabChrome(page);
     await expect(page.locator("#lab").getByText(/Not a live Snowflake account/i)).toBeVisible();
+
+    await page.goto(PYTHON);
+    await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
+    await expectLessonOrder(page);
+    const pyLab = page.locator("#lab");
+    await expect(pyLab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
+    await expect(pyLab.getByText("Pyodide", { exact: true })).toBeVisible();
+    await expect(pyLab.getByLabel("Python sample", { exact: true })).toBeVisible();
+    await expect(pyLab.getByRole("button", { name: "Run Python sample" })).toBeVisible();
+    await expect(pyLab.getByLabel("Python to run")).toBeVisible();
   });
 
   test("TryIt is editable; Run deep-links and executes when a lab exists", async ({ page }) => {
@@ -95,10 +106,10 @@ test.describe("UX unify — lesson layout, TryIt editor, lab chrome", () => {
     await expect(table.getByRole("columnheader", { name: /order_id|status/i }).first()).toBeVisible();
   });
 
-  test("Python / FDE / AI TryIt is copy-only — editable, no Run, Coming soon = 0", async ({
+  test("FDE / AI / Python ETL TryIt is copy-only — editable, no Run, Coming soon = 0", async ({
     page,
   }) => {
-    for (const href of [PYTHON, FDE, AI]) {
+    for (const href of [FDE, AI, PY_ETL]) {
       await page.goto(href);
       await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
       await expect(page.locator("#lab")).toHaveCount(0);

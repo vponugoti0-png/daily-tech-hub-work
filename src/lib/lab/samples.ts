@@ -1,6 +1,15 @@
+import {
+  isPythonLabLesson,
+  pythonSamplesForLesson,
+  PYTHON_LAB_ENTRY_SLUG,
+  PYTHON_LAB_SLUGS,
+} from "./python-samples";
+
 export const DATABRICKS_LAB_ENTRY_SLUG = "dbx-workspace-cluster-basics";
 export const SNOWFLAKE_LAB_ENTRY_SLUG = "sf-day0-objects";
 export const SQL_LAB_ENTRY_SLUG = "sql-select-filter-nulls";
+export { PYTHON_LAB_ENTRY_SLUG, isPythonLabLesson, pythonSamplesForLesson };
+export type { PythonLabSlug } from "./python-samples";
 
 export const DATABRICKS_LAB_SLUGS = [
   "dbx-workspace-cluster-basics",
@@ -77,7 +86,8 @@ export function isLabLesson(track: string, slug: string): boolean {
   return (
     isDatabricksLabLesson(track, slug) ||
     isSnowflakeLabLesson(track, slug) ||
-    isSqlLabLesson(track, slug)
+    isSqlLabLesson(track, slug) ||
+    isPythonLabLesson(track, slug)
   );
 }
 
@@ -85,6 +95,7 @@ export function labEntrySlug(track: string): string | undefined {
   if (track === "databricks") return DATABRICKS_LAB_ENTRY_SLUG;
   if (track === "snowflake") return SNOWFLAKE_LAB_ENTRY_SLUG;
   if (track === "sql") return SQL_LAB_ENTRY_SLUG;
+  if (track === "python") return PYTHON_LAB_ENTRY_SLUG;
   return undefined;
 }
 
@@ -682,6 +693,9 @@ const BY_LESSON: Record<DatabricksLabSlug | SnowflakeLabSlug | SqlLabSlug, strin
 };
 
 export function samplesForLesson(slug: string): LabSample[] {
+  if ((PYTHON_LAB_SLUGS as readonly string[]).includes(slug)) {
+    return pythonSamplesForLesson(slug);
+  }
   const ids = (BY_LESSON as Record<string, string[] | undefined>)[slug] ?? [
     "medallion-counts",
     "gold-revenue",

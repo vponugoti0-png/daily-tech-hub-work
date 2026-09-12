@@ -106,32 +106,29 @@ test.describe("Sibling exercise spines (DBX + SF + Python)", () => {
     await expect(page.getByRole("button", { name: /Mark complete/i })).toBeEnabled();
   });
 
-  test("Python exercise-path is copy-only — no #lab on new or existing lessons", async ({ page }) => {
+  test("Python exercise-path hosts the local lab; ETL builder stays copy-only", async ({ page }) => {
     await page.goto("/training/python");
     await expect(page.getByRole("heading", { name: "Python for Data Engineers" })).toBeVisible();
     await expect(page.getByRole("heading", { name: /None, dicts, and pipeline rows/i })).toBeVisible();
-    await expect(page.getByRole("link", { name: /Practice · local lab/i })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /Practice · local lab/i })).toBeVisible();
 
     await page.locator('a[href="/training/python/python-none-dicts-rows"]').first().click();
     await expect(page).toHaveURL(/\/training\/python\/python-none-dicts-rows/);
     await expect(page.locator("#learn")).toHaveText(/None, dicts, and pipeline rows/i);
-    await expect(page.locator("#lab")).toHaveCount(0);
-    await expect(page.getByRole("link", { name: /Run in local lab/i })).toHaveCount(0);
-    await expect(page.locator(".tryit").first()).toBeVisible();
+    await expect(page.locator("#lab").getByRole("heading", { name: "Local practice lab" })).toBeVisible();
+    await expect(page.getByRole("link", { name: /Run in local lab/i }).first()).toBeVisible();
+    await expect(page.locator("#tryit")).toBeVisible();
     await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
-    const tryit = page.locator(".tryit").first();
-    const copy = tryit.getByRole("button", { name: /Copy to practice/i });
-    await expect(copy).toBeVisible();
-    await copy.click();
-    await tryit.getByRole("button", { name: /How to practice/i }).click();
-    await expect(tryit.getByText(/Copy this example and run it/i)).toBeVisible();
     await expect(page.locator("#quiz").getByRole("heading", { name: "Check your understanding" })).toBeVisible();
 
     await page.goto(PY_LOG);
     await expect(page.locator("#learn")).toHaveText(/logging — not print/i);
-    await expect(page.locator("#lab")).toHaveCount(0);
+    await expect(page.locator("#lab").getByRole("heading", { name: "Local practice lab" })).toBeVisible();
 
     await page.goto("/training/python/python-dataframe-contracts");
+    await expect(page.locator("#lab").getByRole("heading", { name: "Local practice lab" })).toBeVisible();
+
+    await page.goto("/training/python/python-etl-pipeline-builder");
     await expect(page.locator("#lab")).toHaveCount(0);
   });
 

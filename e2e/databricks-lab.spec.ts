@@ -74,7 +74,7 @@ test.describe("Databricks local practice lab v1", () => {
     await expect(nav.getByRole("link", { name: "Training" })).toBeVisible();
     await expect(nav.getByRole("link", { name: /^Lab$/i })).toHaveCount(0);
 
-    await page.goto("/training/python/python-dataframe-contracts");
+    await page.goto("/training/python/python-etl-pipeline-builder");
     await expect(page.locator("#lab")).toHaveCount(0);
     await expect(page.getByText("Local practice lab")).toHaveCount(0);
   });

@@ -99,8 +99,8 @@ test.describe("Phase 3 richer lab datasets", () => {
     await expect(table.locator("tbody tr").first()).toBeVisible();
   });
 
-  test("Python track stays copy-only — no runtime lab", async ({ page }) => {
-    await page.goto("/training/python/python-none-dicts-rows");
+  test("Python ETL builder stays copy-only — no runtime lab", async ({ page }) => {
+    await page.goto("/training/python/python-etl-pipeline-builder");
     await expect(page.locator("#lab")).toHaveCount(0);
     await expect(page.getByRole("link", { name: /Run in local lab/i })).toHaveCount(0);
     await expect(page.getByText(/Coming soon/i)).toHaveCount(0);

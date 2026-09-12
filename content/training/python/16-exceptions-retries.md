@@ -2,7 +2,7 @@
 slug: python-exceptions-retries
 track: python
 title: "Exceptions and retry-shaped handling"
-description: "Fail loud on contract breaks. Retry only transient I/O. Do not swallow Exception and return []. Copyable examples — no Python lab."
+description: "Fail loud on contract breaks. Retry only transient I/O. Do not swallow Exception and return []. Practice in the local Pyodide lab."
 level: beginner
 order: -4
 durationMinutes: 25
