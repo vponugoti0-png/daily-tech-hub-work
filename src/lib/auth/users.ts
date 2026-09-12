@@ -5,6 +5,7 @@ import {
   checkPassword,
   hashPassword,
 } from "@/lib/auth/password";
+import { assertProgressIds, splitProgressMergeKey } from "@/lib/auth/progress-validate";
 import bcrypt from "bcryptjs";
 
 export function findUserByEmail(email: string): UserRow | undefined {
@@ -138,12 +139,13 @@ export function upsertProgress(
     updatedAt?: string;
   },
 ) {
+  const { track, slug } = assertProgressIds(patch.track, patch.slug);
   const db = getDb();
   const existing = db
     .prepare(
       "SELECT * FROM lesson_progress WHERE user_id = ? AND track = ? AND slug = ?",
     )
-    .get(userId, patch.track, patch.slug) as
+    .get(userId, track, slug) as
     | (ProgressRow & { id: number; user_id: number })
     | undefined;
 
@@ -179,7 +181,7 @@ export function upsertProgress(
        quiz_total = excluded.quiz_total,
        step_index = excluded.step_index,
        updated_at = datetime('now')`,
-  ).run(userId, patch.track, patch.slug, completed, quizScore, quizTotal, stepIndex);
+  ).run(userId, track, slug, completed, quizScore, quizTotal, stepIndex);
 }
 
 export const MERGE_PAYLOAD_MAX_KEYS = 500;
@@ -203,12 +205,13 @@ export function mergeLocalProgress(
   }
   const tx = getDb().transaction(() => {
     for (const [key, val] of entries) {
-      const [track, ...rest] = key.split(":");
-      const slug = rest.join(":");
-      if (!track || !slug) continue;
+      const parsed = splitProgressMergeKey(key);
+      if (!parsed) {
+        throw new Error("Invalid progress key");
+      }
       upsertProgress(userId, {
-        track,
-        slug,
+        track: parsed.track,
+        slug: parsed.slug,
         completed: val.completed,
         quizScore: val.quizScore,
         quizTotal: val.quizTotal,

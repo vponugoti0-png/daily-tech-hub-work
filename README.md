@@ -96,8 +96,8 @@ Lessons include objectives, try-it shells, **Databricks + Snowflake local practi
 - Email/password APIs: `POST /api/auth/signup|login|logout`, `GET /api/auth/me`, `GET|POST /api/progress`
 - OAuth: Auth.js / NextAuth v5 at `/api/auth/*` (App Router)
 - Sessions: email/password uses short-lived httpOnly access JWT (`dth_access`, 15m) + longer refresh JWT (`dth_refresh`, 30d) with a server-side `jti` row in SQLite. Access is silently rotated from refresh on `readSession`; the refresh family rotates on use (short grace window for concurrent requests). Logout revokes the family, not only cookies. Legacy `dth_session` / refresh JWTs without `jti` are accepted once then migrated. OAuth uses Auth.js JWT. `GET /api/auth/me` accepts either and issues a CSRF cookie (`dth_csrf`) for mutating clients.
-- Mutating email/password + progress routes require double-submit CSRF (`x-csrf-token`) plus a trusted Origin/Referer (`AUTH_TRUSTED_ORIGINS` + `AUTH_URL`). Login/signup are rate-limited in-memory by IP + email (single-node). Passwords use bcrypt cost 12 and min length 8 (`src/lib/auth/password.ts`).
-- Guest progress stays in `localStorage` (`dth-progress-v3`); login merges/syncs
+- Mutating email/password + progress routes require double-submit CSRF (`x-csrf-token`) plus a trusted Origin/Referer (`AUTH_TRUSTED_ORIGINS` + `AUTH_URL`). Login/signup are rate-limited in-memory by IP + email; `POST /api/progress` is rate-limited by IP + user id (single-node). Passwords use bcrypt cost 12 and min length 8 (`src/lib/auth/password.ts`).
+- Guest progress stays in `localStorage` (`dth-progress-v3`); login merges/syncs. New tracks sync as free-text `track` + `slug` rows (shape-checked; no server allowlist). Frontend/QA: [`docs/auth-and-progress.md`](./docs/auth-and-progress.md).
 - OAuth users are upserted into `users` (link by email when the provider returns one; otherwise a synthetic `@oauth.local` email). `password_hash` is nullable / unusable for OAuth-only accounts. Columns: `oauth_provider`, `oauth_subject`.
 
 ### OAuth env vars
