@@ -45,6 +45,14 @@ export const WAVE_LESSONS = [
   { wave: "W5", track: "sql", file: "12-staging-mart-etl.md", slug: "sql-staging-mart-etl", title: "Build staging→mart ETL with DQ gates" },
   { wave: "W5", track: "databricks", file: "12-medallion-etl-builder.md", slug: "dbx-medallion-etl-builder", title: "Build medallion ETL — Autoloader to gold" },
   { wave: "W5", track: "snowflake", file: "12-warehouse-etl-builder.md", slug: "sf-warehouse-etl-builder", title: "Build warehouse ETL — COPY, Streams, Dynamic Tables" },
+  // W6 — Aurora SQL exercise path (clustered categories; original DE copy)
+  { wave: "W6", track: "sql", file: "13-select-filter-nulls.md", slug: "sql-select-filter-nulls", title: "SELECT, filters, NULLs, and LIMIT" },
+  { wave: "W6", track: "sql", file: "14-dml-write-path.md", slug: "sql-dml-write-path", title: "INSERT, UPDATE, DELETE on staging" },
+  { wave: "W6", track: "sql", file: "15-aggregates-group-having.md", slug: "sql-aggregates-group-having", title: "Aggregates, GROUP BY, and HAVING" },
+  { wave: "W6", track: "sql", file: "16-patterns-aliases-case.md", slug: "sql-patterns-aliases-case", title: "LIKE, IN, BETWEEN, aliases, and CASE" },
+  { wave: "W6", track: "sql", file: "17-exists-any-all.md", slug: "sql-exists-any-all", title: "EXISTS, ANY, and ALL as set filters" },
+  { wave: "W6", track: "sql", file: "18-ddl-constraints.md", slug: "sql-ddl-constraints", title: "Tables, constraints, and indexes" },
+  { wave: "W6", track: "sql", file: "19-dates-injection.md", slug: "sql-dates-injection", title: "Warehouse dates and injection-safe filters" },
 ];
 
 export const WAVE_FILES_BY_TRACK = WAVE_LESSONS.reduce((acc, l) => {
@@ -88,8 +96,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.error("Missing wave lesson files:\n" + missing.map((m) => `  - ${m}`).join("\n"));
     process.exit(1);
   }
-  console.log(`✓ ${WAVE_LESSONS.length} W1–W5 lessons present`);
-  for (const wave of ["W1", "W2", "W3", "W4", "W5"]) {
+  console.log(`✓ ${WAVE_LESSONS.length} W1–W6 lessons present`);
+  for (const wave of ["W1", "W2", "W3", "W4", "W5", "W6"]) {
     const rows = WAVE_LESSONS.filter((l) => l.wave === wave);
     console.log(`  ${wave}: ${rows.map((r) => r.slug).join(", ")}`);
   }

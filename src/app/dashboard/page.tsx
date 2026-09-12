@@ -40,6 +40,13 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "python-etl-pipeline-builder",
   ],
   sql: [
+    "sql-select-filter-nulls",
+    "sql-dml-write-path",
+    "sql-aggregates-group-having",
+    "sql-patterns-aliases-case",
+    "sql-exists-any-all",
+    "sql-ddl-constraints",
+    "sql-dates-injection",
     "sql-joins-set-logic-recap",
     "sql-window-functions-de",
     "sql-incremental-loads",

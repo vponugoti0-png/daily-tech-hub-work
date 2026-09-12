@@ -54,7 +54,7 @@ This is the **SQL ETL builder**. It assembles [incremental loads](/training/sql/
 
 > **Dialects:** extract/freshness sketches use Snowflake `DATEADD`. `MERGE … UPDATE SET *` is Spark SQL / Databricks — list columns explicitly on Snowflake. Do not mix syntax in one worksheet.
 
-There is **no SQL-track Practice Lab** yet (DuckDB labs live on Databricks + Snowflake lessons). Copy into your warehouse. Honest TryIt cards — not a live runner.
+The SQL **local practice lab** (DuckDB, not a live warehouse) lives on the exercise-path lessons and the [joins recap](/training/sql/sql-joins-set-logic-recap). This builder is MERGE/DDL-heavy — copy the TryIt cards into your warehouse. Honest chrome: not a live runner on this page.
 
 ## Pipeline
 

@@ -54,7 +54,8 @@ test.describe("W0–W4 training waves", () => {
   test("W1 SQL day-0 lesson shows TryIt and quiz", async ({ page }) => {
     await page.goto(W1_SQL);
     await expectLessonChrome(page, /DE joins & set-logic recap/i);
-    await expect(page.locator(".tryit")).toHaveCount(3);
+    await expect(page.locator(".tryit").first()).toBeVisible();
+    await expect(page.locator("#lab").getByRole("heading", { name: "Local practice lab" })).toBeVisible();
     await expect(page.getByText(/INNER vs LEFT vs ANTI/i).first()).toBeVisible();
     await expect(page.getByText(/ANTI-join missing customers/i).first()).toBeVisible();
     const back = page.getByRole("link", { name: /Back to SQL for Analytics Engineering/i });

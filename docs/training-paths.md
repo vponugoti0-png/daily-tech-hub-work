@@ -16,8 +16,8 @@ W2  Ingestion (SQL late-data · Autoloader · COPY/stages)
 W3  Shared + tool capstones (orders → daily revenue mart)
 W4  Depth (SCD, DLT, clones, Cortex vs Snowpark, …)
       ↓
-Practice labs   Databricks + Snowflake local labs (DuckDB-WASM)
-                Honest: not a live workspace. Python lab = team hold (do not build).
+Practice labs   Databricks + Snowflake + SQL local labs (DuckDB-WASM)
+                Honest: not a live workspace / warehouse. Python lab = team hold (do not build).
       ↓
 Build ETL       One builder lesson per major tool track (W5)
       ↓
@@ -36,7 +36,11 @@ Header nav is unchanged: News · Training · Releases · Shortcuts · Dashboard.
 | Databricks | `dbx-medallion-etl-builder` | Autoloader bronze → silver MERGE → DQ → gold (Job-shaped) |
 | Snowflake | `sf-warehouse-etl-builder` | COPY/stages → Stream/Task MERGE → Dynamic Table gold |
 
-Each lesson: objectives, DE body, cheat-sheet TryIt cards, 3 quiz questions, ~30 min. Copy cards are honest (`Coming soon · live Run` where no lab is wired). DBX/SF builders point at the existing Practice labs on day-0 / lakehouse / architecture lessons.
+Each lesson: objectives, DE body, cheat-sheet TryIt cards, 3 quiz questions, ~30 min. Copy cards are honest (`Coming soon · live Run` where no lab is wired). DBX/SF builders point at the existing Practice labs on day-0 / lakehouse / architecture lessons. SQL exercise-path lessons (SELECT → DML → aggregates → patterns/CASE → EXISTS → DDL → dates/injection) host the same **Local practice lab** shell; the SQL ETL builder stays copy-to-warehouse.
+
+## Aurora SQL exercise path (W6)
+
+Clustered beginner lessons on the SQL track (catalog `13`–`19`, negative `order` so they list first). Original Aurora/DE copy — not a W3Schools clone. Track Practice CTA → `sql-select-filter-nulls#lab`. Python runtime lab stays out.
 
 ## Where the path shows up in the app
 

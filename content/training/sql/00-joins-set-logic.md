@@ -57,10 +57,17 @@ True-zero warmup: joins and set logic before windows and incrementals. Guest-fri
 |------|--------|----------|
 | `INNER` | Matches only | Both sides must exist (paid order + known customer) |
 | `LEFT` | All left rows | Facts must survive a missing dim |
+| `RIGHT` | All right rows | Rare in DE — flip the FROM so the preserved grain is on the left |
+| `FULL` | All rows from both | Reconcile two extracts; unmatched keys are a metric |
+| `SELF` | A table joined to itself | Hierarchy / previous-row without a window (prefer `LAG` when you can) |
 | `ANTI` (`NOT EXISTS`) | Left rows with no match | Late keys, orphans, “not yet in mart” |
 | `SEMI` (`EXISTS`) | Left rows with a match | Filter without adding columns |
 
 Never join two facts at different grains without aggregating first — that is how revenue doubles.
+
+`RIGHT JOIN` is the same as a LEFT with the tables swapped — reviewers prefer the preserved grain on the left. `FULL OUTER JOIN` is for reconcile jobs (lab sample: items × `SKU-LANE`). A **self-join** (`FROM aurora_customers a JOIN aurora_customers b ON …`) is how you compare a row to another row in the same table; windows are usually clearer for “previous paid order.”
+
+The **local practice lab** on this page runs `aurora_*` samples (DuckDB in the browser — not a live warehouse).
 
 ## Set logic
 

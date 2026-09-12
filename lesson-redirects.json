@@ -683,5 +683,75 @@
     "source": "/training/snowflake/warehouse-etl-builder",
     "destination": "/training/snowflake/sf-warehouse-etl-builder",
     "permanent": true
+  },
+  {
+    "source": "/training/sql/13-select-filter-nulls",
+    "destination": "/training/sql/sql-select-filter-nulls",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/select-filter-nulls",
+    "destination": "/training/sql/sql-select-filter-nulls",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/14-dml-write-path",
+    "destination": "/training/sql/sql-dml-write-path",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/dml-write-path",
+    "destination": "/training/sql/sql-dml-write-path",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/15-aggregates-group-having",
+    "destination": "/training/sql/sql-aggregates-group-having",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/aggregates-group-having",
+    "destination": "/training/sql/sql-aggregates-group-having",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/16-patterns-aliases-case",
+    "destination": "/training/sql/sql-patterns-aliases-case",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/patterns-aliases-case",
+    "destination": "/training/sql/sql-patterns-aliases-case",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/17-exists-any-all",
+    "destination": "/training/sql/sql-exists-any-all",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/exists-any-all",
+    "destination": "/training/sql/sql-exists-any-all",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/18-ddl-constraints",
+    "destination": "/training/sql/sql-ddl-constraints",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/ddl-constraints",
+    "destination": "/training/sql/sql-ddl-constraints",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/19-dates-injection",
+    "destination": "/training/sql/sql-dates-injection",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/dates-injection",
+    "destination": "/training/sql/sql-dates-injection",
+    "permanent": true
   }
 ]
