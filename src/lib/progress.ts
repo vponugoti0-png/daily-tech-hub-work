@@ -14,8 +14,18 @@ export interface LessonProgress {
   updatedAt: string;
 }
 
+/** Prompt E placement landing — no quiz scores stored. */
+export type PlacementLanding = "L1" | "L2" | "L3" | "L4" | "L5" | "L6" | "L7";
+
+export interface PlacementResult {
+  landingLevel: PlacementLanding;
+  setAt: string;
+}
+
 export interface ProgressState {
   lessons: Record<string, LessonProgress>;
+  /** Client-only skip-ahead result. Not a score; not synced as an exam. */
+  placement?: PlacementResult;
 }
 
 /** Legacy progress keys from old lesson URL/slug experiments. */
@@ -32,9 +42,28 @@ function lessonKey(track: TrackId | string, slug: string) {
   return `${track}:${canonicalSlug(slug)}`;
 }
 
+const PLACEMENT_LANDINGS = new Set<PlacementLanding>([
+  "L1",
+  "L2",
+  "L3",
+  "L4",
+  "L5",
+  "L6",
+  "L7",
+]);
+
+function readPlacement(raw: unknown): PlacementResult | undefined {
+  if (!raw || typeof raw !== "object") return undefined;
+  const landingLevel = (raw as PlacementResult).landingLevel;
+  const setAt = (raw as PlacementResult).setAt;
+  if (!PLACEMENT_LANDINGS.has(landingLevel)) return undefined;
+  if (typeof setAt !== "string" || !setAt) return undefined;
+  return { landingLevel, setAt };
+}
+
 function normalizeProgressKeys(state: ProgressState): ProgressState {
   const lessons: ProgressState["lessons"] = {};
-  for (const [key, value] of Object.entries(state.lessons)) {
+  for (const [key, value] of Object.entries(state.lessons ?? {})) {
     const idx = key.indexOf(":");
     if (idx < 0) {
       lessons[key] = value;
@@ -48,7 +77,8 @@ function normalizeProgressKeys(state: ProgressState): ProgressState {
       lessons[nextKey] = value;
     }
   }
-  return { lessons };
+  const placement = readPlacement(state.placement);
+  return placement ? { lessons, placement } : { lessons };
 }
 
 
@@ -90,12 +120,33 @@ export function clearLocalProgress() {
   localStorage.removeItem(LEGACY_KEY);
 }
 
-/** Overwrite local progress with server state (no guest merge). */
+/** Overwrite local progress with server state (no guest merge). Keep local placement. */
 export function replaceLocalProgress(serverLessons: Record<string, LessonProgress>) {
   if (typeof window === "undefined") return { lessons: serverLessons };
-  const next: ProgressState = { lessons: { ...serverLessons } };
+  const placement = loadProgress().placement;
+  const next: ProgressState = placement
+    ? { lessons: { ...serverLessons }, placement }
+    : { lessons: { ...serverLessons } };
   saveProgress(next);
   return next;
+}
+
+export function loadPlacement(): PlacementResult | undefined {
+  return loadProgress().placement;
+}
+
+export function savePlacement(landingLevel: PlacementLanding): ProgressState {
+  const state = loadProgress();
+  state.placement = { landingLevel, setAt: new Date().toISOString() };
+  saveProgress(state);
+  return state;
+}
+
+export function clearPlacement(): ProgressState {
+  const state = loadProgress();
+  delete state.placement;
+  saveProgress(state);
+  return state;
 }
 
 export function getLessonProgress(track: string, slug: string): LessonProgress | undefined {
@@ -187,8 +238,10 @@ export function mergeServerProgress(
       };
     }
   }
-  saveProgress(merged);
-  return merged;
+  const placement = local.placement;
+  const next: ProgressState = placement ? { lessons: merged.lessons, placement } : merged;
+  saveProgress(next);
+  return next;
 }
 
 export async function pushLocalProgressToServer() {

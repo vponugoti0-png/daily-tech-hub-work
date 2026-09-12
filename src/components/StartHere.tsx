@@ -16,7 +16,7 @@ const CHOICES = [
   {
     href: PATHS_HREF,
     title: "Skip ahead",
-    blurb: "Already know SQL? Jump a level on the Zero→Hero outline.",
+    blurb: "Already know the work? Six short questions suggest a level — nothing is locked.",
     icon: Compass,
     accent: "text-[var(--sky)] border-[var(--sky)]/35 hover:border-[var(--sky)]/60",
     chip: "Experienced",
