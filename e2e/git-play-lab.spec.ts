@@ -31,7 +31,8 @@ test.describe("Git Play Lab (Product A)", () => {
     await expect(page.locator(".tryit").first()).toBeVisible();
     await expect(lab.getByLabel("Git Play Lab level")).toHaveValue("commit-mart");
 
-    await expect(lab.getByText(/HEAD is on main/i)).toBeVisible();
+    const goals = lab.getByRole("list", { name: "Level goals" });
+    await expect(goals.getByText(/HEAD is on main/i)).toBeVisible();
     await lab.getByLabel("Git command").fill('git commit -m "feat(marts): add orders_daily grain"');
     await lab.getByRole("button", { name: "Run command" }).click();
 
