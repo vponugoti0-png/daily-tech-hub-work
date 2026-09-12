@@ -15,7 +15,10 @@ test.describe("search form (hydration-resilient GET)", () => {
     await expect(input).toHaveAttribute("type", "search");
     await expect(input).toHaveAttribute("enterkeyhint", "search");
     await expect(input).toHaveAttribute("aria-label", "Search");
-    await expect(form.getByRole("button", { name: "Search" })).toBeVisible();
+    const submit = form.getByRole("button", { name: "Search" });
+    await expect(submit).toBeVisible();
+    await expect(submit).toHaveAttribute("aria-label", "Search");
+    await expect(submit).toHaveCSS("min-height", "44px");
   });
 
   test("Enter submits to /search?q= and shows results UI", async ({ page }) => {

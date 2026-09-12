@@ -2,7 +2,7 @@
 
 **Audience:** Learners, Product, content authors  
 **Date:** 2026-09-12  
-**Status:** In-app overlay + track `orderNote`s (no new top-level nav)
+**Status:** In-app overlay + track `orderNote`s (no new top-level nav). FDE (#18) and ETL builders (#19) are on `main`.
 
 This page describes the **overnight path** shipped with the ETL-builder wave. Catalog `order` numbers stay as-is; recommended reading is overlay copy.
 
