@@ -147,7 +147,8 @@ export default function TrainingPage() {
         </h2>
         <p className="mt-1 max-w-3xl text-sm text-[var(--muted)]">
           SQL, Databricks, and Snowflake use the DuckDB local practice lab. Python uses Pyodide.
-          Git has Play Lab on the lesson — not a top-nav item.
+          Prompt Engineering and AI for DE use in-browser Local practice (checklist — not a live
+          model). Git has Play Lab on the lesson — not a top-nav item.
         </p>
         <ul className="mt-4 flex flex-wrap gap-2">
           {TRACKS.map((track) => {

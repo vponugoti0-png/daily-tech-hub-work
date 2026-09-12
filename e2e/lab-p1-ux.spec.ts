@@ -39,6 +39,8 @@ test.describe("Wave A — training index + lab P1 UX", () => {
     await expect(labs.getByRole("link", { name: /Practice · Snowflake lab/i })).toBeVisible();
     await expect(labs.getByRole("link", { name: /Practice · Python lab/i })).toBeVisible();
     await expect(labs.getByRole("link", { name: /Practice · Git Play Lab/i })).toBeVisible();
+    await expect(labs.getByRole("link", { name: /Practice · Prompt lab/i })).toBeVisible();
+    await expect(labs.getByRole("link", { name: /Practice · AI lab/i })).toBeVisible();
 
     const nav = page.getByRole("navigation", { name: "Primary" });
     await expect(nav.getByRole("link", { name: "Training" })).toBeVisible();

@@ -5,7 +5,7 @@ export const TRACKS: TrackMeta[] = [
     id: "prompt-engineering",
     title: "Prompt Engineering",
     blurb:
-      "Ask better questions, structure prompts, iterate, verify, and stay safe — beginner-friendly AI skills. Includes a DE role prompt library for on-call, PRs, and incidents.",
+      "Ask better questions, structure prompts, iterate, verify, and stay safe — beginner-friendly AI skills. Includes a DE role prompt library for on-call, PRs, and incidents. Practice prompts in Local practice (in-browser checklist — not a live Claude/GPT account).",
     accent: "from-[#9B5CFF] to-[#FF6B4A]",
     difficulty: "Beginner",
     estimatedHours: 3,
@@ -15,7 +15,7 @@ export const TRACKS: TrackMeta[] = [
     id: "ai-data-eng",
     title: "AI for Data Engineers",
     blurb:
-      "Use AI as a DE copilot: debug, generate SQL/Python safely, then practice with agents and Cortex functions, plus generic / Databricks Assistant-shaped tool calling.",
+      "Use AI as a DE copilot: debug, generate SQL/Python safely, then practice with agents and Cortex functions, plus generic / Databricks Assistant-shaped tool calling. Local practice scores prompts in-browser — Copy remains the fallback for a live tool.",
     accent: "from-[#FF6B4A] to-[#FFD166]",
     difficulty: "Beginner → Intermediate",
     estimatedHours: 3.5,
@@ -113,7 +113,7 @@ export const META_DE_OVERLAY = {
   eyebrow: "Meta DE path · optional overlay",
   title: "Suggested cert-style order (no new nav)",
   blurb:
-    "Use the tracks you already have. Overnight spine: W0 recommended-order overlay → W1–W4 waves → Practice labs (Databricks + Snowflake + SQL DuckDB labs; Python Pyodide lab on the exercise path) → exercise-path siblings → Build ETL on each tool track → Forward Deployed Engineer → Git Play Lab (in-browser graph + CLI). Suggested cert-style order: Prompt Engineering → AI for DE → Python → SQL → Snowflake → Databricks → Forward Deployed Engineer → Git.",
+    "Use the tracks you already have. Overnight spine: W0 recommended-order overlay → W1–W4 waves → Practice labs (Databricks + Snowflake + SQL DuckDB labs; Python Pyodide lab on the exercise path; Prompt Engineering / AI-for-DE Local practice) → exercise-path siblings → Build ETL on each tool track → Forward Deployed Engineer → Git Play Lab (in-browser graph + CLI). Suggested cert-style order: Prompt Engineering → AI for DE → Python → SQL → Snowflake → Databricks → Forward Deployed Engineer → Git.",
   sqlOrder:
     "SELECT/filters → DML → Aggregates → Patterns/CASE → EXISTS → DDL → Dates/injection → Joins recap. Then CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL → Catalogs/views/metrics",
   pythonOrder:
