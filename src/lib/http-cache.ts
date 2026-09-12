@@ -1,4 +1,6 @@
-/** Shared-cache (CDN / `s-maxage`) policy. Do not confuse with HSTS `max-age`. */
+/** Shared-cache (CDN / `s-maxage`) policy. Do not confuse with HSTS `max-age`.
+ *  next.config.ts inlines HTML_DOCUMENT_CACHE_CONTROL — do not import this
+ *  module from next.config.ts (Docker runner does not COPY src/). */
 
 export const YEAR_SECONDS = 31_536_000;
 
