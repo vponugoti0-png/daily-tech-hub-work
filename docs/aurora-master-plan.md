@@ -2,17 +2,17 @@
 
 **Audience:** Product, UX, Frontend, Backend, Security, Content, QA  
 **Date:** 2026-09-12  
-**Status:** **Product ACCEPT** + **UX ACCEPT** 2026-09-12 — direction + Q1–Q18 bold defaults + Tryit AC + four-item nav / lesson loop. **Awaiting user stamp** on Acceptance (§14).  
+**Status:** **User stamped §14** 2026-09-12. Product + UX ACCEPT. **Ready for docs merge.** Phase 1 tickets: §17.  
 **Scope of this PR:** this document (and a pointer from [`docs/improvements-and-training.md`](./improvements-and-training.md)). No app code.  
-**Addendum:** §4.0 = UX stamp (learner POV). §7.0 = locked W3 Tryit Product AC. §8 = Backend. §11 = Security. §16 = QA/Security/Backend stampable AC + stubs for the Editor impl PR.
+**Addendum:** §4.0 = UX stamp. §7.0 = Product Tryit AC. §8 = Backend. §11 = Security. §14 = User stamp. §16 = impl-PR AC. §17 = user-locked runtime + Phase 1 prompt pack. Where §17 is more specific, it wins.
 
 ---
 
 ## Halt rule (read first)
 
-The site feels messy because we shipped tracks, labs, overlays, and “no new nav” workarounds faster than we designed the product. **Product and UX accepted this direction** (2026-09-12). **Stop merging feature / content / lab PRs** until the **user** stamps Acceptance (§14).
+The site feels messy because we shipped tracks, labs, overlays, and “no new nav” workarounds faster than we designed the product. **Product, UX, and the user stamped this direction** (2026-09-12). Phase 0 docs freeze is **complete** for this file. **This docs PR may merge.** Phase 1 is the §17 prompt pack — still no app code in *this* PR.
 
-Phase 0 remains a freeze on *new* school features. Exceptions: production incidents, security, and doc-only revisions of this plan.
+Do **not** merge feature / content / lab PRs that are outside §17 Prompts A–E. Exceptions: production incidents, security, and doc-only revisions of this plan.
 
 **Wave B reconcile:** **B1 (AI Local practice) is already on `main`** (#42) — **grandfathered**. Do **not** revert it. Do **not** write as if B1 is unshipped. **No further B1 / B2 / B3 work** until the Phase 1 Unified Editor shell ships. **B2** (auto-check) and **B3** (Git VM) stay **held** — source of truth: [`docs/wave-b-backend-ac.md`](./wave-b-backend-ac.md).
 
@@ -35,9 +35,10 @@ Tactical inventories in [`docs/training-paths.md`](./training-paths.md) and [`do
 11. [Security](#11-security) — threat model · CSP · W3 Tryit · auth honesty · held list · stamp gate
 12. [Risks](#12-risks)
 13. [Open questions for Product / UX](#13-open-questions-for-product--ux) — **Q1–Q18 Product-stamped; UX-endorsed Q5–Q7, Q14–Q16**
-14. [Acceptance of this doc](#14-acceptance-of-this-doc) — **awaiting user**
+14. [Acceptance of this doc](#14-acceptance-of-this-doc) — **user stamped 2026-09-12**
 15. [Competitive review](#15-competitive-review) — [Tryit teardown](#153-w3schools-tryit-ux-teardown-what-feel-similar-means) · [copy vs not](#154-what-to-copy-vs-what-not-to-copy-explicit)
 16. [Locked AC — Tryit Phase 1](#16-locked-acceptance-criteria--tryit-phase-1) — [UX](#160-ux-ac--phase-1-chrome) · [Product](#161-product-ac--locked) · [QA](#162-qa-ac--stampable) · [Security](#163-security-ac) · [Backend](#164-backend-ac) · [Stubs](#165-stubs--fill-when-the-editor-impl-pr-opens)
+17. [User-locked Runtime & Phase 1 prompt stack](#17-user-locked-runtime--phase-1-prompt-stack) — [guardrails](#171-master-system-architecture--strict-guardrails) · [Prompts A–E](#173-phase-1--door-desk--l1-closed-loop)
 
 ---
 
@@ -138,7 +139,7 @@ Room brief called this “§13” (Acceptance is now §14). UX stamps **four-ite
 | # | Locked | Meaning |
 |---|--------|---------|
 | **U1** | **`/practice` is never empty** | Default = SQL lab (`sql-select-filter-nulls`) + dialect tabs. No blank desk. No “Coming soon” Practice chrome. |
-| **U2** | **StartHere = Zero→Hero** | PE is elective. Hero CTA = the **first real L0/L1 lesson** (a click that opens a lesson), not a scroll-only path card. |
+| **U2** | **StartHere = Zero→Hero** | PE is elective. Hero CTA = **`/training/sql/sql-select-filter-nulls#lab`** (§17). Not a scroll-only path card. |
 | **U3** | **Home after demoting Today** | `/` keeps the digest. Returners get a **loud Continue / next-step**. Digest headlines alone are not enough. |
 | **U4** | **Plain English + explain-this chips** | Phase **1 chrome** (toggle + jargon chips stay visible on Learn / lesson / Practice). Not deferred to Phase 2 content. |
 | **U5** | **Lesson loop** | **Learn → Example → Practice → Quiz.** Hide extra TryIts behind Example. One Practice desk. |
@@ -221,7 +222,7 @@ Redirects: existing `lesson-redirects.json` + `next.config.ts` + filename-stem f
 | **Zero→Hero DE** | New to data work, or SQL-curious career changers | `/paths/zero-to-hero` — default StartHere |
 | **Experienced skip-ahead** | Analysts / software engineers / warehouse folks | `/paths/experienced` — 6-question self-placement (not a scored exam). Jumps to the first level they mark “not yet.” |
 
-Prompt Engineering and AI-for-DE **are not the front door** of the DE path. They are **L0 electives** (and a later “AI copilot” module after the learner can read a query). Today `FIRST_LESSON_HREF` is `pe-ask-better-questions`. That was a growth experiment; it fights JTBD #1. **UX / Product lock (U2 / Q4):** StartHere = **Zero→Hero**. PE remains a track and an elective node. The **hero CTA** opens the **first real L0/L1 lesson** (not a scroll-only path overview). Skip-ahead is the second door.
+Prompt Engineering and AI-for-DE **are not the front door** of the DE path. They are **L0 electives** (and a later “AI copilot” module after the learner can read a query). Today `FIRST_LESSON_HREF` is `pe-ask-better-questions`. That was a growth experiment; it fights JTBD #1. **UX / Product / User lock (U2 / Q4 / §17):** StartHere = **Zero→Hero**. PE remains a track and an elective node. The **hero CTA** opens **`/training/sql/sql-select-filter-nulls#lab`**. Skip-ahead is the second door.
 
 `CERT_PATH` as PE → AI → Python → SQL → SF → DBX → FDE → Git is **retired as the default spine**. It can remain a Phase 3 “Meta overlay” for people collecting every track, not the hire path.
 
@@ -257,16 +258,16 @@ No score, no gate. Progress still records completed slugs; the path just highlig
 
 ### 5.4 How tracks appear inside levels
 
-A level is an **ordered list of slugs** (plus optional “read the Shortcuts pack”). Example L1 (illustrative, not a content rewrite):
+A level is an **ordered list of slugs** (plus optional “read the Shortcuts pack”). **L1 display / route order is user-locked** (§17 Prompt D). Slugs and files do **not** change:
 
 1. `sql-select-filter-nulls`  
-2. `sql-dml-write-path`  
+2. `sql-patterns-aliases-case`  
 3. `sql-aggregates-group-having`  
-4. `sql-patterns-aliases-case`  
+4. `sql-joins-set-logic-recap`  
 5. `sql-exists-any-all`  
 6. `sql-ddl-constraints`  
-7. `sql-dates-injection`  
-8. `sql-joins-set-logic-recap`  
+7. `sql-dml-write-path`  
+8. `sql-dates-injection`  
 
 L1 does **not** include windows, SCD, or the ETL builder. Those stay on the SQL *track* for people browsing by tool, and they appear on L3+.
 
@@ -592,7 +593,7 @@ Not in the UX list (§13). Defaults until stamp:
 | P1-3 | **Display numbers** | **Hide filename numbers in Phase 1** (Q16). Later: path/catalog numbers from schema, not filename `13`. |
 | P1-4 | **Shortcuts as Reference** | Lesson rail + track “Reference” link. `/shortcuts` remains. |
 | P1-5 | **Search** | Grouping already exists (lessons / news / shortcuts / releases). Add path + practice weighting; keep 44px submit. Optional ⌘K later (P2). |
-| P1-6 | **StartHere** | Zero→Hero default; PE elective (U2 / Q4). **Hero CTA = first real L0/L1 lesson**, not scroll-only. Skip-ahead is the second door. Shortcuts is not a door. |
+| P1-6 | **StartHere** | Zero→Hero default; PE elective. **Hero CTA = `/training/sql/sql-select-filter-nulls#lab`** (§17). Skip-ahead is the second door. Shortcuts is not a door. |
 | P1-7 | **Dashboard** | Path % first; track % second. META essay goes away. |
 | P1-8 | **In-line DB (existing labs)** | Lessons that already have DuckDB/Pyodide: drop the second TryItBox editor; Example = Load into `#lab`. |
 
@@ -614,32 +615,32 @@ Out of this backlog: new tracks, B2/B3 (B1 already on main), XP/leaderboards, ma
 ## 10. Phased rollout
 
 ```
-Phase 0  Docs / IA freeze          ← you are here
-    ↓  User stamp Acceptance (§14); Product + UX already ACCEPTed 2026-09-12
-Phase 1  IA + nav + Unified Editor shell
+Phase 0  Docs / IA freeze          ← stamped; this PR may merge
+    ↓  User stamp Acceptance (§14) 2026-09-12
+Phase 1  IA + nav + Unified Editor shell  ← §17 Prompts A–E
 Phase 2  Content reorder + in-line Tryit on every DB lesson
 Phase 3  Paths complete + Aurora cert overlay
 ```
 
 ### Phase 0 — docs / IA freeze (this PR)
 
-- Ship this plan.  
-- **No feature merge** (no new tracks, labs, overlays, Wave A content, **further B1 / B2 / B3**) until the **user** stamps §14. B1 already on `main` stays.  
-- Allowed: incident/security fixes; revisions to this doc.
+- Ship this plan. **User stamped §14** (2026-09-12). Gate for Phase 1: engineering + product + user — **user stamp = this addendum**.  
+- Docs lock + security runbooks stay the source of truth (§11, §17.I).  
+- **This docs PR may merge.** No feature merge outside §17. B1 already on `main` stays.  
+- Allowed still: incident/security fixes; revisions to this doc.
 
 ### Phase 1 — IA + nav + unified editor shell
 
-- Implement §4 nav and Learn hub (**four items**).  
-- Mount one **Tryit-shaped** Practice layout per **§7.0 / §16.1** (lesson left / editor+results right; Run → table; Restore seed; next exercise). Same-origin DuckDB (SQL/DBX/SF) + Python VFS. No new labs on depth slugs yet. Auto-grade stays held (B2). **No further B1/B2/B3** until this shell ships.  
-- **`/practice` never empty** (U1 / Q5): SQL default + dialect tabs. No Coming soon desk.  
-- Lesson chrome: **Learn → Example → Practice → Quiz**; hide extra TryIts behind Example (U5).  
-- Home (`/`): **loud Continue / next-step** after Today leaves the header (U3).  
-- StartHere: Zero→Hero; PE elective; **hero CTA = first real L0/L1 lesson** (U2).  
-- **Plain English + explain-this chips** stay in Phase 1 chrome (U4).  
-- Hide filename numbers on track cards (Q16).  
-- Add `/paths` stub with Zero→Hero outline + skip-ahead questions (can point at **existing slugs**).  
-- Redirects: none required if we keep `/training` as Learn. Add `/practice` and `/paths` as new.  
-- **No** filename renames. **No** new lessons. **No further B1 / B2 / B3.** B1 already on `main` (#42) is grandfathered.
+Implement **§17 Prompts A–E** (docs tickets, not this PR). Summary:
+
+- Four-item nav permanently locked: Learn `/training`, Practice `/practice`, Paths `/paths`, Progress `/dashboard`.  
+- One Tryit-shaped editor; desktop lesson left | editor+results right; mobile stack. Same-origin DuckDB / Pyodide. No Monaco, no CDN, no Check.  
+- `/practice` never empty: default `sql-select-filter-nulls`; tabs `sql | sql-dbx | sql-sf | python`.  
+- StartHere + hero CTA → `/training/sql/sql-select-filter-nulls#lab`. Home: Continue if progress else first-run CTA.  
+- L1 closed loop display order in §17 Prompt D. Slugs unchanged.  
+- `/paths` stub (Prompt E — remainder **TODO**, user paste truncated).  
+- **No further B1 / B2 / B3** until this shell ships. B1 on `main` (#42) grandfathered.  
+- **Plain English + explain-this chips** stay in Phase 1 chrome (U4).
 
 ### Phase 2 — content reorder
 
@@ -661,7 +662,8 @@ Phase 3  Paths complete + Aurora cert overlay
 ### Merge gate
 
 ```
-if (PR adds features or training content) and (user has not stamped §14):
+# User stamped §14 on 2026-09-12. This docs PR may merge.
+if (PR adds features or training content) and (work is not a §17 Prompt A–E impl):
     do not merge
 # B1 on main is grandfathered. No further B1/B2/B3 until Phase 1 Editor ships.
 ```
@@ -758,12 +760,12 @@ Do **not** build in Phase 1 (omit chrome — no “Coming soon”):
 
 **UX ACCEPT 2026-09-12** endorses: **Q5** (SQL empty-state + dialect tabs), **Q6** (keep permalinks / drop nav), **Q7** (pack link only), **Q14** (guest-first), **Q15** (Editor shell before further Wave B), **Q16** (hide filename numbers in Phase 1). Plus §4.0 watch-outs U1–U5.
 
-**Awaiting user stamp** on Acceptance (§14) — room brief “§13”.
+**User stamped Acceptance (§14)** 2026-09-12. Locked architecture + Phase 1 prompt pack: **§17**.
 
 1. **Today in the header?** **Default: no** — logo goes home. Reopen if digest traffic is the primary job.  
 2. **Practice as its own nav item?** **Default: yes** (JTBD #2). Alternative: Learn-only header + persistent “Practice” button.  
 3. **Paths as nav vs a card inside Learn?** **Default: nav.** Paths are the product; burying them recreates today’s overlay.  
-4. **StartHere front door:** Zero→Hero SQL/L0 vs Prompt Engineering (current `FIRST_LESSON_HREF`)? **Default: Zero→Hero.** PE remains elective. Hero CTA = first real L0/L1 lesson (U2).  
+4. **StartHere front door:** Zero→Hero SQL/L0 vs Prompt Engineering (current `FIRST_LESSON_HREF`)? **Default: Zero→Hero.** PE remains elective. **User-locked hero CTA:** `/training/sql/sql-select-filter-nulls#lab` (§17).  
 5. **`/practice` empty state:** last dialect vs always SQL? **Default: SQL lab** (`sql-select-filter-nulls` sample) with dialect tabs. **UX-endorsed.** Desk must never be blank / Coming soon (U1).  
 6. **News/Releases permalinks** after header removal — any SEO concern that requires `/updates`? **Default: keep URLs, drop nav.** **UX-endorsed.**  
 7. **Shortcuts favorites/recents** — stay on `/shortcuts` only, or also in the lesson Reference rail? **Default: pack link only in v1.** **UX-endorsed.**  
@@ -780,17 +782,18 @@ Do **not** build in Phase 1 (omit chrome — no “Coming soon”):
 18. **Rename Training → Learn in the UI only, keep `/training`?** **Default: yes.**  
 19. **Every SQL / DBX / SF lesson gets a Tryit lab (Phase 2)?** Including stand-ins for COPY / Autoloader / Cortex? **Default: yes** — copy-only only for the narrow list in §7.5.  
 20. **Auto-run the default sample on lab mount?** **Default: no** (W3Schools empty state; WASM cost).  
-21. **W3Schools “Your database” wording vs “Sample schema”?** **Default: “Your database”** + honest subtitle (“local DuckDB seed, not a warehouse”).
+21. **W3Schools “Your database” wording vs “Sample schema”?** **Default: “Your database”** + honest subtitle (“local DuckDB seed, not a warehouse”). **User-locked** (§17 Prompt C).  
+22. **Typed hint generation + failure logging in Phase 1?** Mentioned in Phase 1 objectives. **Open.** May conflict with **B2 held** and **stepIndex-only telemetry** (§17.I / Prompt C). Do not add a hint-generation API, failure log store, or Check chrome until Product revises this question. Existing author hint-after-N-fails may stay.
 
 ---
 
 ## 14. Acceptance of this doc
 
-**Product ACCEPT** + **UX ACCEPT** 2026-09-12. Phase 1 Editor work waits on the **user** stamp in this table (room brief: “awaiting user on §13”).
+**Product ACCEPT** + **UX ACCEPT** + **User STAMP** 2026-09-12. Phase 0 complete. Phase 1 tickets: **§17**.
 
 | Role | Asks | Stamp (name / date) |
 |------|------|---------------------|
-| **User** | Halt features; this plan matches the “messy” feeling; Zero→Hero is the north star; Tryit direction is the practice desk | |
+| **User** | Halt features; this plan matches the “messy” feeling; Zero→Hero is the north star; Tryit direction is the practice desk; locked runtime + Phase 1 prompt stack (§17) | **STAMPED 2026-09-12** |
 | **Product** | Direction + **Q1–Q18 bold defaults** + §7.0 / §16.1 Tryit AC | **ACCEPT 2026-09-12** |
 | **UX** | Four-item nav + lesson loop from learner POV; §4.0 U1–U5; Q5–Q7 / Q14–Q16 endorsed | **ACCEPT 2026-09-12** |
 | **QA** | §16.2 checklists are testable on the Editor impl PR | |
@@ -799,7 +802,7 @@ Do **not** build in Phase 1 (omit chrome — no “Coming soon”):
 | **Frontend** | Feasible without CSP/runtime change in Phase 1 | |
 | **Content** | Original Aurora exercises only (no W3 copy). Path fields in Phase 2 | |
 
-**User stamp** ends Phase 0 and tickets Phase 1 against **§4.0 / §7.0 / §16**. Product Tryit AC and UX chrome watch-outs are **locked**. Owners fill §16.5 stubs on the Editor impl PR.
+**User stamp** ended Phase 0. Phase 1 is ticketed against **§17** (more specific than §4.0 / §7.0 / §16 where they overlap). Product, Security (§11), and Backend (§8) sections stay. Owners fill §16.5 stubs on the Editor impl PR.
 
 ---
 
@@ -909,7 +912,7 @@ Same lock as §4.0. Stamp on the **IA / Editor impl PR**.
 | ID | Locked | Fail if |
 |----|--------|---------|
 | **U1** | `/practice` opens a **SQL** desk + dialect tabs. Never a blank / Coming soon Practice page. | Empty editor, “Coming soon,” or no default sample. |
-| **U2** | StartHere = Zero→Hero; PE elective; **hero CTA opens the first real L0/L1 lesson**. | Hero only scrolls a path card. PE is the front door. |
+| **U2** | StartHere = Zero→Hero; PE elective; **hero CTA = `/training/sql/sql-select-filter-nulls#lab`**. | Hero only scrolls a path card. PE is the front door. |
 | **U3** | After Today leaves the header, `/` has a **loud Continue / next-step** for returners. | Home is digest-only with no next lesson. |
 | **U4** | **Plain English** toggle + **explain-this** / jargon chips remain in Phase 1 chrome. | Chips removed or deferred to “Phase 2 content.” |
 | **U5** | Lesson chrome: **Learn → Example → Practice → Quiz**. Extra TryIts hide behind Example. | Extra TryIt editors still pile above the article. |
@@ -1002,19 +1005,97 @@ Leave these blank in **this** docs PR. Owners paste into the impl PR (or a follo
 
 ---
 
+## 17. User-locked Runtime & Phase 1 prompt stack
+
+**User STAMP 2026-09-12.** This section is the locked architecture and the Phase 1 **implementation ticket / prompt pack**. Still **docs only** — no app code in this PR.
+
+Do **not** delete Product (§7 / §16.1), Security (§11), or Backend (§8). Where this section is **more specific**, it wins.
+
+### 17.1 Master System Architecture & Strict Guardrails
+
+**Aurora Runtime Engine**
+
+| Piece | Locked |
+|-------|--------|
+| **Storage** | Guest progress: `localStorage` / `dth-progress-v3`. Fields: `stepIndex` + lesson slug (`track:slug`). |
+| **Sandboxes** | DuckDB-WASM (SQL) \| Pyodide (Python) |
+| **UI shell** | Unified Editor. Desktop split / mobile stack |
+
+**Immutable constraints**
+
+1. **Single Unified Editor Component** — exactly one Tryit-shaped desk (`#lab` and `/practice`). Desktop: **lesson left \| editor+results right**; mobile stack. **No Monaco, no extra CDNs, no new component spawns.**
+2. **Deterministic Data Source** — `seed.ts` via DuckDB-WASM or Pyodide only. **No remote DB, no live warehouses, no server-side exec for client code.**
+3. **URL & Nav invariants** — four-item primary nav **permanently locked:** `/training`, `/practice`, `/paths`, `/dashboard`. Hide filename numbers; blurbs ≤ 2 lines; **slugs immutable.**
+4. **Zero Coming-Soon Policy** — omit unfinished features entirely; no Coming Soon banners/stubs.
+5. **Brand Integrity** — Aurora-only certificate phrasing; no vendor credential imitation (SnowPro, Databricks Certified).
+
+### 17.2 Phase 0 — Documentation Freeze
+
+Docs lock + security runbooks. Gate = engineering + product + user stamp before Phase 1. **User stamp = this addendum (2026-09-12).** Phase 0 is complete for this file.
+
+### 17.3 Phase 1 — Door, Desk, & L1 Closed Loop
+
+Capture as **implementation tickets** (not code here).
+
+#### Prompt A — IA / Door & Navigation
+
+- Nav exactly: **Learn** (`/training`), **Practice** (`/practice`), **Paths** (`/paths`), **Progress** (`/dashboard`)
+- Logo = home; remove Today / Shortcuts / News / Releases from primary nav (**keep routes**)
+- StartHere + hero CTA → `/training/sql/sql-select-filter-nulls#lab`
+- Home: **Continue** if progress else first-run CTA
+- Learn hub: next-step card, single path card, quiet track grid, one **Open Practice**; strip META essay / stacked promos above the fold
+- PE / AI / FDE **below the fold** with **Elective** badges
+- Hide filename numbers; blurbs ≤ 2 lines; no new placeholder lessons
+
+#### Prompt B — Lesson Chrome
+
+- Order: **Learn → Example → Practice → Quiz**; markdown above widgets
+- Extra TryItBoxes behind Example fold; Example loads into `#lab` (single textarea); no empty editors on copy-only; path breadcrumbs; reference rail = leftover cheat-sheet + Shortcuts pack links only
+
+#### Prompt C — Unified Editor Shell
+
+- One component for `#lab` + `/practice`; desktop 2-col / mobile stack
+- `/practice` default **non-empty** `sql-select-filter-nulls`; tabs `sql` \| `sql-dbx` \| `sql-sf` \| `python`
+- Coral **44px Run**; SQL result table / Python stdout; empty before first run; **no auto-run**
+- **Restore** (seed), **Reset** (default statement), Next/Prev sample
+- Schema sidebar **SQL-only**; header **“Your database”** + subtitle
+- Reuse DuckDB-WASM, Pyodide, `sql-guard`, `python-guard`, `seed.ts`, `schema.ts`, `cellText` — **no CDN / Monaco**
+- No Check assertions, Coming soon, or W3 `Customers` clones; telemetry = **`stepIndex` only**
+
+#### Prompt D — L1 Closed Loop (display/route order only; slugs/files unchanged)
+
+Order:
+
+`sql-select-filter-nulls` → `sql-patterns-aliases-case` → `sql-aggregates-group-having` → `sql-joins-set-logic-recap` → `sql-exists-any-all` → `sql-ddl-constraints` → `sql-dml-write-path` → `sql-dates-injection`
+
+- Default sample valid vs seed; completion → next `#lab`
+- Exclude windows / SCD / ETL builders
+- Prepend a **5-row seed demo** in Learn markdown
+
+#### Prompt E — `/paths` stub (**TRUNCATED** in user paste)
+
+- `/paths` + `/paths/zero-to-hero` L0–L7 outline → existing slugs
+- Evidence-based diagnostic (six multi…) — **TODO:** remainder of this prompt was cut off in the stamp message. Do not invent the rest. Fill when the user pastes the missing sentence.
+
+### 17.4 Open Product question (from Phase 1 objectives)
+
+**Typed hint generation + failure logging** was mentioned in Phase 1 objectives. Not stamped here. See **Q22** in §13. May conflict with Wave **B2 held** and **stepIndex-only** telemetry (Prompt C). Omit until Product revises Q22.
+
+---
+
 ## Appendix A — current vs proposed (cheat sheet)
 
 | | Current (`main`) | Proposed |
 |--|------------------|----------|
 | Header | Today Training Shortcuts News Releases Progress | Learn Practice Paths Progress |
 | Spine | `CERT_PATH` + META overlay + `orderNote` | Zero→Hero levels L0–L7 + skip-ahead |
-| First lesson | PE “Ask better questions” | Path L0/L1 (stamp Q4) |
+| First lesson | PE “Ask better questions” | `/training/sql/sql-select-filter-nulls#lab` (§17) |
 | Lesson numbers | Filename 13–20 + `order: -7` vs 01–12 | `pathOrder` / `catalogOrder`; slugs stable |
 | Practice | TryIt + DuckDB lab + Pyodide + Git Play + copy | One **Tryit-shaped** Editor; every DB lesson in line with the seed |
 | Backend | Auth/progress as today; Wave B held as a block | Keep sessions / CSRF / progress; B1 on `main` OK; B2/B3 held; no new Tryit APIs (§8) |
 | Shortcuts | Header peer | Reference rail + `/shortcuts` |
 | News / Releases | Header peers | Today digest + permalinks |
-| Feature policy | Ship waves | **No merge until stamp** |
+| Feature policy | Ship waves | User stamped §14. Docs PR may merge. Phase 1 = §17 only |
 | UX chrome | Six-item nav; inverted lesson; empty Practice risk | **§4.0 / §16.0:** four-item nav; Learn→Example→Practice→Quiz; `/practice` never empty; home Continue; Plain English chips in Phase 1 |
 | Tryit AC | Lab pieces scattered | **§7.0 / §16.1 locked:** lesson left / editor+results right; Run → table; Restore; next; DuckDB + Python VFS; no W3 copy; guest progress same; B2 held |
 
@@ -1022,7 +1103,7 @@ Leave these blank in **this** docs PR. Owners paste into the impl PR (or a follo
 
 | Doc | Role after stamp |
 |-----|------------------|
-| This file | Product + UX north star. **§4.0 UX + §7.0 / §16.1 Tryit AC locked. §11 Security.** QA/Security/Backend stamp §16.2–§16.4; stubs in §16.5 |
+| This file | Product + UX + **User** north star. **§14 stamped. §17 Phase 1 prompt pack.** §8 Backend / §11 Security stay. |
 | [`training-paths.md`](./training-paths.md) | Inventory of W0–W7 / labs / FDE / Git (tactical) |
 | [`improvements-and-training.md`](./improvements-and-training.md) | Older peer notes; P0/P1 lab items fold into §7–§9 |
 | [`wave-b-backend-ac.md`](./wave-b-backend-ac.md) | B1 shipped (#42); B2/B3 held. See §8.3. |
@@ -1030,4 +1111,4 @@ Leave these blank in **this** docs PR. Owners paste into the impl PR (or a follo
 
 ---
 
-*Original product writing for Aurora / Daily Tech Hub. Not a substitute for vendor curricula. Product Tryit AC is locked in §7.0 / §16.1. UX stamped four-item nav + lesson loop (§4.0 / §16.0). Security lock is §11. Product stamped Q1–Q18 (§13). Awaiting **user** stamp on Acceptance (§14).*
+*Original product writing for Aurora / Daily Tech Hub. Not a substitute for vendor curricula. **User stamped §14** 2026-09-12. Phase 1 tickets: §17. Product Tryit AC §7.0 / §16.1. UX §4.0. Security §11. Backend §8. Ready for docs merge.*
