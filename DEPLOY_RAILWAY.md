@@ -24,7 +24,13 @@ AUTH_TRUSTED_ORIGINS=https://<your-railway-domain>
 ```
 
 5. Generate a public domain (Settings → Networking → Generate Domain).
-6. In Google Cloud OAuth client, add:
+6. **Sharing with your team (required):**
+   - Confirm **Public Networking** is on and you are sending the `https://….up.railway.app` app URL — not a Railway dashboard / project invite and not `*.railway.internal`.
+   - Turn **off** Railway **deployment protection** / password (Settings → Networking or service Security). If this is on, only people logged into your Railway workspace can open the site.
+   - Many corporate filters and browser protections **block the shared `*.up.railway.app` domain**. Railway has documented this. Add a **custom domain** (Settings → Networking → Custom Domain) and share that instead.
+   - Slack / Teams / Outlook in-app browsers may fail to embed the page (`X-Frame-Options: DENY`). Ask teammates to **Open in browser**.
+   - Set `AUTH_URL` and `AUTH_TRUSTED_ORIGINS` to the exact `https://` origin people type (custom domain if you added one).
+7. In Google Cloud OAuth client, add:
    - Origin: `https://<your-railway-domain>`
    - Redirect: `https://<your-railway-domain>/api/auth/callback/google`
 
