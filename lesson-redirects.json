@@ -993,5 +993,85 @@
     "source": "/training/snowflake/catalog-views-metrics",
     "destination": "/training/snowflake/sf-catalog-views-metrics",
     "permanent": true
+  },
+  {
+    "source": "/training/prompt-engineering/08-practice-de-reviews",
+    "destination": "/training/prompt-engineering/pe-practice-de-reviews",
+    "permanent": true
+  },
+  {
+    "source": "/training/prompt-engineering/practice-de-reviews",
+    "destination": "/training/prompt-engineering/pe-practice-de-reviews",
+    "permanent": true
+  },
+  {
+    "source": "/training/ai-data-eng/09-practice-sql-review",
+    "destination": "/training/ai-data-eng/ai-de-practice-sql-review",
+    "permanent": true
+  },
+  {
+    "source": "/training/ai-data-eng/practice-sql-review",
+    "destination": "/training/ai-data-eng/ai-de-practice-sql-review",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/21-notebook-cell-types",
+    "destination": "/training/databricks/dbx-notebook-cell-types",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/notebook-cell-types",
+    "destination": "/training/databricks/dbx-notebook-cell-types",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/22-dbutils-notebook",
+    "destination": "/training/databricks/dbx-dbutils-notebook",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/dbutils-notebook",
+    "destination": "/training/databricks/dbx-dbutils-notebook",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/23-delta-merge-deep",
+    "destination": "/training/databricks/dbx-delta-merge-deep",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/delta-merge-deep",
+    "destination": "/training/databricks/dbx-delta-merge-deep",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/21-copy-history-practice",
+    "destination": "/training/snowflake/sf-copy-history-practice",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/copy-history-practice",
+    "destination": "/training/snowflake/sf-copy-history-practice",
+    "permanent": true
+  },
+  {
+    "source": "/training/git/06-conflict-practice",
+    "destination": "/training/git/git-conflict-practice",
+    "permanent": true
+  },
+  {
+    "source": "/training/git/conflict-practice",
+    "destination": "/training/git/git-conflict-practice",
+    "permanent": true
+  },
+  {
+    "source": "/training/forward-deployed/11-practice-runbooks",
+    "destination": "/training/forward-deployed/fde-practice-runbooks",
+    "permanent": true
+  },
+  {
+    "source": "/training/forward-deployed/practice-runbooks",
+    "destination": "/training/forward-deployed/fde-practice-runbooks",
+    "permanent": true
   }
 ]

@@ -35,6 +35,14 @@ quiz:
       - "git rm --cached the file, add to .gitignore, and rotate the credentials"
       - "Amend after force-pushing to main"
     answer: 2
+  - question: "A good data-PR commit is usually…"
+    options:
+      - "One theme (one mart window or one contract) with a why"
+      - "Every file in the repo so CI runs once"
+      - "A screenshot with no message"
+      - "A rebase of origin/main onto a shared release"
+    answer: 0
+    explanation: "Atomic commits stay reviewable. Do not bundle unrelated warehouse objects."
 ---
 
 # Commit hygiene for data PRs

@@ -19,6 +19,9 @@ export const DATABRICKS_LAB_SLUGS = [
   "dbx-dates-partition-filters",
   "dbx-unity-catalog",
   "dbx-catalog-views-metrics",
+  "dbx-notebook-cell-types",
+  "dbx-dbutils-notebook",
+  "dbx-delta-merge-deep",
 ] as const;
 
 export const SNOWFLAKE_LAB_SLUGS = [
@@ -35,6 +38,7 @@ export const SNOWFLAKE_LAB_SLUGS = [
   "sf-ddl-constraints",
   "sf-dates-injection",
   "sf-catalog-views-metrics",
+  "sf-copy-history-practice",
 ] as const;
 
 export const SQL_LAB_SLUGS = [
@@ -65,6 +69,7 @@ export const GIT_LAB_SLUGS = [
   "git-bisect-and-blame",
   "git-branching-dbt-sql",
   "git-pr-templates-data-diffs",
+  "git-conflict-practice",
 ] as const;
 
 export type DatabricksLabSlug = (typeof DATABRICKS_LAB_SLUGS)[number];
@@ -699,6 +704,68 @@ FROM metrics.aurora_region_revenue
 ORDER BY measure_revenue DESC;`,
     note: "Metric-view–style table: dimensions + measures. Not a BI semantic layer SaaS — just a local fixture.",
   },
+  {
+    id: "dbx-notebook-cells",
+    label: "Notebook cell types (inventory)",
+    sql: `SELECT cell_id, cell_type, cell_name, runs_in_job
+FROM dbx_notebook_cells
+ORDER BY cell_id;`,
+    note: "md / sql / python cells are teaching labels. %sh is inventory only — this lab never runs a shell.",
+  },
+  {
+    id: "dbx-job-cells",
+    label: "Cells that belong on a Job",
+    sql: `SELECT cell_name, cell_type
+FROM dbx_notebook_cells
+WHERE runs_in_job = 1 AND cell_type <> 'sh'
+ORDER BY cell_id;`,
+    note: "%sh / secrets stay in a laptop notebook for debug. Jobs schedule sql + python cells from a repo.",
+  },
+  {
+    id: "dbx-job-params",
+    label: "Job widget stand-ins",
+    sql: `SELECT job_name, param_name, param_value
+FROM dbx_job_params
+ORDER BY param_name;`,
+    note: "DuckDB stand-in for dbutils.widgets.get. Copy widget code into a workspace — no live dbutils here.",
+  },
+  {
+    id: "dbx-merge-matched",
+    label: "MERGE MATCHED preview",
+    sql: `SELECT t.order_id, t.status AS silver_status, u.status AS bronze_status, u.amount
+FROM silver_orders t
+INNER JOIN bronze_orders u ON t.order_id = u.order_id
+ORDER BY t.order_id;`,
+    note: "WHEN MATCHED set. Preview before you copy MERGE INTO silver in a workspace.",
+  },
+  {
+    id: "dbx-merge-not-matched",
+    label: "MERGE NOT MATCHED preview",
+    sql: `SELECT u.order_id, u.status, u.amount
+FROM bronze_orders u
+WHERE NOT EXISTS (
+  SELECT 1 FROM silver_orders t WHERE t.order_id = u.order_id
+)
+ORDER BY u.order_id;`,
+    note: "WHEN NOT MATCHED THEN INSERT. This seed’s leftover is the corrupt bronze row.",
+  },
+  {
+    id: "sf-copy-history",
+    label: "COPY history stand-in",
+    sql: `SELECT stage_path, rows_loaded, status, load_date
+FROM sf_copy_history
+ORDER BY load_date;`,
+    note: "Local stand-in for COPY INTO history. Not a live account. PARTIAL days need a replay.",
+  },
+  {
+    id: "sf-copy-partial",
+    label: "PARTIAL COPY days",
+    sql: `SELECT stage_path, rows_loaded, load_date
+FROM sf_copy_history
+WHERE status = 'PARTIAL'
+ORDER BY load_date;`,
+    note: "A PARTIAL load is a contract break. Replay the stage; do not silently zero-fill gold.",
+  },
 ];
 
 const BY_LESSON: Record<DatabricksLabSlug | SnowflakeLabSlug | SqlLabSlug, string[]> = {
@@ -716,6 +783,9 @@ const BY_LESSON: Record<DatabricksLabSlug | SnowflakeLabSlug | SqlLabSlug, strin
   "dbx-dates-partition-filters": ["partition-filter", "dbx-date-window", "gold-revenue"],
   "dbx-unity-catalog": ["lab-catalogs", "lab-current-catalog", "dbx-qualified-silver", "dbx-metric-view"],
   "dbx-catalog-views-metrics": ["lab-catalogs", "lab-schemas", "lab-views", "dbx-ok-view", "dbx-metric-view"],
+  "dbx-notebook-cell-types": ["dbx-notebook-cells", "dbx-job-cells", "dbx-schema"],
+  "dbx-dbutils-notebook": ["dbx-job-params", "dbx-notebook-cells", "partition-filter"],
+  "dbx-delta-merge-deep": ["dbx-merge-matched", "dbx-merge-not-matched", "upsert-shape", "dbx-exists-ok"],
   "sf-day0-objects": ["sf-account-map", "sf-warehouses", "sf-schema", "lab-catalogs"],
   "sf-architecture": ["sf-warehouses", "sf-account-map", "sf-orders-customers"],
   "sf-time-travel-clones": ["sf-time-travel", "sf-orders-customers", "sf-date-window"],
@@ -729,6 +799,7 @@ const BY_LESSON: Record<DatabricksLabSlug | SnowflakeLabSlug | SqlLabSlug, strin
   "sf-ddl-constraints": ["sf-schema", "sf-account-map", "sf-paid-limit", "lab-schemas"],
   "sf-dates-injection": ["sf-date-window", "sf-time-travel", "sf-like-promo"],
   "sf-catalog-views-metrics": ["lab-catalogs", "lab-schemas", "lab-views", "sf-paid-view", "sf-metric-view"],
+  "sf-copy-history-practice": ["sf-copy-history", "sf-copy-partial", "sf-paid-limit"],
   "sql-select-filter-nulls": ["aurora-paid-select", "aurora-distinct-nulls", "aurora-null-promo"],
   "sql-dml-write-path": ["aurora-dml-preview", "aurora-null-promo", "aurora-paid-select"],
   "sql-aggregates-group-having": ["aurora-agg-revenue", "aurora-distinct-nulls", "aurora-paid-select"],

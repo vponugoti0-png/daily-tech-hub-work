@@ -263,6 +263,42 @@ export const LAB_SEED_SCHEMA: LabSchemaTable[] = [
     dialects: ["snowflake"],
   },
   {
+    name: "sf_copy_history",
+    schema: "main",
+    kind: "table",
+    columns: [
+      { name: "stage_path", type: "VARCHAR" },
+      { name: "rows_loaded", type: "INTEGER" },
+      { name: "status", type: "VARCHAR" },
+      { name: "load_date", type: "DATE" },
+    ],
+    dialects: ["snowflake"],
+  },
+  {
+    name: "dbx_notebook_cells",
+    schema: "main",
+    kind: "table",
+    columns: [
+      { name: "cell_id", type: "INTEGER" },
+      { name: "notebook_path", type: "VARCHAR" },
+      { name: "cell_type", type: "VARCHAR" },
+      { name: "cell_name", type: "VARCHAR" },
+      { name: "runs_in_job", type: "INTEGER" },
+    ],
+    dialects: ["databricks"],
+  },
+  {
+    name: "dbx_job_params",
+    schema: "main",
+    kind: "table",
+    columns: [
+      { name: "job_name", type: "VARCHAR" },
+      { name: "param_name", type: "VARCHAR" },
+      { name: "param_value", type: "VARCHAR" },
+    ],
+    dialects: ["databricks"],
+  },
+  {
     name: "analytics.orders",
     schema: "analytics",
     kind: "table",
