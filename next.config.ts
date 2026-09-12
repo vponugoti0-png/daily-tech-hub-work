@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 import lessonRedirects from "./lesson-redirects.json";
-import { HTML_DOCUMENT_CACHE_CONTROL } from "./src/lib/http-cache";
+
+/**
+ * Inlined so the Docker runner can load this file without `src/`.
+ * (Dockerfile copies `next.config.ts` + `lesson-redirects.json` only.)
+ * HTML + RSC: Railway hikari honors `s-maxage`; Next static default is 1 year.
+ */
+const HTML_DOCUMENT_CACHE_CONTROL = "s-maxage=0, stale-while-revalidate=60";
 
 const isDev = process.env.NODE_ENV !== "production";
 
