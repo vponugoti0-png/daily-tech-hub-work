@@ -21,7 +21,9 @@ test.describe("FDE training track", () => {
     await page.goto("/training");
 
     await expect(page.getByRole("heading", { name: "Interactive course tracks" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Forward Deployed Engineer" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Forward Deployed Engineer", exact: true }),
+    ).toBeVisible();
     await expect(
       page.getByText(/Customer-facing delivery for DE\/AI platforms/i).first(),
     ).toBeVisible();
@@ -30,7 +32,9 @@ test.describe("FDE training track", () => {
   test("track page lists all ten lessons", async ({ page }) => {
     await page.goto(TRACK);
 
-    await expect(page.getByRole("heading", { name: "Forward Deployed Engineer" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Forward Deployed Engineer", exact: true }),
+    ).toBeVisible();
     await expect(page.getByText(/10 lessons/i)).toBeVisible();
     for (const title of LESSON_TITLES) {
       await expect(page.getByRole("heading", { name: title })).toBeVisible();
@@ -52,6 +56,8 @@ test.describe("FDE training track", () => {
     await expect(back).toBeVisible();
     await back.click();
     await expect(page).toHaveURL(/\/training\/forward-deployed\/?$/);
-    await expect(page.getByRole("heading", { name: "Forward Deployed Engineer" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Forward Deployed Engineer", exact: true }),
+    ).toBeVisible();
   });
 });
