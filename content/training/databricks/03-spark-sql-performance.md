@@ -12,6 +12,10 @@ objectives:
   - "Use predicate pushdown and partition filters"
   - "Read Spark UI for skew/spill"
 updatedAt: "2026-09-11"
+cheatSheet:
+  - label: "Filter early"
+    code: "SELECT region, COUNT(*) AS n\nFROM silver_orders\nWHERE order_date >= DATE '2026-09-02'\nGROUP BY region\nORDER BY n DESC;"
+    note: "Partition-style filter you can run in the local practice lab."
 quiz:
   - question: "Countless tiny files usually cause…"
     options:

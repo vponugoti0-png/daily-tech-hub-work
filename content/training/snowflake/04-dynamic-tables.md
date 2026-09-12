@@ -12,6 +12,10 @@ objectives:
   - "Understand incremental vs full refresh"
   - "Monitor freshness"
 updatedAt: "2026-09-11"
+cheatSheet:
+  - label: "Daily mart grain"
+    code: "SELECT o.order_date, c.region, COUNT(*) AS orders, ROUND(SUM(o.amount), 2) AS revenue\nFROM sf_orders o\nJOIN sf_customers c ON c.customer_id = o.customer_id\nGROUP BY o.order_date, c.region\nORDER BY o.order_date, c.region;"
+    note: "Mart-shaped SELECT you can run in the local practice lab."
 quiz:
   - question: "TARGET_LAG expresses…"
     options:

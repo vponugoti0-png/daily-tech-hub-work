@@ -10,11 +10,14 @@ export function TryItBox({
   code,
   hint,
   dialect,
+  labHref,
 }: {
   title?: string;
   code: string;
   hint?: string;
   dialect?: string;
+  /** In-lesson local lab (Databricks v1). Not a top-level nav item. */
+  labHref?: string;
 }) {
   const [showHint, setShowHint] = useState(false);
   return (
@@ -30,11 +33,26 @@ export function TryItBox({
               {dialect}
             </span>
           ) : null}
-          <span className="rounded-full border border-[var(--sun)]/40 bg-[var(--sun)]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--sun)]">
-            Coming soon · live Run
-          </span>
+          {labHref ? (
+            <span className="rounded-full border border-[var(--coral)]/40 bg-[var(--coral)]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--coral)]">
+              Local lab below
+            </span>
+          ) : (
+            <span className="rounded-full border border-[var(--sun)]/40 bg-[var(--sun)]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--sun)]">
+              Coming soon · live Run
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-2">
+          {labHref ? (
+            <a
+              href={labHref}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--coral)]/40 bg-[var(--coral)]/10 px-2.5 py-1 text-xs font-bold text-[var(--ink-fg)]"
+              aria-label="Open local practice lab"
+            >
+              Run in local lab
+            </a>
+          ) : null}
           <CopyButton text={code} />
           <button
             type="button"
@@ -51,12 +69,25 @@ export function TryItBox({
       </pre>
       {showHint ? (
         <div className="border-t border-[var(--ink-border)] bg-[var(--panel-2)] px-3 py-2 text-xs text-[var(--muted)]">
-          Live Run isn&apos;t ready yet — copy this into Snowflake, Databricks, or your AI chat to practice.
+          {labHref
+            ? "Copy if you want, or run a SQL sample in the local practice lab below."
+            : "Live Run isn't ready yet — copy this into Snowflake, Databricks, or your AI chat to practice."}
           {hint ? <span className="mt-1 block font-semibold text-[var(--mint)]">{hint}</span> : null}
         </div>
       ) : (
         <div className="border-t border-[var(--ink-border)] bg-[var(--panel-2)]/60 px-3 py-1.5 text-[11px] text-[var(--muted)]">
-          Tip: use <strong className="text-[var(--ink-fg)]">Copy</strong> — the green Play button will arrive later (honest!).
+          {labHref ? (
+            <>
+              Tip:{" "}
+              <strong className="text-[var(--ink-fg)]">Run in local lab</strong> opens the DuckDB
+              practice surface on this page.
+            </>
+          ) : (
+            <>
+              Tip: use <strong className="text-[var(--ink-fg)]">Copy</strong> — the green Play button
+              will arrive later (honest!).
+            </>
+          )}
         </div>
       )}
     </div>

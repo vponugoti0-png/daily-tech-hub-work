@@ -15,6 +15,7 @@ import type {
   TrackId,
 } from "./types";
 import { TRACK_IDS } from "./tracks";
+import { isLabLesson } from "./lab/samples";
 
 const CONTENT_ROOT = path.join(process.cwd(), "content");
 
@@ -54,8 +55,9 @@ export function getShortcutBySlug(slug: string): ShortcutItem | undefined {
   return getAllShortcuts().find((s) => s.slug === slug);
 }
 
-function deriveSteps(content: string, hasQuiz: boolean): LessonStep[] {
+function deriveSteps(content: string, hasQuiz: boolean, hasLab: boolean): LessonStep[] {
   const steps: LessonStep[] = [{ id: "learn", title: "Learn" }];
+  if (hasLab) steps.push({ id: "lab", title: "Practice lab" });
   if (/## Exercises/i.test(content)) {
     steps.push({ id: "exercises", title: "Exercises" });
   }
@@ -89,7 +91,13 @@ export function getAllLessons(): TrainingLesson[] {
         exercises: (data.exercises as Exercise[] | undefined) ?? [],
         cheatSheet: (data.cheatSheet as CheatSheetEntry[] | undefined) ?? undefined,
         quiz,
-        steps: (data.steps as LessonStep[] | undefined) ?? deriveSteps(body, Boolean(quiz?.length)),
+        steps:
+          (data.steps as LessonStep[] | undefined) ??
+          deriveSteps(
+            body,
+            Boolean(quiz?.length),
+            isLabLesson(String(data.track), String(data.slug)),
+          ),
         updatedAt: String(data.updatedAt),
       });
     }

@@ -12,6 +12,10 @@ objectives:
   - "Size warehouses for workload types"
   - "Organize databases/schemas for medallion-like layers"
 updatedAt: "2026-09-11"
+cheatSheet:
+  - label: "Account map"
+    code: "SELECT database, schema, object_name, object_type\nFROM sf_account_objects\nORDER BY database, schema, object_name;"
+    note: "Run this in the local practice lab — not a live Snowflake account."
 quiz:
   - question: "Virtual warehouses primarily provide…"
     options:

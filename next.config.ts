@@ -36,9 +36,11 @@ const oauthOriginList = [...oauthBrowserOrigins].join(" ");
 // 'unsafe-inline' stays: Next.js App Router hydration + the theme FOUC script in
 // layout.tsx. A nonce/proxy.ts CSP would force dynamic rendering of every page.
 // 'unsafe-eval' is only for next/react dev (HMR / stack reconstruction).
+// wasm-unsafe-eval: DuckDB-WASM compile for the Databricks local practice lab.
+// Safer than widening script-src with full unsafe-eval in production.
 const scriptSrc = isDev
-  ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
-  : "script-src 'self' 'unsafe-inline'";
+  ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'"
+  : "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'";
 
 const connectSrc = isDev
   ? `connect-src 'self' ${oauthOriginList} ws: wss:`
@@ -85,7 +87,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  transpilePackages: ["three", "@react-three/fiber", "@react-three/drei"],
+  transpilePackages: ["three", "@react-three/fiber", "@react-three/drei", "@duckdb/duckdb-wasm"],
   serverExternalPackages: ["better-sqlite3"],
   devIndicators: false,
   async headers() {

@@ -926,6 +926,13 @@ Prefer projecting needed fields into typed columns for marts. Keep raw VARIANT i
         "Choose Jobs over ad-hoc notebooks for prod",
         "Locate Unity Catalog objects",
       ],
+      cheatSheet: [
+        {
+          label: "Medallion counts",
+          code: "SELECT layer, COUNT(*) AS row_count\nFROM (\n  SELECT 'bronze' AS layer FROM bronze_orders\n  UNION ALL\n  SELECT 'silver' FROM silver_orders\n  UNION ALL\n  SELECT 'gold' FROM gold_daily_orders\n) t\nGROUP BY layer\nORDER BY layer;",
+          note: "Run this in the local practice lab on this page — not a live workspace.",
+        },
+      ],
       quiz: [
         {
           question: "Bronze layers typically store…",
@@ -1012,6 +1019,13 @@ WHEN NOT MATCHED THEN INSERT *;
         "Target healthy file sizes",
         "Use predicate pushdown and partition filters",
         "Read Spark UI for skew/spill",
+      ],
+      cheatSheet: [
+        {
+          label: "Filter early",
+          code: "SELECT region, COUNT(*) AS n\nFROM silver_orders\nWHERE order_date >= DATE '2026-09-02'\nGROUP BY region\nORDER BY n DESC;",
+          note: "Partition-style filter you can run in the local practice lab.",
+        },
       ],
       quiz: [
         {
@@ -1174,6 +1188,13 @@ Use job clusters or serverless SQL/warehouses appropriately; pin library version
         "Use query history for tuning",
         "Separate ETL compute from BI serving",
       ],
+      cheatSheet: [
+        {
+          label: "Serve gold",
+          code: "SELECT order_date, region, orders, revenue\nFROM gold_daily_orders\nORDER BY order_date, region;",
+          note: "BI-shaped read against gold — run it in the local practice lab.",
+        },
+      ],
       quiz: [
         {
           question: "Running heavy ETL on the same small SQL warehouse as BI often…",
@@ -1211,6 +1232,13 @@ Draft a policy: which workloads use Jobs clusters vs SQL warehouses.
         "Explain storage vs compute separation",
         "Size warehouses for workload types",
         "Organize databases/schemas for medallion-like layers",
+      ],
+      cheatSheet: [
+        {
+          label: "Account map",
+          code: "SELECT database, schema, object_name, object_type\nFROM sf_account_objects\nORDER BY database, schema, object_name;",
+          note: "Run this in the local practice lab — not a live Snowflake account.",
+        },
       ],
       quiz: [
         {
@@ -1332,6 +1360,13 @@ CREATE TASK load_orders WAREHOUSE = etl_wh SCHEDULE = '5 MINUTE' AS
         "Declare Dynamic Tables with lag targets",
         "Understand incremental vs full refresh",
         "Monitor freshness",
+      ],
+      cheatSheet: [
+        {
+          label: "Daily mart grain",
+          code: "SELECT o.order_date, c.region, COUNT(*) AS orders, ROUND(SUM(o.amount), 2) AS revenue\nFROM sf_orders o\nJOIN sf_customers c ON c.customer_id = o.customer_id\nGROUP BY o.order_date, c.region\nORDER BY o.order_date, c.region;",
+          note: "Mart-shaped SELECT you can run in the local practice lab.",
+        },
       ],
       quiz: [
         {
