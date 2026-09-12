@@ -58,7 +58,7 @@ test.describe("Wave A — training index + lab P1 UX", () => {
 
     const schema = lab.getByRole("complementary", { name: /Sample database schema/i });
     await expect(schema).toBeVisible();
-    await expect(schema.getByText("aurora_orders", { exact: true })).toBeVisible();
+    await expect(schema.getByTestId("lab-schema-table-aurora_orders")).toBeVisible();
     await expect(schema.getByText("order_id", { exact: true }).first()).toBeVisible();
     await expect(schema.getByText("amount", { exact: true }).first()).toBeVisible();
 
@@ -75,7 +75,7 @@ test.describe("Wave A — training index + lab P1 UX", () => {
 
     await lab.getByRole("button", { name: "Restore sample database" }).click();
     await expect(lab.getByText("Sample database restored.")).toBeVisible({ timeout: 45_000 });
-    await expect(schema.getByText("aurora_orders", { exact: true })).toBeVisible();
+    await expect(schema.getByTestId("lab-schema-table-aurora_orders")).toBeVisible();
 
     await lab.getByLabel("SQL to run").fill(
       "SELECT order_id, status, amount FROM aurora_orders WHERE status = 'paid' ORDER BY amount DESC LIMIT 1",
@@ -93,16 +93,16 @@ test.describe("Wave A — training index + lab P1 UX", () => {
     const dbx = page.locator("#lab");
     await expect(dbx.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
     const dbxSchema = dbx.getByRole("complementary", { name: /Sample database schema/i });
-    await expect(dbxSchema.getByText("bronze_orders", { exact: true })).toBeVisible();
-    await expect(dbxSchema.getByText("silver_orders", { exact: true })).toBeVisible();
+    await expect(dbxSchema.getByTestId("lab-schema-table-bronze_orders")).toBeVisible();
+    await expect(dbxSchema.getByTestId("lab-schema-table-silver_orders")).toBeVisible();
     await expect(dbx.getByRole("button", { name: "Restore sample database" })).toBeVisible();
 
     await page.goto(`${SF_DAY0}#lab`);
     const sf = page.locator("#lab");
     await expect(sf.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
     const sfSchema = sf.getByRole("complementary", { name: /Sample database schema/i });
-    await expect(sfSchema.getByText("sf_orders", { exact: true })).toBeVisible();
-    await expect(sfSchema.getByText("sf_warehouses", { exact: true })).toBeVisible();
+    await expect(sfSchema.getByTestId("lab-schema-table-sf_orders")).toBeVisible();
+    await expect(sfSchema.getByTestId("lab-schema-table-sf_warehouses")).toBeVisible();
     await expect(sf.getByRole("button", { name: "Restore sample database" })).toBeVisible();
     await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
   });

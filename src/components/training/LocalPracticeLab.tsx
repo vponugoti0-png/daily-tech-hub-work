@@ -303,7 +303,7 @@ function LabSchemaSidebar({ tables }: { tables: LabSchemaTable[] }) {
           <li key={table.name}>
             <details open={index < 2} className="rounded-lg border border-[var(--ink-border)] bg-[var(--panel)]">
               <summary className="cursor-pointer px-2 py-1.5 text-xs font-semibold text-[var(--ink-fg)]">
-                {table.name}
+                <span data-testid={`lab-schema-table-${table.name}`}>{table.name}</span>
                 <span className="ml-1 font-normal text-[var(--muted)]">
                   {table.kind === "view" ? "view" : table.schema}
                 </span>
