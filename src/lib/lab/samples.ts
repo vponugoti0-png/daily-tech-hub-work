@@ -8,6 +8,13 @@ export const DATABRICKS_LAB_SLUGS = [
   "dbx-delta-lake-basics",
   "dbx-spark-sql-performance",
   "dbx-sql-warehouses",
+  "dbx-spark-select-nulls",
+  "dbx-delta-write-preview",
+  "dbx-gold-aggregates",
+  "dbx-silver-patterns-case",
+  "dbx-semi-joins-leftovers",
+  "dbx-delta-table-contracts",
+  "dbx-dates-partition-filters",
 ] as const;
 
 export const SNOWFLAKE_LAB_SLUGS = [
@@ -16,6 +23,13 @@ export const SNOWFLAKE_LAB_SLUGS = [
   "sf-time-travel-clones",
   "sf-dynamic-tables",
   "sf-performance-cost",
+  "sf-select-filter-nulls",
+  "sf-dml-write-path",
+  "sf-aggregates-group-having",
+  "sf-patterns-aliases-case",
+  "sf-exists-semi-joins",
+  "sf-ddl-constraints",
+  "sf-dates-injection",
 ] as const;
 
 export const SQL_LAB_SLUGS = [
@@ -326,19 +340,221 @@ WHERE order_date BETWEEN DATE '2026-09-02' AND DATE '2026-09-04'
 ORDER BY order_date, order_id;`,
     note: "BETWEEN on a DATE column is inclusive. Do not glue a user string into this predicate — bind a date parameter in app SQL.",
   },
+  {
+    id: "dbx-bronze-nulls",
+    label: "Bronze NULL / corrupt landings",
+    sql: `SELECT order_id, order_date, region, status, amount
+FROM bronze_orders
+WHERE amount IS NULL OR status = 'corrupt'
+ORDER BY order_id;`,
+    note: "amount = NULL matches zero rows. Silver in this seed drops corrupt bronze — that is the quality contract.",
+  },
+  {
+    id: "dbx-silver-limit",
+    label: "Silver peek (LIMIT)",
+    sql: `SELECT order_id, order_date, region, status, amount
+FROM silver_orders
+WHERE status <> 'returned'
+ORDER BY order_date DESC, order_id DESC
+LIMIT 5;`,
+    note: "LIMIT is a notebook sample. Jobs filter on a date partition or Autoloader checkpoint.",
+  },
+  {
+    id: "dbx-gold-having",
+    label: "Silver regions over a floor",
+    sql: `SELECT region, COUNT(*) AS n, ROUND(SUM(amount), 2) AS amount
+FROM silver_orders
+WHERE status = 'ok'
+GROUP BY region
+HAVING SUM(amount) >= 40
+ORDER BY amount DESC;`,
+    note: "WHERE filters rows. HAVING filters groups. Gold should be this grain, persisted.",
+  },
+  {
+    id: "dbx-case-status",
+    label: "CASE status buckets",
+    sql: `SELECT
+  order_id,
+  status,
+  amount,
+  CASE
+    WHEN status = 'ok' AND amount >= 80 THEN 'large_ok'
+    WHEN status = 'ok' THEN 'ok'
+    WHEN status = 'returned' THEN 'returned'
+    ELSE 'other'
+  END AS status_bucket
+FROM silver_orders
+ORDER BY amount DESC;`,
+    note: "CASE is a column expression for silver cleaning — not a Delta constraint.",
+  },
+  {
+    id: "dbx-exists-ok",
+    label: "Leftover bronze keys",
+    sql: `SELECT b.order_id, b.status, b.amount
+FROM bronze_orders b
+WHERE NOT EXISTS (
+  SELECT 1 FROM silver_orders s
+  WHERE s.order_id = b.order_id
+)
+ORDER BY b.order_id;`,
+    note: "Anti-join. This seed’s leftover is the corrupt bronze row that never made silver.",
+  },
+  {
+    id: "dbx-schema",
+    label: "Inspect bronze/silver/gold columns",
+    sql: `SELECT table_name, column_name, data_type
+FROM information_schema.columns
+WHERE table_schema = 'main'
+  AND table_name IN ('bronze_orders', 'silver_orders', 'gold_daily_orders')
+ORDER BY table_name, ordinal_position;`,
+    note: "Read the contract first. This lab does not run CREATE TABLE USING DELTA.",
+  },
+  {
+    id: "dbx-date-window",
+    label: "Inclusive silver date window",
+    sql: `SELECT order_id, order_date, region, amount
+FROM silver_orders
+WHERE order_date BETWEEN DATE '2026-09-02' AND DATE '2026-09-03'
+ORDER BY order_date, order_id;`,
+    note: "BETWEEN on DATE is inclusive. Put order_date in WHERE so Spark can prune.",
+  },
+  {
+    id: "dbx-like-region",
+    label: "LIKE / IN on silver",
+    sql: `SELECT order_id, region, status, amount
+FROM silver_orders
+WHERE region LIKE 'w%'
+   OR status IN ('ok', 'returned')
+   OR amount BETWEEN 15 AND 50
+ORDER BY order_id;`,
+    note: "% is any suffix. BETWEEN is inclusive. Prefer IN over a long OR chain.",
+  },
+  {
+    id: "sf-null-promo",
+    label: "NULL-aware promo gap",
+    sql: `SELECT
+  COUNT(*) AS orders,
+  COUNT(promo_code) AS with_promo,
+  COUNT(*) - COUNT(promo_code) AS missing_promo
+FROM sf_orders;`,
+    note: "COUNT(col) skips NULLs. promo_code = NULL is never TRUE.",
+  },
+  {
+    id: "sf-paid-limit",
+    label: "Paid SAMPLE orders (LIMIT)",
+    sql: `SELECT o.order_id, c.region, o.status, o.amount, o.promo_code
+FROM sf_orders o
+JOIN sf_customers c ON c.customer_id = o.customer_id
+WHERE o.status = 'paid'
+ORDER BY o.amount DESC
+LIMIT 5;`,
+    note: "LIMIT is a worksheet sample. Tasks / Dynamic Tables use a stream or a date window.",
+  },
+  {
+    id: "sf-agg-having",
+    label: "Paid revenue + HAVING",
+    sql: `SELECT c.region, COUNT(*) AS paid_orders, ROUND(SUM(o.amount), 2) AS revenue
+FROM sf_orders o
+JOIN sf_customers c ON c.customer_id = o.customer_id
+WHERE o.status = 'paid'
+GROUP BY c.region
+HAVING SUM(o.amount) >= 20
+ORDER BY revenue DESC;`,
+    note: "WHERE filters rows before the group. HAVING filters groups.",
+  },
+  {
+    id: "sf-case-bucket",
+    label: "CASE size buckets",
+    sql: `SELECT
+  order_id,
+  amount,
+  CASE
+    WHEN amount >= 80 THEN 'large'
+    WHEN amount >= 20 THEN 'mid'
+    ELSE 'small'
+  END AS size_bucket
+FROM sf_orders
+WHERE status <> 'pending'
+ORDER BY amount DESC;`,
+    note: "CASE is an expression, not a stored procedure.",
+  },
+  {
+    id: "sf-exists-buyers",
+    label: "Customers with no orders",
+    sql: `SELECT c.customer_id, c.region, c.status
+FROM sf_customers c
+WHERE NOT EXISTS (
+  SELECT 1 FROM sf_orders o
+  WHERE o.customer_id = c.customer_id
+)
+ORDER BY c.customer_id;`,
+    note: "Anti-join. This seed’s leftover is the churned west customer.",
+  },
+  {
+    id: "sf-schema",
+    label: "Inspect sf_* columns",
+    sql: `SELECT table_name, column_name, data_type
+FROM information_schema.columns
+WHERE table_schema = 'main' AND table_name LIKE 'sf_%'
+ORDER BY table_name, ordinal_position;`,
+    note: "Read the contract before ALTER/DROP. This lab does not run DDL.",
+  },
+  {
+    id: "sf-date-window",
+    label: "Inclusive SAMPLE date window",
+    sql: `SELECT order_id, order_date, status, amount
+FROM sf_orders
+WHERE order_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-02'
+ORDER BY order_date, order_id;`,
+    note: "BETWEEN on DATE is inclusive. Bind dates in app SQL — do not glue a form string.",
+  },
+  {
+    id: "sf-like-promo",
+    label: "LIKE / IN / BETWEEN on SAMPLE",
+    sql: `SELECT order_id, promo_code, amount
+FROM sf_orders
+WHERE promo_code LIKE 'F%'
+   OR promo_code IN ('VIP', 'FLASH')
+   OR amount BETWEEN 15 AND 50
+ORDER BY order_id;`,
+    note: "LIKE is for patterns. IN is a set. BETWEEN is inclusive.",
+  },
+  {
+    id: "sf-dml-preview",
+    label: "Rows a write would touch",
+    sql: `SELECT order_id, status, amount, order_date
+FROM sf_orders
+WHERE status = 'pending' AND order_date <= DATE '2026-09-02'
+ORDER BY order_id;`,
+    note: "The local lab is read-only. Preview the set a MERGE would hit before you run it in an account.",
+  },
 ];
 
 const BY_LESSON: Record<DatabricksLabSlug | SnowflakeLabSlug | SqlLabSlug, string[]> = {
-  "dbx-workspace-cluster-basics": ["catalog-objects", "medallion-counts"],
-  "dbx-lakehouse-fundamentals": ["medallion-counts", "silver-quality", "gold-revenue"],
-  "dbx-delta-lake-basics": ["upsert-shape", "silver-quality", "medallion-counts"],
-  "dbx-spark-sql-performance": ["partition-filter", "gold-revenue", "silver-quality"],
-  "dbx-sql-warehouses": ["gold-revenue", "partition-filter", "medallion-counts"],
-  "sf-day0-objects": ["sf-account-map", "sf-warehouses"],
+  "dbx-workspace-cluster-basics": ["catalog-objects", "medallion-counts", "dbx-schema"],
+  "dbx-lakehouse-fundamentals": ["medallion-counts", "silver-quality", "gold-revenue", "dbx-gold-having"],
+  "dbx-delta-lake-basics": ["upsert-shape", "silver-quality", "medallion-counts", "dbx-bronze-nulls"],
+  "dbx-spark-sql-performance": ["partition-filter", "gold-revenue", "silver-quality", "dbx-date-window"],
+  "dbx-sql-warehouses": ["gold-revenue", "partition-filter", "medallion-counts", "dbx-gold-having"],
+  "dbx-spark-select-nulls": ["dbx-silver-limit", "dbx-bronze-nulls", "silver-quality"],
+  "dbx-delta-write-preview": ["upsert-shape", "dbx-bronze-nulls", "dbx-exists-ok"],
+  "dbx-gold-aggregates": ["gold-revenue", "dbx-gold-having", "silver-quality"],
+  "dbx-silver-patterns-case": ["dbx-like-region", "dbx-case-status", "dbx-silver-limit"],
+  "dbx-semi-joins-leftovers": ["dbx-exists-ok", "upsert-shape", "medallion-counts"],
+  "dbx-delta-table-contracts": ["dbx-schema", "catalog-objects", "medallion-counts"],
+  "dbx-dates-partition-filters": ["partition-filter", "dbx-date-window", "gold-revenue"],
+  "sf-day0-objects": ["sf-account-map", "sf-warehouses", "sf-schema"],
   "sf-architecture": ["sf-warehouses", "sf-account-map", "sf-orders-customers"],
-  "sf-time-travel-clones": ["sf-time-travel", "sf-orders-customers"],
-  "sf-dynamic-tables": ["sf-daily-mart", "sf-orders-customers"],
+  "sf-time-travel-clones": ["sf-time-travel", "sf-orders-customers", "sf-date-window"],
+  "sf-dynamic-tables": ["sf-daily-mart", "sf-orders-customers", "sf-agg-having"],
   "sf-performance-cost": ["sf-prune-filter", "sf-warehouses", "sf-daily-mart"],
+  "sf-select-filter-nulls": ["sf-paid-limit", "sf-null-promo", "sf-orders-customers"],
+  "sf-dml-write-path": ["sf-dml-preview", "sf-null-promo", "sf-paid-limit"],
+  "sf-aggregates-group-having": ["sf-daily-mart", "sf-agg-having", "sf-null-promo"],
+  "sf-patterns-aliases-case": ["sf-like-promo", "sf-case-bucket", "sf-paid-limit"],
+  "sf-exists-semi-joins": ["sf-exists-buyers", "sf-orders-customers", "sf-paid-limit"],
+  "sf-ddl-constraints": ["sf-schema", "sf-account-map", "sf-paid-limit"],
+  "sf-dates-injection": ["sf-date-window", "sf-time-travel", "sf-like-promo"],
   "sql-select-filter-nulls": ["aurora-paid-select", "aurora-distinct-nulls", "aurora-null-promo"],
   "sql-dml-write-path": ["aurora-dml-preview", "aurora-null-promo", "aurora-paid-select"],
   "sql-aggregates-group-having": ["aurora-agg-revenue", "aurora-distinct-nulls", "aurora-paid-select"],
@@ -417,11 +633,11 @@ SELECT * FROM (VALUES
 
 CREATE OR REPLACE TABLE sf_orders AS
 SELECT * FROM (VALUES
-  (101, 1, DATE '2026-09-01', 12.50, 2),
-  (102, 2, DATE '2026-09-01', 40.00, 2),
-  (103, 1, DATE '2026-09-02', 18.25, 2),
-  (104, 2, DATE '2026-09-03', 99.00, 2)
-) AS t(order_id, customer_id, order_date, amount, as_of_version);
+  (101, 1, DATE '2026-09-01', 12.50, 2, 'paid', 'FALL26'),
+  (102, 2, DATE '2026-09-01', 40.00, 2, 'paid', NULL),
+  (103, 1, DATE '2026-09-02', 18.25, 2, 'pending', 'FALL26'),
+  (104, 2, DATE '2026-09-03', 99.00, 2, 'paid', 'VIP')
+) AS t(order_id, customer_id, order_date, amount, as_of_version, status, promo_code);
 
 CREATE OR REPLACE TABLE sf_orders_history AS
 SELECT * FROM (VALUES
