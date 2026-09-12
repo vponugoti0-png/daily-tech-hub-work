@@ -133,6 +133,30 @@ SELECT * FROM (VALUES
   ('SKU-CORE', 'compute', 'Aurora Core')
 ) AS t(sku, category, product_name);
 
+CREATE OR REPLACE TABLE dbx_notebook_cells AS
+SELECT * FROM (VALUES
+  (1, '/Repos/aurora/orders_etl', 'md', 'intro', 0),
+  (2, '/Repos/aurora/orders_etl', 'sql', 'bronze_select', 1),
+  (3, '/Repos/aurora/orders_etl', 'python', 'silver_transform', 1),
+  (4, '/Repos/aurora/orders_etl', 'sql', 'gold_merge_preview', 1),
+  (5, '/Repos/aurora/orders_etl', 'sh', 'copy_only_debug', 0)
+) AS t(cell_id, notebook_path, cell_type, cell_name, runs_in_job);
+
+CREATE OR REPLACE TABLE dbx_job_params AS
+SELECT * FROM (VALUES
+  ('orders_daily', 'start_date', '2026-09-01'),
+  ('orders_daily', 'end_date', '2026-09-02'),
+  ('orders_daily', 'catalog', 'main'),
+  ('orders_daily', 'env', 'dev')
+) AS t(job_name, param_name, param_value);
+
+CREATE OR REPLACE TABLE sf_copy_history AS
+SELECT * FROM (VALUES
+  ('@analytics.raw.orders_stage/2026-09-01/', 4, 'LOADED', DATE '2026-09-01'),
+  ('@analytics.raw.orders_stage/2026-09-02/', 2, 'LOADED', DATE '2026-09-02'),
+  ('@analytics.raw.orders_stage/2026-09-03/', 0, 'PARTIAL', DATE '2026-09-03')
+) AS t(stage_path, rows_loaded, status, load_date);
+
 CREATE SCHEMA IF NOT EXISTS bronze;
 CREATE SCHEMA IF NOT EXISTS silver;
 CREATE SCHEMA IF NOT EXISTS gold;
@@ -216,7 +240,10 @@ SELECT * FROM (VALUES
   ('memory', 'metrics', 'aurora_region_revenue', 'metric_view'),
   ('memory', 'analytics', 'orders', 'table'),
   ('memory', 'analytics', 'paid_orders', 'view'),
-  ('memory', 'metrics', 'sf_daily_revenue', 'metric_view')
+  ('memory', 'metrics', 'sf_daily_revenue', 'metric_view'),
+  ('memory', 'main', 'dbx_notebook_cells', 'table'),
+  ('memory', 'main', 'dbx_job_params', 'table'),
+  ('memory', 'main', 'sf_copy_history', 'table')
 ) AS t(catalog, schema, object_name, object_type);
 `;
 
