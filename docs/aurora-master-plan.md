@@ -512,18 +512,7 @@ Phase 1 = one shell that *looks* like Tryit on lessons that already have labs. P
 
 ## 8. Backend — auth, progress, sandboxes
 
-Backend does **not** become a new product in this plan. Phase 1 Unified Editor and the school IA reuse what is already on `main`. New APIs, cookies, or sandboxes wait for a stamp — Wave B AC for B2/B3, this file for Product non-goals. Detail for sessions and progress: [`docs/auth-and-progress.md`](./auth-and-progress.md). Wave B AC: [`docs/wave-b-backend-ac.md`](./wave-b-backend-ac.md). **B1 is shipped on `main` (#42)** — grandfathered; no further B1 work until the Editor shell ships. B2/B3 stay **held**.
-
-### 8.0 Room AC (docs — Product ACCEPT)
-
-| Locked | Rule |
-|--------|------|
-| **Guest progress + `/api/progress`** | Unchanged for Tryit practice. Guests: `dth-progress-v3`. Signed-in: existing `GET` / `POST /api/progress` (`track:slug`). **No new progress model.** |
-| **Seeded DBs** | **Client DuckDB fixtures** (`src/lib/lab/seed.ts`). Restore = in-browser re-seed. **No remote DB.** |
-| **Auto-check grading** | **Wave B2 later**, not Phase 1. Do not add `/api/practice/grade` or Check chrome. |
-| **Auth / CSRF vs HTML cache** | Cookies (`dth_access`, `dth_refresh`, `dth_csrf`) **must not** depend on year-long HTML/RSC cache. Incident **#39 / #44 closed** — HTML stays `s-maxage=0, stale-while-revalidate=60`. Do not reintroduce long CDN cache on documents that mint CSRF. |
-
-Backend fills the §16.5 stub when the Editor impl PR opens.
+Backend does **not** become a new product in this plan. Phase 1 Unified Editor and the school IA reuse what is already on `main`. New APIs, cookies, or sandboxes wait for a stamp — Wave B AC for B2/B3, this file for Product non-goals. Detail for sessions and progress: [`docs/auth-and-progress.md`](./auth-and-progress.md). Wave B AC: [`docs/wave-b-backend-ac.md`](./wave-b-backend-ac.md).
 
 ### 8.1 Keep (already shipped)
 
@@ -553,7 +542,7 @@ Phase 1 Editor work is Frontend + Content. Backend’s job is: do not invent a g
 
 | Item | Status |
 |------|--------|
-| **B1 AI Local practice** | **Shipped** (#42). Client rubric. Kill-switch `NEXT_PUBLIC_AI_LAB=0`. Already on `main` is OK — **grandfathered, not unshipped.** This plan does not ask to revert it. No further B1 work until the Phase 1 Editor shell ships. |
+| **B1 AI Local practice** | **Shipped** (#42). Client rubric. Kill-switch `NEXT_PUBLIC_AI_LAB=0`. Already on `main` is OK; this plan does not ask to revert it. |
 | **B2 Practice Engine auto-check** | **Held.** Client preferred. If an API exists later: CSRF + rate-limit; fixed fixtures only; no LLM grading in v1. |
 | **B3 Git Practice VM** | **Held.** D5 locked to **Railway sidecar** (separate service, deny-egress, short TTL). Never `spawn('git')` on the web/SQLite service. |
 | **Cloud warehouses** | Still omit real Snowflake / Databricks credential connect. |
@@ -806,7 +795,7 @@ Do **not** build in Phase 1 (omit chrome — no “Coming soon”):
 | **UX** | Four-item nav + lesson loop from learner POV; §4.0 U1–U5; Q5–Q7 / Q14–Q16 endorsed | **ACCEPT 2026-09-12** |
 | **QA** | §16.2 checklists are testable on the Editor impl PR | |
 | **Security** | Phase 1 = same-origin; held list intact; no Coming soon for Tests/VM | |
-| **Backend** | §8.0 + §16.4: `/api/progress` unchanged; client DuckDB fixtures; B2 later; cache #39/#44 | room AC recorded; impl stub §16.5 |
+| **Backend** | §8 + §16.4: `/api/progress` unchanged; client DuckDB fixtures; B2 later; cache #39/#44 | room AC recorded; impl stub §16.5 |
 | **Frontend** | Feasible without CSP/runtime change in Phase 1 | |
 | **Content** | Original Aurora exercises only (no W3 copy). Path fields in Phase 2 | |
 
@@ -978,7 +967,7 @@ Locked constraints for the Editor impl PR (same as §11). **Security fills §16.
 
 ### 16.4 Backend AC
 
-Locked for Phase 1 (same as §8.0). **Backend fills §16.5** (route diff note) when the Editor impl PR opens.
+Locked for Phase 1 (same as §8). **Backend fills §16.5** (route diff note) when the Editor impl PR opens.
 
 | Rule | Locked |
 |------|--------|
