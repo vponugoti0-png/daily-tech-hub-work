@@ -1,21 +1,7 @@
-/** Shared-cache (CDN / `s-maxage`) policy. Do not confuse with HSTS `max-age`. */
-
-export const YEAR_SECONDS = 31_536_000;
-
-/**
- * HTML + RSC documents for this frequently updated training app.
- * Railway hikari honors `s-maxage`; Next.js static pages default to 1 year.
- */
-export const HTML_DOCUMENT_CACHE_CONTROL =
-  "s-maxage=0, stale-while-revalidate=60";
-
-/** Content-hashed `/_next/static` files are immutable. */
-export const STATIC_ASSET_CACHE_CONTROL = `public, max-age=${YEAR_SECONDS}, immutable`;
-
-/** True when a Cache-Control value tells shared caches to keep the response for a year. */
-export function hasYearLongSharedCache(
-  cacheControl: string | null | undefined,
-): boolean {
-  if (!cacheControl) return false;
-  return /(?:^|,)\s*s-maxage=31536000(?:\s|,|$)/i.test(cacheControl);
-}
+/** Re-export so app/e2e can keep importing `@/lib/http-cache`. */
+export {
+  YEAR_SECONDS,
+  HTML_DOCUMENT_CACHE_CONTROL,
+  STATIC_ASSET_CACHE_CONTROL,
+  hasYearLongSharedCache,
+} from "../../http-cache";

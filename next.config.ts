@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 import lessonRedirects from "./lesson-redirects.json";
-import { HTML_DOCUMENT_CACHE_CONTROL } from "./src/lib/http-cache";
+import { HTML_DOCUMENT_CACHE_CONTROL } from "./http-cache";
 
 const isDev = process.env.NODE_ENV !== "production";
 

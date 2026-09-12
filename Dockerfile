@@ -40,6 +40,7 @@ COPY --from=builder /app/content ./content
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/package-lock.json ./package-lock.json
 COPY --from=builder /app/next.config.ts ./next.config.ts
+COPY --from=builder /app/http-cache.ts ./http-cache.ts
 COPY --from=builder /app/lesson-redirects.json ./lesson-redirects.json
 COPY --from=builder /app/tsconfig.json ./tsconfig.json
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh

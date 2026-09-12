@@ -24,7 +24,19 @@ test("root layout sets ISR revalidate so Next.js does not default to 1-year s-ma
 });
 
 test("http-cache policy is short for documents and long only for hashed assets", () => {
-  const src = readFileSync(join(root, "src/lib/http-cache.ts"), "utf8");
+  const src = readFileSync(join(root, "http-cache.ts"), "utf8");
   assert.match(src, /s-maxage=0, stale-while-revalidate=60/);
   assert.match(src, /max-age=\$\{YEAR_SECONDS\}, immutable/);
+});
+
+test("next.config imports cache policy from the Docker runner root file", () => {
+  const src = readFileSync(join(root, "next.config.ts"), "utf8");
+  assert.match(src, /from ["']\.\/http-cache["']/);
+  assert.doesNotMatch(src, /from ["']\.\/src\/lib\/http-cache["']/);
+});
+
+test("Dockerfile runner copies http-cache.ts next to next.config.ts", () => {
+  const src = readFileSync(join(root, "Dockerfile"), "utf8");
+  assert.match(src, /COPY --from=builder \/app\/http-cache\.ts \.\/http-cache\.ts/);
+  assert.match(src, /COPY --from=builder \/app\/next\.config\.ts \.\/next\.config\.ts/);
 });
