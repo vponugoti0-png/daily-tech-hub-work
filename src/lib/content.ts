@@ -16,6 +16,7 @@ import type {
 } from "./types";
 import { TRACK_IDS } from "./tracks";
 import { isPracticeLesson } from "./lab/samples";
+import { sortLessonsForDisplay } from "./learner-paths";
 
 const CONTENT_ROOT = path.join(process.cwd(), "content");
 
@@ -118,7 +119,7 @@ export function getAllLessons(): TrainingLesson[] {
 }
 
 export function getLessonsByTrack(track: string): TrainingLesson[] {
-  return getAllLessons().filter((l) => l.track === track);
+  return sortLessonsForDisplay(getAllLessons().filter((l) => l.track === track));
 }
 
 export function getLesson(track: string, slug: string): TrainingLesson | undefined {

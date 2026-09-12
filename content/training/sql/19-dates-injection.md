@@ -72,6 +72,25 @@ quiz:
 
 Dates are filters. Injection is a **construction** bug. This page stays at awareness: bind values, type them, and never turn a request string into SQL text.
 
+### Seed demo (5 rows)
+
+These five rows are a slice of `aurora_orders` in the local lab — the same seed the Practice editor runs. No second dataset.
+
+| order_id | customer_id | order_date | status | amount | promo_code |
+|----------|-------------|------------|--------|--------|------------|
+| 1001 | 1 | 2026-09-01 | paid | 42.50 | FALL26 |
+| 1002 | 2 | 2026-09-01 | paid | 18.00 | NULL |
+| 1003 | 1 | 2026-09-02 | pending | 99.00 | FALL26 |
+| 1004 | 3 | 2026-09-02 | cancelled | 12.00 | WIN25 |
+| 1005 | 2 | 2026-09-03 | paid | 64.25 | VIP |
+
+```sql
+SELECT order_id, customer_id, order_date, status, amount, promo_code
+FROM aurora_orders
+ORDER BY order_id
+LIMIT 5;
+```
+
 ## Inclusive vs half-open
 
 ```sql

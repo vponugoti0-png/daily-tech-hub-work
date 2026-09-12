@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { TrainingLesson } from "@/lib/types";
 import { getLessonProgress } from "@/lib/progress";
-import { displayLessonTitle } from "@/lib/learner-paths";
+import { displayLessonTitle, isL1SqlSlug } from "@/lib/learner-paths";
 import { cn } from "@/lib/utils";
 import { Check, ChevronDown } from "lucide-react";
 
@@ -26,7 +26,7 @@ function OutlineList({
         return (
           <li key={l.slug}>
             <Link
-              href={`/training/${track}/${l.slug}`}
+              href={`/training/${track}/${l.slug}${track === "sql" && isL1SqlSlug(l.slug) ? "#lab" : ""}`}
               className={cn(
                 "flex min-h-[40px] items-start gap-2 rounded-lg px-2 py-1.5 text-sm transition",
                 active

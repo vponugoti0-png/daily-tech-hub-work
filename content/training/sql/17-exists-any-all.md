@@ -72,6 +72,25 @@ quiz:
 
 Set filters without changing grain. Joins that **add columns** live in the [DE joins recap](/training/sql/sql-joins-set-logic-recap). This page is **does a child row exist?**
 
+### Seed demo (5 rows)
+
+These five rows are a slice of `aurora_customers` in the local lab — the same seed the Practice editor runs. No second dataset.
+
+| customer_id | region | status | email | signup_date |
+|-------------|--------|--------|-------|-------------|
+| 1 | west | active | ada@aurora.dev | 2026-01-04 |
+| 2 | east | active | NULL | 2026-02-11 |
+| 3 | west | churned | kai@aurora.dev | 2025-11-20 |
+| 4 | latam | active | luz@aurora.dev | 2026-03-01 |
+| 5 | north | active | rio@aurora.dev | 2026-04-15 |
+
+```sql
+SELECT customer_id, region, status, email, signup_date
+FROM aurora_customers
+ORDER BY customer_id
+LIMIT 5;
+```
+
 ## EXISTS / NOT EXISTS
 
 ```sql

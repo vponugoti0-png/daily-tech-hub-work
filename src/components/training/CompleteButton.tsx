@@ -1,10 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { CheckCircle2, PartyPopper } from "lucide-react";
 import { getLessonProgress, markLessonComplete } from "@/lib/progress";
 
-export function CompleteButton({ track, slug }: { track: string; slug: string }) {
+export function CompleteButton({
+  track,
+  slug,
+  nextHref,
+  nextTitle,
+}: {
+  track: string;
+  slug: string;
+  nextHref?: string;
+  nextTitle?: string;
+}) {
   const [done, setDone] = useState(false);
   const [justDone, setJustDone] = useState(false);
 
@@ -36,6 +47,15 @@ export function CompleteButton({ track, slug }: { track: string; slug: string })
         <span className="celebrate-pop inline-flex items-center gap-1 rounded-full bg-[var(--sun)]/20 px-2.5 py-1 text-xs font-bold text-[var(--sun)]">
           +XP · nice work!
         </span>
+      ) : null}
+      {done && nextHref ? (
+        <Link
+          href={nextHref}
+          data-testid="complete-next-cta"
+          className="inline-flex min-h-[44px] items-center rounded-[14px] border border-[var(--mint)]/40 bg-[var(--mint)]/10 px-4 py-2 text-sm font-bold text-[var(--ink-fg)] hover:bg-[var(--mint)]/20"
+        >
+          Next: {nextTitle ?? "Continue"} →
+        </Link>
       ) : null}
     </div>
   );
