@@ -16,6 +16,12 @@ cheatSheet:
   - label: "Medallion counts"
     code: "SELECT layer, COUNT(*) AS row_count\nFROM (\n  SELECT 'bronze' AS layer FROM bronze_orders\n  UNION ALL\n  SELECT 'silver' FROM silver_orders\n  UNION ALL\n  SELECT 'gold' FROM gold_daily_orders\n) t\nGROUP BY layer\nORDER BY layer;"
     note: "Run this in the local practice lab on this page — not a live workspace."
+  - label: "Silver quality by status"
+    code: "SELECT status, COUNT(*) AS n, ROUND(SUM(amount), 2) AS amount\nFROM silver_orders\nGROUP BY status\nORDER BY n DESC;"
+    note: "Corrupt bronze rows never make it to silver in this sample set."
+  - label: "Gold daily revenue"
+    code: "SELECT order_date, region, orders, revenue\nFROM gold_daily_orders\nORDER BY order_date, region;"
+    note: "Warehouses serve gold — keep ETL off the BI warehouse."
 quiz:
   - question: "Bronze layers typically store…"
     options:

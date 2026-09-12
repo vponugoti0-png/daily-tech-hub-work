@@ -18,6 +18,9 @@ cheatSheet:
     note: "Nesting is database → schema → table. SHOW is your map."
   - label: "Warehouse parameters (comment as you go)"
     code: "CREATE WAREHOUSE IF NOT EXISTS learn_wh\n  WAREHOUSE_SIZE = 'XSMALL'   -- right-size; bump only if spilling\n  AUTO_SUSPEND = 60           -- seconds idle before stop\n  AUTO_RESUME = TRUE\n  INITIALLY_SUSPENDED = TRUE; -- do not start until first query"
+  - label: "Account map (local lab)"
+    code: "SELECT database, schema, object_name, object_type\nFROM sf_account_objects\nORDER BY database, schema, object_name;"
+    note: "Nesting is database.schema.table. Run this SELECT in the local practice lab — not a live account."
 quiz:
   - question: "A Snowflake virtual warehouse primarily provides…"
     options:

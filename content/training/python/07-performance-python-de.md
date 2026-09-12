@@ -14,9 +14,14 @@ objectives:
 updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Avoid iterrows"
-    code: "df['x'] = df['a'] + df['b']"
+    code: "df[\"amount_taxed\"] = df[\"amount\"] * 1.08"
+    note: "Vectorize. A Python loop over millions of rows is a push-down signal."
   - label: "Chunk read"
-    code: "pd.read_sql(q, con, chunksize=50_000)"
+    code: "for chunk in pd.read_sql(q, con, chunksize=50_000):\n    load_staging(transform(chunk))"
+    note: "Do not concat every chunk back into one frame."
+  - label: "Push the filter"
+    code: "SQL = \"SELECT order_id, amount FROM raw.orders WHERE updated_at >= %(start)s\""
+    note: "Filter in SQL/Spark. Python should see the window, not the lake."
 quiz:
   - question: "Python row loops over millions of rows usually means…"
     options:

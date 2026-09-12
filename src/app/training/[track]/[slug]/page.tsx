@@ -48,7 +48,7 @@ export default async function LessonPage({
   const isFdeTrack = lesson.track === "forward-deployed";
   const trackTitle = getTrackMeta(lesson.track)?.title ?? lesson.track;
   const showLab = isLabLesson(lesson.track, lesson.slug);
-  const tryItLimit = isAiTrack || isFdeTrack ? 4 : 3;
+  const tryItLimit = isAiTrack || isFdeTrack || lesson.track === "python" ? 4 : 3;
   const tryItEntries = (lesson.cheatSheet ?? []).filter((e) => e.code).slice(0, tryItLimit);
   const tryItDialect =
     lesson.track === "sql"
@@ -116,48 +116,65 @@ export default async function LessonPage({
           </div>
         ) : null}
 
-        {isAiTrack ? (
-          <StepCards
-            steps={[
-              { title: "Learn", body: "Read the short lesson — keep it bite-sized." },
-              { title: "Try it", body: "Copy the prompt/example and run it in your AI tool." },
-              { title: "Quiz", body: "Check understanding, then mark the checkpoint." },
-            ]}
-          />
-        ) : isFdeTrack ? (
-          <StepCards
-            steps={[
-              { title: "Learn", body: "Read the engagement pattern — keep it customer-shaped." },
-              { title: "Copy a card", body: "Cheat sheets are checklists you paste into a ticket." },
-              { title: "Quiz", body: "Check understanding, then mark the checkpoint." },
-            ]}
-          />
-        ) : showLab ? (
-          <StepCards
-            steps={[
-              { title: "Learn", body: "Read the short lesson — the lab does not gate reading." },
-              { title: "Practice lab", body: "Run a SQL sample in the local (DuckDB) lab." },
-              { title: "Quiz", body: "Check understanding, then mark the checkpoint." },
-            ]}
-          />
-        ) : null}
+        <StepCards
+          steps={
+            showLab
+              ? [
+                  {
+                    title: "Cheat sheet",
+                    body: "Scan the cards — title, code, tip, then Copy.",
+                  },
+                  {
+                    title: "Try it",
+                    body:
+                      lesson.track === "python"
+                        ? "Edit the sample, then Run it in the local (Pyodide) lab."
+                        : "Edit the sample, then Run it in the local (DuckDB) lab.",
+                  },
+                  {
+                    title: "Local lab",
+                    body: "Practice on this page — not a live cloud workspace or warehouse.",
+                  },
+                ]
+              : isAiTrack
+                ? [
+                    { title: "Cheat sheet", body: "Scan the cards — title, code, tip, then Copy." },
+                    { title: "Try it", body: "Edit if you want, then Copy into your AI tool." },
+                    { title: "Quiz", body: "Check understanding, then mark the checkpoint." },
+                  ]
+                : isFdeTrack
+                  ? [
+                      { title: "Cheat sheet", body: "Checklists you paste into a ticket." },
+                      { title: "Try it", body: "Edit if you want, then Copy into notes or a runbook." },
+                      { title: "Quiz", body: "Check understanding, then mark the checkpoint." },
+                    ]
+                  : [
+                      { title: "Cheat sheet", body: "Scan the cards — title, code, tip, then Copy." },
+                      {
+                        title: "Try it",
+                        body: "Edit if you want, then Copy into your warehouse, notebook, or repo.",
+                      },
+                      { title: "Quiz", body: "Check understanding, then mark the checkpoint." },
+                    ]
+          }
+        />
 
         {lesson.cheatSheet?.length ? (
-          <div className="panel mt-8 rounded-2xl p-5">
+          <div id="cheat-sheet" className="panel mt-8 scroll-mt-24 rounded-2xl p-5">
             <h2 className="font-display text-sm font-bold uppercase tracking-wider text-[var(--sky)]">
               Cheat sheet
             </h2>
             <ul className="mt-3 space-y-3">
               {lesson.cheatSheet.map((e) => (
                 <li key={e.label} className="rounded-xl border border-[var(--ink-border)] bg-[var(--canvas)]/50 p-3">
-                  <div className="mb-1 flex items-center justify-between gap-2">
-                    <p className="text-sm font-medium text-[var(--ink-fg)]">{e.label}</p>
-                    <CopyButton text={e.code} />
-                  </div>
-                  <pre className="overflow-x-auto font-mono text-xs text-[var(--ink-fg)]">
+                  <p className="text-sm font-medium text-[var(--ink-fg)]">{e.label}</p>
+                  <pre className="mt-2 overflow-x-auto font-mono text-xs text-[var(--ink-fg)]">
                     <code>{e.code}</code>
                   </pre>
-                  {e.note ? <p className="mt-1 text-xs text-[var(--muted)]">{e.note}</p> : null}
+                  {e.note ? <p className="mt-2 text-xs text-[var(--muted)]">{e.note}</p> : null}
+                  <div className="mt-2">
+                    <CopyButton text={e.code} />
+                  </div>
                 </li>
               ))}
             </ul>

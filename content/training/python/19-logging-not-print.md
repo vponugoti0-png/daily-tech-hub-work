@@ -2,7 +2,7 @@
 slug: python-logging-not-print
 track: python
 title: "logging — not print — for ETL jobs"
-description: "Structured logs are how Jobs, Tasks, and Airflow show rows_in / rows_out. print goes to a notebook and dies. Copyable examples — no Python lab."
+description: "Structured logs are how Jobs, Tasks, and Airflow show rows_in / rows_out. print goes to a notebook and dies. Practice small examples in the local lab."
 level: beginner
 order: -1
 durationMinutes: 25
@@ -15,7 +15,7 @@ updatedAt: "2026-09-12"
 cheatSheet:
   - label: "Job-shaped logger"
     code: "import logging\n\nlog = logging.getLogger(\"aurora.orders_etl\")\n\ndef run(start: str, end: str, extract, transform, load) -> dict:\n    raw = extract(start, end)\n    clean = transform(raw)\n    metrics = {\"start\": start, \"end\": end, \"rows_in\": len(raw), \"rows_out\": len(clean)}\n    log.info(\"transform_ok %s\", metrics)\n    load(clean)\n    log.info(\"load_ok %s\", metrics)\n    return metrics"
-    note: "getLogger(name) so Databricks / Airflow can route it. Copy into your repo — no Python runtime lab."
+    note: "getLogger(name) so Databricks / Airflow can route it. Run a tiny job in the local practice lab."
   - label: "Configure once at the edge"
     code: "import logging\n\nlogging.basicConfig(\n    level=logging.INFO,\n    format=\"%(asctime)s %(levelname)s %(name)s %(message)s\",\n)\n# In a notebook: logging.getLogger(\"aurora\").setLevel(logging.INFO)\n# Do not basicConfig inside transform_orders."
     note: "Libraries log. Apps configure. A transform that calls basicConfig fights the orchestrator."
@@ -51,7 +51,7 @@ quiz:
 
 Logs are the **observability** of a batch job. If the only signal is a green checkbox, you will not know `rows_out` collapsed to zero.
 
-**Copy the examples.** There is **no Python runtime lab** (same team hold as the ETL builder).
+**Edit and Run** in the local practice lab. The ETL builder is still copy-to-repo (pandas/Spark).
 
 ## INFO is a metric
 

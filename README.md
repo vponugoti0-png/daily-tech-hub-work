@@ -76,14 +76,14 @@ npm run seed:demo   # prints credentials
 |-------|---------|--------|
 | Prompt Engineering | 6 | Ask, structure, iterate, verify, safety, learning prompts |
 | AI for Data Engineers | 6 | Copilot mindset, debug, safe codegen, docs/tests, tools, review |
-| Python | 17 | Exercise path (None/dicts→logging, copy-only) plus contracts, typing, testing, writers, config, orchestration, perf, packaging, ETL builder |
+| Python | 17 | Exercise path (None/dicts→logging, local Pyodide lab) plus contracts, typing, testing, writers, config, orchestration, perf, packaging, ETL builder |
 | SQL | 21 | Exercise path (SELECT→DDL/dates), catalogs/views/metrics, windows, incrementals, perf, modeling, DQ, CTEs, semi-structured, ETL builder |
 | Databricks | 21 | Exercise path (Spark SQL→dates) plus lakehouse, Delta, Unity Catalog, Jobs, Streaming, warehouses, catalogs/views/metrics, medallion ETL |
 | Snowflake | 21 | Exercise path (SELECT→dates) plus architecture, Time Travel, Streams/Tasks, Dynamic Tables, cost, RBAC, catalogs/views/metrics, warehouse ETL |
 | Forward Deployed Engineer | 10 | Customer-facing DE/AI delivery: discover, scope, integrate, deploy, secure, hand off |
 | Git (bonus) | 3 | Rebase, hygiene, bisect |
 
-Lessons include objectives, try-it shells, **Databricks + Snowflake + SQL local practice labs** (DuckDB-WASM in-browser SQL samples — not live workspaces), Python **copyable examples only** (no runtime lab), quizzes, outlines (mobile disclosure), and progress (localStorage + SQLite when signed in).
+Lessons include objectives, try-it shells, **Databricks + Snowflake + SQL local practice labs** (DuckDB-WASM in-browser SQL samples — not live workspaces), a **Python local practice lab** on the exercise path (Pyodide — not a live cloud kernel), quizzes, outlines (mobile disclosure), and progress (localStorage + SQLite when signed in).
 
 ### Shortcuts
 

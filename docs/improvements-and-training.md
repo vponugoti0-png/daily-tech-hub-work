@@ -79,7 +79,7 @@
 - Paid AI tutor clone
 - Collaboration / multiplayer notebooks
 - FDE v1 live cloud deploy / CRM / paid cert (lessons + quizzes only)
-- FDE v1 DuckDB Practice Lab expansion (reuse DBX/SF labs; Python runtime still deferred)
+- FDE v1 DuckDB Practice Lab expansion (reuse DBX/SF labs; no FDE Python/cloud lab)
 
 ---
 
@@ -95,7 +95,7 @@ W2 ingestion (late-data · Autoloader · COPY/stages)
 W3 capstones (shared checklist + DT mart + medallion Job)
 W4 depth (SCD, DLT, clones, …)
       ↓
-Practice labs (DBX / SF) — no Python DuckDB/runtime lab (team hold)
+Practice labs (DBX / SF / SQL DuckDB + Python Pyodide on the exercise path)
       ↓
 Build ETL (one lesson per tool)
   · Python  python-etl-pipeline-builder
@@ -110,7 +110,7 @@ FDE track (`/training/forward-deployed`, 10 lessons) — after ETL builders on t
 1. Databricks (shipped)  
 2. Snowflake (shipped)  
 3. Core SQL (P1 — not this wave)  
-4. Python (deferred — different runtime; **do not** build)
+4. Python (exercise-path Pyodide lab — not a cloud kernel)
 
 In-app path chrome (no new top-level nav): META overlay on `/training`, `orderNote` on the four tool tracks, **Build ETL · four tool tracks** card.
 

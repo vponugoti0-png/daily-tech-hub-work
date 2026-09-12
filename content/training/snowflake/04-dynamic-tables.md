@@ -16,6 +16,12 @@ cheatSheet:
   - label: "Daily mart grain"
     code: "SELECT o.order_date, c.region, COUNT(*) AS orders, ROUND(SUM(o.amount), 2) AS revenue\nFROM sf_orders o\nJOIN sf_customers c ON c.customer_id = o.customer_id\nGROUP BY o.order_date, c.region\nORDER BY o.order_date, c.region;"
     note: "Mart-shaped SELECT you can run in the local practice lab."
+  - label: "Paid SAMPLE peek"
+    code: "SELECT o.order_id, c.region, o.status, o.amount\nFROM sf_orders o\nJOIN sf_customers c ON c.customer_id = o.customer_id\nWHERE o.status = 'paid'\nORDER BY o.amount DESC;"
+    note: "The Dynamic Table persists a grain. This SELECT is the idea — not CREATE DYNAMIC TABLE."
+  - label: "Regions over a floor"
+    code: "SELECT c.region, COUNT(*) AS paid_orders, ROUND(SUM(o.amount), 2) AS revenue\nFROM sf_orders o\nJOIN sf_customers c ON c.customer_id = o.customer_id\nWHERE o.status = 'paid'\nGROUP BY c.region\nHAVING SUM(o.amount) >= 20\nORDER BY revenue DESC;"
+    note: "HAVING is the freshness check you can read. TARGET_LAG lives in the account."
 quiz:
   - question: "TARGET_LAG expresses…"
     options:

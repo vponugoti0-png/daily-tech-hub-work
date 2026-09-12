@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Play, Sparkles } from "lucide-react";
 import { CopyButton } from "@/components/CopyButton";
-import { Sparkles } from "lucide-react";
+import { TRYIT_RUN_EVENT, type TryItRunDetail } from "@/lib/lab/events";
 
-/** Try-it shell: DuckDB lab lessons deep-link to #lab; others are copy-to-practice. */
+/** Editable try-it shell. Lab lessons Run into #lab; others Copy to the learner's tool. */
 export function TryItBox({
   title = "Try it",
   code,
@@ -16,10 +17,22 @@ export function TryItBox({
   code: string;
   hint?: string;
   dialect?: string;
-  /** In-lesson local lab (Databricks / Snowflake / SQL). Not a top-level nav item. */
+  /** In-lesson local lab (Databricks / Snowflake / SQL / Python). Not a top-level nav item. */
   labHref?: string;
 }) {
+  const [draft, setDraft] = useState(code);
   const [showHint, setShowHint] = useState(false);
+
+  useEffect(() => {
+    setDraft(code);
+  }, [code]);
+
+  function runInLab() {
+    const detail: TryItRunDetail = { code: draft };
+    window.dispatchEvent(new CustomEvent<TryItRunDetail>(TRYIT_RUN_EVENT, { detail }));
+    document.getElementById("lab")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   return (
     <div className="tryit my-6 overflow-hidden rounded-2xl border border-[var(--ink-border)] bg-[var(--panel)]">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--ink-border)] bg-[var(--panel-2)] px-3 py-2">
@@ -45,15 +58,17 @@ export function TryItBox({
         </div>
         <div className="flex items-center gap-2">
           {labHref ? (
-            <a
-              href={labHref}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--coral)]/40 bg-[var(--coral)]/10 px-2.5 py-1 text-xs font-bold text-[var(--ink-fg)]"
-              aria-label="Open local practice lab"
+            <button
+              type="button"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--coral)]/40 bg-[var(--coral)]/15 px-2.5 py-1 text-xs font-bold text-[var(--ink-fg)]"
+              onClick={runInLab}
+              aria-label="Run in local lab"
             >
-              Run in local lab
-            </a>
+              <Play className="h-3.5 w-3.5" aria-hidden />
+              Run
+            </button>
           ) : null}
-          <CopyButton text={code} label={labHref ? "Copy" : "Copy to practice"} />
+          <CopyButton text={draft} label={labHref ? "Copy" : "Copy to practice"} />
           {labHref ? (
             <a
               href={labHref}
@@ -73,9 +88,16 @@ export function TryItBox({
           )}
         </div>
       </div>
-      <pre className="overflow-x-auto p-3 font-mono text-[12px] leading-relaxed text-[var(--ink-fg)]">
-        <code>{code}</code>
-      </pre>
+      <label className="block px-3 pt-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--muted)]">
+        Editor
+        <textarea
+          className="field mt-1 min-h-[140px] w-full resize-y font-mono text-[12px] leading-relaxed text-[var(--ink-fg)]"
+          value={draft}
+          spellCheck={false}
+          aria-label="Try it editor"
+          onChange={(e) => setDraft(e.target.value)}
+        />
+      </label>
       {showHint ? (
         <div className="border-t border-[var(--ink-border)] bg-[var(--panel-2)] px-3 py-2 text-xs text-[var(--muted)]">
           Copy this example and run it in your warehouse, notebook, repo, or AI chat.
@@ -85,14 +107,13 @@ export function TryItBox({
         <div className="border-t border-[var(--ink-border)] bg-[var(--panel-2)]/60 px-3 py-1.5 text-[11px] text-[var(--muted)]">
           {labHref ? (
             <>
-              Tip:{" "}
-              <strong className="text-[var(--ink-fg)]">Run in local lab</strong> or{" "}
-              <strong className="text-[var(--ink-fg)]">How to practice</strong> opens the DuckDB
-              surface on this page — then use <strong className="text-[var(--ink-fg)]">Run sample</strong>.
+              Tip: edit the sample, then <strong className="text-[var(--ink-fg)]">Run</strong> loads
+              it into the local practice lab on this page.
             </>
           ) : (
             <>
-              Tip: use <strong className="text-[var(--ink-fg)]">Copy to practice</strong> — paste this
+              Tip: edit if you want, then use{" "}
+              <strong className="text-[var(--ink-fg)]">Copy to practice</strong> — paste this
               example in your own tool. No in-browser runtime on this page.
             </>
           )}

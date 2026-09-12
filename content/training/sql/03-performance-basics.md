@@ -15,9 +15,14 @@ objectives:
 updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Selectivity"
-    code: "WHERE event_date BETWEEN ... AND ..."
+    code: "SELECT order_id, status, amount\nFROM aurora_orders\nWHERE order_date BETWEEN DATE '2026-09-02' AND DATE '2026-09-04';"
+    note: "Filter on the date column as a column — wrapping it in a function blocks pruning."
   - label: "Avoid SELECT *"
-    code: "SELECT id, ts, amount FROM ..."
+    code: "SELECT order_id, order_date, amount\nFROM aurora_orders\nWHERE status = 'paid';"
+    note: "Name the columns you will shuffle or serve."
+  - label: "Aggregate after the filter"
+    code: "SELECT c.region, COUNT(*) AS n, ROUND(SUM(o.amount), 2) AS revenue\nFROM aurora_orders o\nJOIN aurora_customers c ON c.customer_id = o.customer_id\nWHERE o.status = 'paid'\nGROUP BY c.region;"
+    note: "WHERE then GROUP BY. Do not SUM(order.amount) after joining items."
 quiz:
   - question: "Applying a function to a filter column often…"
     options:

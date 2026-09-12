@@ -9,7 +9,9 @@ export function StepCards({
   steps: { title: string; body: string }[];
 }) {
   return (
-    <ol className="my-6 grid gap-3 sm:grid-cols-2">
+    <ol
+      className={`my-6 grid gap-3 ${steps.length === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}
+    >
       {steps.map((s, i) => (
         <li
           key={s.title}

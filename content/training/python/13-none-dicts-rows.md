@@ -15,13 +15,16 @@ updatedAt: "2026-09-12"
 cheatSheet:
   - label: "Row dict + required keys"
     code: "REQUIRED = (\"order_id\", \"status\", \"amount\")\n\ndef assert_row(row: dict) -> dict:\n    missing = [k for k in REQUIRED if k not in row]\n    if missing:\n        raise ValueError(f\"missing keys: {missing}\")\n    return row\n\nrow = {\"order_id\": 1001, \"status\": \"paid\", \"amount\": 42.5, \"promo_code\": None}\nassert_row(row)"
-    note: "promo_code may be None. order_id may not be absent. Copy into a REPL — there is no Python runtime lab on this site."
+    note: "promo_code may be None. order_id may not be absent. Run this in the local practice lab on this page."
   - label: "None vs missing vs default"
     code: "def promo_or_none(row: dict):\n    if \"promo_code\" not in row:\n        raise KeyError(\"promo_code not in contract\")\n    return row[\"promo_code\"]  # may be None\n\n# Bad: row.get(\"amount\", 0) hides a landing bug\n# Bad: amount or 0  # also treats 0 as missing"
     note: "get(key, 0) is a silent default. Required measures should raise."
   - label: "Count unknown promos"
     code: "rows = [\n    {\"order_id\": 1, \"promo_code\": \"FALL26\"},\n    {\"order_id\": 2, \"promo_code\": None},\n]\nunknown = sum(1 for r in rows if r[\"promo_code\"] is None)\nprint(unknown)  # 1"
     note: "is None, not == None in reviews. Truthiness (if not promo) also treats '' as unknown — say which you mean."
+  - label: "Paid rows only"
+    code: "rows = [\n    {\"order_id\": 1, \"status\": \"paid\", \"amount\": 10},\n    {\"order_id\": 2, \"status\": \"pending\", \"amount\": None},\n]\npaid = [r for r in rows if r[\"status\"] == \"paid\" and r[\"amount\"] is not None]\nprint(paid)"
+    note: "Filter on status and keep unknown amounts out of gold. Run it in the local lab."
 quiz:
   - question: "A bronze dict has amount: None. What should transform do by default?"
     options:
@@ -49,7 +52,7 @@ quiz:
     explanation: "Truthiness is not a NULL test. Use `is None` when you mean unknown."
 ---
 
-True-zero Python for pipeline rows. **Copy the examples** into your REPL or repo. There is **no Python runtime lab** on this site (team hold — DuckDB labs stay SQL-only).
+True-zero Python for pipeline rows. **Edit and Run** in the local practice lab on this page — not a live cloud kernel. DuckDB labs stay on the SQL / Databricks / Snowflake tracks.
 
 ## A row is a contract
 

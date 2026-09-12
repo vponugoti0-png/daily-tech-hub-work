@@ -99,10 +99,9 @@ test.describe("Phase 3 richer lab datasets", () => {
     await expect(table.locator("tbody tr").first()).toBeVisible();
   });
 
-  test("Python track stays copy-only — no runtime lab", async ({ page }) => {
-    await page.goto("/training/python/python-none-dicts-rows");
+  test("older Python depth lesson stays copy-only — no fake Run", async ({ page }) => {
+    await page.goto("/training/python/python-dataframe-contracts");
     await expect(page.locator("#lab")).toHaveCount(0);
-    await expect(page.getByRole("link", { name: /Open local practice lab/i })).toHaveCount(0);
     await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
     const tryit = page.locator(".tryit").first();
     await expect(tryit).toBeVisible();
@@ -110,7 +109,7 @@ test.describe("Phase 3 richer lab datasets", () => {
     await expect(tryit.getByRole("button", { name: /Copy to practice/i })).toBeVisible();
     await expect(tryit.getByRole("button", { name: /How to practice/i })).toBeVisible();
     await expect(tryit.getByRole("link", { name: /How to practice/i })).toHaveCount(0);
-    await expect(tryit.getByRole("button", { name: /Run SQL sample|Run sample/i })).toHaveCount(0);
+    await expect(tryit.getByRole("button", { name: /Run in local lab|Run SQL sample|Run sample/i })).toHaveCount(0);
   });
 
   test("search indexes catalog/metrics lessons; no Lab nav", async ({ page }) => {
