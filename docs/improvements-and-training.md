@@ -3,7 +3,7 @@
 **Audience:** Product, Frontend, Backend, QA, Security  
 **Date:** 2026-09-12  
 **Status:** Research draft (not AC until Product stamps)  
-**Sources:** DataCamp DataLab, W3Schools Tryit / SQL Tryit, Databricks Academy, Codecademy DBX intro patterns; compared to current Aurora (W0–W4 content live, Databricks Practice Lab v1 in flight)
+**Sources:** DataCamp DataLab, W3Schools Tryit / SQL Tryit, Databricks Academy, Codecademy DBX intro patterns; compared to current Aurora (W0–W4 content live, Databricks + Snowflake Practice Labs shipped, W5 ETL builders on each major tool track). See also [`docs/training-paths.md`](./training-paths.md).
 
 ---
 
@@ -82,26 +82,34 @@
 
 ## 4. Recommended training plan shape (product view)
 
-Keep **one** zero-to-hero spine (already live W0–W4). Layer practice:
+Keep **one** zero-to-hero spine (W0–W4 live). Layer Practice labs, then **Build ETL** (W5). Full write-up: [`docs/training-paths.md`](./training-paths.md).
 
 ```
-W0 foundations (SQL/Python mindset)
-  └─ Practice: local SQL lab (DuckDB) on SQL + Databricks tracks
-W1 cloud day-0 (DBX / SF workspace objects)
-  └─ Practice: Databricks lab samples on lakehouse/SQL lessons
-W2 storage & tables (Delta / SF objects)
-  └─ Practice: seeded bronze→silver queries
-W3 jobs / orchestration concepts
-  └─ Practice: read-only SQL checks (no Jobs API in v1)
-W4 capstone lesson
-  └─ Practice: multi-query lab + progress checkpoint
+W0 recommended-order overlay (SQL/Python/DBX/SF reading paths)
+W1 day-0 (SQL joins · DBX workspace · SF objects)
+  └─ Practice: Databricks + Snowflake local labs (DuckDB-WASM)
+W2 ingestion (late-data · Autoloader · COPY/stages)
+W3 capstones (shared checklist + DT mart + medallion Job)
+W4 depth (SCD, DLT, clones, …)
+      ↓
+Practice labs (DBX / SF) — no Python DuckDB/runtime lab (team hold)
+      ↓
+Build ETL (one lesson per tool)
+  · Python  python-etl-pipeline-builder
+  · SQL     sql-staging-mart-etl
+  · DBX     dbx-medallion-etl-builder
+  · SF      sf-warehouse-etl-builder
+      ↓
+FDE track — not on main as of 2026-09-12; do not invent nav
 ```
 
-**All tools later (phase 2+):** same Practice Lab shell, dialect packs:
-1. Databricks (v1)  
-2. Snowflake  
-3. Core SQL  
-4. Python (deferred — different runtime)
+**Practice Lab dialects:**
+1. Databricks (shipped)  
+2. Snowflake (shipped)  
+3. Core SQL (P1 — not this wave)  
+4. Python (deferred — different runtime; **do not** build)
+
+In-app path chrome (no new top-level nav): META overlay on `/training`, `orderNote` on the four tool tracks, **Build ETL · four tool tracks** card.
 
 ---
 

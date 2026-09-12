@@ -76,7 +76,8 @@ COPY is **file-aware**: already-loaded files are skipped (unless you `FORCE`). T
 
 1. DQ the load (`COPY_HISTORY`, row counts, nulls).
 2. Dedupe / MERGE into silver ([SQL late-data lesson](/training/sql/sql-deduping-late-data)).
-3. Refresh a Dynamic Table mart ([capstone](/training/snowflake/sf-capstone-dynamic-table-mart)).
+3. Wire COPY → Stream/Task → Dynamic Table in [Build warehouse ETL](/training/snowflake/sf-warehouse-etl-builder).
+4. Refresh a Dynamic Table mart ([capstone](/training/snowflake/sf-capstone-dynamic-table-mart)).
 
 Snowpipe is “COPY, but triggered.” Same landing table, same next steps.
 
