@@ -11,14 +11,17 @@ objectives:
   - "Choose natural merge keys for upserts"
   - "Make retries safe with dynamic partition overwrite, replaceWhere, or MERGE"
   - "Emit load metrics for observability"
-updatedAt: "2026-09-11"
+updatedAt: "2026-09-12"
 cheatSheet:
-  - label: "Dynamic partition overwrite"
-    code: "spark.conf.set('spark.sql.sources.partitionOverwriteMode', 'dynamic')"
-  - label: "Delta replaceWhere"
+  - label: "Overwrite staging (retry-safe)"
+    code: "import csv, json\nfrom pathlib import Path\n\nSTAGING = Path(\"/data/staging/orders.json\")\n\ndef publish(rows: list[dict]) -> None:\n    STAGING.parent.mkdir(parents=True, exist_ok=True)\n    STAGING.write_text(json.dumps(rows, indent=2), encoding=\"utf-8\")\n\nwith Path(\"/data/orders.csv\").open(encoding=\"utf-8\") as f:\n    rows = list(csv.DictReader(f))\npublish(rows)\npublish(rows)  # retry — replace, do not append\nprint(STAGING.read_text())"
+    note: "Same path, same bytes on retry. Run it in the local lab. Spark dynamic partition overwrite is the warehouse twin."
+  - label: "Delta replaceWhere (copy)"
     code: "df.write.format('delta').mode('overwrite').option('replaceWhere', \"dt = '2026-09-11'\").save(path)"
+    note: "Warehouse syntax — copy into a notebook. The local lab overwrites a JSON file instead."
   - label: "Merge key"
     code: "ON t.id = s.id AND t.dt = s.dt"
+    note: "Natural keys for MERGE. Preview the set in SQL labs; this Python lab practices the write habit."
 quiz:
   - question: "A job crashes after writing half a partition. Safest retry pattern?"
     options:

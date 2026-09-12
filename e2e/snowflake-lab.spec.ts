@@ -72,12 +72,12 @@ test.describe("Snowflake local practice lab v1", () => {
     await expect(page.getByRole("button", { name: /Mark complete/i })).toBeEnabled();
   });
 
-  test("does not add a top-level Lab nav or a Python-track lab", async ({ page }) => {
+  test("does not add a top-level Lab nav; Spark-test Python stays copy-only", async ({ page }) => {
     await page.goto("/");
     const nav = page.getByRole("navigation", { name: "Primary" });
     await expect(nav.getByRole("link", { name: /^Lab$/i })).toHaveCount(0);
 
-    await page.goto("/training/python/python-dataframe-contracts");
+    await page.goto("/training/python/python-testing-spark-logic");
     await expect(page.locator("#lab")).toHaveCount(0);
   });
 });

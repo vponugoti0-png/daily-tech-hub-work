@@ -20,7 +20,8 @@ W4  Depth (SCD, DLT, clones, Cortex vs Snowpark, …)
       ↓
 Practice labs   Databricks + Snowflake + SQL local labs (DuckDB-WASM)
                 Same-origin seeds: tables, views, schemas, catalogs, metric-view–style tables.
-                Honest: not a live workspace / warehouse. Python exercise path = local Pyodide lab.
+                Honest: not a live workspace / warehouse. Python = local Pyodide lab
+                (exercise path + contracts / typing / writers / config / orchestration / perf / Build ETL).
       ↓
 Exercise paths  Clustered beginner lessons on SQL (#22) + DBX / SF / Python siblings.
                 SQL/DBX/SF TryIt → #lab (DuckDB). Python TryIt → #lab (Pyodide).
@@ -48,7 +49,7 @@ Header nav is unchanged: News · Training · Releases · Shortcuts · Dashboard.
 | Databricks | `dbx-medallion-etl-builder` | Autoloader bronze → silver MERGE → DQ → gold (Job-shaped) |
 | Snowflake | `sf-warehouse-etl-builder` | COPY/stages → Stream/Task MERGE → Dynamic Table gold |
 
-Each lesson: objectives, DE body, cheat-sheet TryIt cards, 3 quiz questions, ~30 min. Copy is primary where no lab is wired (AI / FDE / ETL builders / older Python depth). SQL / Databricks / Snowflake exercise-path lessons host the DuckDB **Local practice lab**; Python exercise-path lessons host the Pyodide lab; Git lessons host **Git Play Lab**. ETL builders stay copy-to-repo / copy-to-warehouse.
+Each lesson: objectives, DE body, cheat-sheet TryIt cards, 3 quiz questions, ~30 min. Copy is primary where no lab is wired (AI / FDE / SQL·DBX·SF ETL builders / Python packaging · Spark-test fixtures · CLI capstone). SQL / Databricks / Snowflake exercise-path lessons host the DuckDB **Local practice lab**; Python hosts the Pyodide lab on the exercise path plus contracts, typing, writers, config, orchestration, perf, and the Python ETL builder (stdlib + `/data` CSV/JSON — not pandas/Spark). Git lessons host **Git Play Lab**.
 
 ## Exercise paths (W6 SQL · W7 siblings)
 
@@ -59,13 +60,13 @@ Clustered beginner lessons (catalog `13`–`19`, negative `order` so they list f
 | SQL (W6) | Yes — Practice CTA → `sql-select-filter-nulls#lab` | SELECT / filters / NULLs |
 | Databricks (W7) | Yes — TryIt → `#lab` on new + existing day-0 / lakehouse labs | Spark SQL SELECT / NULLs |
 | Snowflake (W7) | Yes — TryIt → `#lab` on new + existing day-0 / architecture labs | SELECT on SAMPLE |
-| Python (W7) | Yes — Pyodide local lab (stdlib samples; not cloud) | None / dicts / rows |
+| Python (W7) | Yes — Pyodide local lab (stdlib + `/data` CSV/JSON; not cloud) | None / dicts / rows |
 
 DBX/SF add more sample packs on the existing DuckDB seed (bronze/silver/gold + `sf_*`). Phase 3 adds local schemas (`bronze` / `silver` / `gold` / `aurora` / `analytics` / `metrics`), views (`silver.ok_orders`, `aurora.paid_orders`, …), a `lab_catalog_objects` inventory, and metric-view–style tables (`metrics.orders_daily`, …). Optional in-memory catalogs via same-origin `ATTACH ':memory:'` (learner SQL still cannot ATTACH). No new top-level nav, no server grading, no CSP widen, no remote catalogs.
 
 ## Richer lab datasets (after #23)
 
-Short lessons (`sql-catalog-views-metrics`, `dbx-catalog-views-metrics`, `sf-catalog-views-metrics`) plus extra sample packs on day-0 / DDL / gold / Unity Catalog labs. Guest progress still writes `stepIndex` only (does not complete the lesson). Seeds stay in-module (`src/lib/lab/seed.ts`) — small enough for `/public` if we ever split fixtures. Python exercise-path lessons use a same-origin Pyodide lab (stdlib only).
+Short lessons (`sql-catalog-views-metrics`, `dbx-catalog-views-metrics`, `sf-catalog-views-metrics`) plus extra sample packs on day-0 / DDL / gold / Unity Catalog labs. Guest progress still writes `stepIndex` only (does not complete the lesson). Seeds stay in-module (`src/lib/lab/seed.ts`) — small enough for `/public` if we ever split fixtures. Python lessons use a same-origin Pyodide lab (stdlib + `/data` VFS files). See [`docs/python-local-lab.md`](./python-local-lab.md) for CSP (unchanged).
 
 ## Where the path shows up in the app
 

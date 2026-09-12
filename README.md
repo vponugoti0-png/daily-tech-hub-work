@@ -76,14 +76,14 @@ npm run seed:demo   # prints credentials
 |-------|---------|--------|
 | Prompt Engineering | 6 | Ask, structure, iterate, verify, safety, learning prompts |
 | AI for Data Engineers | 6 | Copilot mindset, debug, safe codegen, docs/tests, tools, review |
-| Python | 17 | Exercise path (None/dicts→logging, local Pyodide lab) plus contracts, typing, testing, writers, config, orchestration, perf, packaging, ETL builder |
+| Python | 17 | Exercise path (None/dicts→logging) plus contracts, typing, testing, writers, config, orchestration, perf, packaging, ETL builder — local Pyodide lab on the exercise path and most depth lessons (stdlib + `/data` CSV/JSON) |
 | SQL | 21 | Exercise path (SELECT→DDL/dates), catalogs/views/metrics, windows, incrementals, perf, modeling, DQ, CTEs, semi-structured, ETL builder |
 | Databricks | 21 | Exercise path (Spark SQL→dates) plus lakehouse, Delta, Unity Catalog, Jobs, Streaming, warehouses, catalogs/views/metrics, medallion ETL |
 | Snowflake | 21 | Exercise path (SELECT→dates) plus architecture, Time Travel, Streams/Tasks, Dynamic Tables, cost, RBAC, catalogs/views/metrics, warehouse ETL |
 | Forward Deployed Engineer | 10 | Customer-facing DE/AI delivery: discover, scope, integrate, deploy, secure, hand off |
 | Git (bonus) | 5 | Rebase, hygiene, bisect, dbt/SQL branching, data-diff PRs + in-browser **Git Play Lab** |
 
-Lessons include objectives, try-it shells, **Databricks + Snowflake + SQL local practice labs** (DuckDB-WASM in-browser SQL samples — not live workspaces), a **Python local practice lab** on the exercise path (Pyodide — not a live cloud kernel), **AI Local practice** on Prompt Engineering / AI-for-DE (in-browser checklist — not a live Claude/GPT account; Copy stays the fallback), **Git Play Lab** (commit graph + CLI, no VM), quizzes, outlines (mobile disclosure), and progress (localStorage + SQLite when signed in).
+Lessons include objectives, try-it shells, **Databricks + Snowflake + SQL local practice labs** (DuckDB-WASM in-browser SQL samples — not live workspaces), a **Python local practice lab** (Pyodide — file tabs for `main.py` + `/data` CSV/JSON, not a live cloud kernel), **AI Local practice** on Prompt Engineering / AI-for-DE (in-browser checklist — not a live Claude/GPT account; Copy stays the fallback), **Git Play Lab** (commit graph + CLI, no VM), quizzes, outlines (mobile disclosure), and progress (localStorage + SQLite when signed in). CSP for the Python lab stays same-origin `/public/pyodide` — see [`docs/python-local-lab.md`](./docs/python-local-lab.md).
 
 ### Shortcuts
 

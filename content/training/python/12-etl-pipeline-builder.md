@@ -13,15 +13,15 @@ objectives:
   - "Expose --start/--end/--dry-run so Airflow, Dagster, or Databricks Jobs can rerun safely"
 updatedAt: "2026-09-12"
 cheatSheet:
-  - label: "extract_orders (chunked)"
-    code: "def extract_orders(read_sql, start: str, end: str, chunksize=50_000):\n    q = \"\"\"\n      SELECT order_id, customer_id, amount, status, updated_at, src_file\n      FROM raw.orders\n      WHERE updated_at >= %(start)s AND updated_at < %(end)s\n    \"\"\"\n    frames = list(read_sql(q, params={\"start\": start, \"end\": end}, chunksize=chunksize))\n    return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()"
-    note: "Extract is a window, not SELECT *. Chunk so a 20GB source never lands in RAM."
+  - label: "extract → transform → load"
+    code: "import csv, json\nfrom pathlib import Path\n\nREQUIRED = (\"order_id\", \"status\", \"amount\")\n\ndef extract(path: Path) -> list[dict]:\n    with path.open(encoding=\"utf-8\") as f:\n        return list(csv.DictReader(f))\n\ndef transform(rows: list[dict]) -> list[dict]:\n    out = []\n    for row in rows:\n        missing = [k for k in REQUIRED if not row.get(k)]\n        if missing:\n            raise ValueError(f\"missing: {missing}\")\n        if row[\"status\"] == \"paid\":\n            out.append(row)\n    return out\n\ndef load(rows: list[dict], dest: Path) -> None:\n    dest.parent.mkdir(parents=True, exist_ok=True)\n    dest.write_text(json.dumps(rows, indent=2), encoding=\"utf-8\")\n\nraw = extract(Path(\"/data/orders.csv\"))\nclean = transform(raw)\nload(clean, Path(\"/data/staging/paid_orders.json\"))\nprint(\"rows_in\", len(raw), \"rows_out\", len(clean))"
+    note: "Run in the local lab (stdlib + /data files). pandas/SQL I/O is the repo twin in the lesson body."
   - label: "transform_orders (contracts)"
-    code: "REQUIRED = (\"order_id\", \"amount\", \"status\", \"updated_at\")\n\ndef transform_orders(raw: pd.DataFrame) -> pd.DataFrame:\n    missing = set(REQUIRED) - set(map(str, raw.columns))\n    if missing:\n        raise ValueError(f\"missing columns: {sorted(missing)}\")\n    out = raw.sort_values([\"updated_at\"]).drop_duplicates(\"order_id\", keep=\"last\")\n    out[\"event_date\"] = pd.to_datetime(out[\"updated_at\"]).dt.floor(\"D\")\n    return out"
-    note: "Same latest-per-order_id rule as the SQL / warehouse silver grain."
+    code: "REQUIRED = (\"order_id\", \"amount\", \"status\")\n\ndef transform_orders(rows: list[dict]) -> list[dict]:\n    out = []\n    for row in rows:\n        missing = [k for k in REQUIRED if not row.get(k)]\n        if missing:\n            raise ValueError(f\"missing columns: {missing}\")\n        out.append(row)\n    return out\n\nprint(transform_orders([{\"order_id\": \"1\", \"amount\": \"10\", \"status\": \"paid\"}]))"
+    note: "Same latest-per-order_id rule as the SQL / warehouse silver grain — keep I/O out of this function."
   - label: "run() — orchestrator door"
-    code: "def run(start: str, end: str, dry_run: bool = False) -> dict:\n    raw = extract_orders(read_sql, start, end)\n    clean = transform_orders(raw)\n    metrics = {\"rows_in\": len(raw), \"rows_out\": len(clean), \"start\": start, \"end\": end}\n    if dry_run:\n        return {**metrics, \"status\": \"dry_run\"}\n    write_staging_then_publish(clean, start, end)\n    return {**metrics, \"status\": \"ok\"}"
-    note: "Copy into your repo. This builder is copy-to-practice — the in-browser Python lab is on the exercise-path lessons."
+    code: "def run(start: str, end: str, dry_run: bool = False) -> dict:\n    metrics = {\"start\": start, \"end\": end, \"status\": \"dry_run\" if dry_run else \"ok\"}\n    print(metrics)\n    return metrics\n\nprint(run(\"2026-09-01\", \"2026-09-02\", dry_run=True))"
+    note: "Orchestrators pass --start/--end. This local lab calls run() — no Airflow, no credentials."
 quiz:
   - question: "Where should file/SQL I/O live in this ETL job?"
     options:
@@ -69,7 +69,7 @@ quiz:
 
 This is the **Python ETL builder** — one job that stitches pieces you already met: [DataFrame contracts](/training/python/python-dataframe-contracts), [idempotent writers](/training/python/python-idempotent-writers), and [orchestration hooks](/training/python/python-orchestration-hooks). Shared story: **Orders → late events → daily revenue mart**.
 
-This builder is **copy-to-repo** (pandas / warehouse I/O). Small stdlib examples run in the local Python lab on the [exercise-path lessons](/training/python/python-none-dicts-rows#lab). Warehouse SQL still owns the mart; this package owns **extract + rules + the job door**.
+Practice the stdlib shape in the **local practice lab** on this page (`#lab`, Pyodide, `/data` CSV/JSON). pandas / warehouse I/O stays **copy-to-repo** in the samples below — not a live kernel and not a pandas wheel. Warehouse SQL still owns the mart; this package owns **extract + rules + the job door**.
 
 ## Shape
 

@@ -11,11 +11,17 @@ objectives:
   - "Build a clean `python -m` entrypoint"
   - "Use exit codes and structured logs"
   - "Support backfill date ranges"
-updatedAt: "2026-09-11"
+updatedAt: "2026-09-12"
 cheatSheet:
-  - label: "Job entrypoint"
-    code: "def main() -> int:\n    cfg = load_settings()\n    start, end = next_window(cfg.watermark)\n    run(start, end)\n    return 0\n\nif __name__ == \"__main__\":\n    raise SystemExit(main())"
-    note: "Orchestrators call a function. Import side effects are a foot-gun."
+  - label: "run(start, end, dry_run)"
+    code: "def run(start: str, end: str, dry_run: bool = False) -> dict:\n    metrics = {\"start\": start, \"end\": end, \"status\": \"dry_run\" if dry_run else \"ok\"}\n    print(metrics)\n    return metrics\n\nprint(run(\"2026-09-01\", \"2026-09-02\", dry_run=True))"
+    note: "Date windows are the job interface. Run this in the local lab — argparse is the CLI twin in the lesson body."
+  - label: "JSON log line"
+    code: "import json\nprint(json.dumps({\"job\": \"orders_etl\", \"dt\": \"2026-09-12\", \"status\": \"ok\", \"rows\": 5}))"
+    note: "Dashboards parse one object per line. Do not log a DSN or the full row payload."
+  - label: "Validate a partition"
+    code: "import re\n\ndef assert_day(day: str) -> str:\n    if not re.fullmatch(r\"\\d{4}-\\d{2}-\\d{2}\", day):\n        raise ValueError(f\"expected YYYY-MM-DD, got {day!r}\")\n    return day\n\nprint(assert_day(\"2026-09-12\"))"
+    note: "Refuse a junk --partition before extract. Same habit as a landing stem contract."
 quiz:
   - question: "Why accept `--start` and `--end` on a batch job?"
     options:
@@ -45,6 +51,8 @@ quiz:
 ---
 
 # Orchestration hooks & job entrypoints
+
+Practice `run(start, end, dry_run=…)` in the **local practice lab** on this page. The argparse CLI below is what Airflow / Dagster / Databricks Jobs call in a repo.
 
 ```python
 import argparse, sys
