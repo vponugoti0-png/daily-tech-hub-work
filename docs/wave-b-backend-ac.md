@@ -5,9 +5,14 @@
 **Status:** Product-stamped order and wording below. Security + QA stamp per section before the matching impl PR ships.  
 **This PR:** docs only. No implementation.
 
-Wave A (content / local labs) stays on a separate track. Wave B is three **held** surfaces. **Ship order: B1 → B2 → B3.** Each is its own future impl PR. Omit chrome until that flag is on — no “Coming soon”.
+Wave A (content / local labs) stays on a separate track. Wave B is three **held** surfaces. Each is its own future impl PR. Omit chrome until that flag is on — no “Coming soon”.
 
-**Still omit (all waves):** real Snowflake / Databricks cloud credential connect / live workspace login.
+**Product stamp (locked):**
+
+- **Ship order: B1 → B2 → B3.** Separate future impl PRs.
+- **Still OMIT:** real Snowflake/Databricks cloud credential connect / live workspace login.
+- Prefer client-side for B1/B2 so Backend may be thin (rate-limit/proxy only if needed); B3 is the heavy Backend surface.
+- **Open decision:** sandbox host for B3 (Railway sidecar vs external).
 
 Existing session / CSRF / guest progress (do not reinvent): [`docs/auth-and-progress.md`](./auth-and-progress.md). Training backlog: [`docs/improvements-and-training.md`](./improvements-and-training.md).
 
@@ -56,22 +61,25 @@ Flag-off **404** is intentional so Frontend treats “not shipped” as absent.
 
 ## Open decisions
 
-Product stamped guest policy and client-first for B1/B2. **One hosting decision remains** (blocks B3 impl).
+**Only D5 is open.** Everything else in the Product stamp is closed.
 
-| ID | Surface | Question | Stamped / proposed |
-|----|---------|----------|--------------------|
-| D1 | B1 AI | Client-first vs server proxy in v1? | **Stamped: prefer fully client-side.** Proxy only if a later stamp requires it. |
-| D2 | B2 Engine | Client-side checks vs grade API in v1? | **Stamped: client-side preferred** (DuckDB / Pyodide sandboxes). API only if needed; then CSRF + rate-limit + guest OK. |
-| D3 | B1 / B2 | Store prompts or full submissions? | **No.** No PII storage. Product must ask to retain. |
-| D4 | B3 Git VM | Guest sessions? | **Stamped: guest OK** with IP rate-limit; signed-in may have slightly higher caps. |
-| D5 | B3 Git VM | Where does `git` run? | **OPEN — must decide before B3 code.** Railway/Fly sidecar vs external sandbox provider. Next.js `spawn('git')` on the SQLite web service is **not** an option. |
-| D6 | B3 Git VM | TTL / idle / concurrency | **Proposed:** 20 min TTL, 5 min idle, 1 session/user, 2/IP (guests count against IP). Tune after D5. |
+| ID | Surface | Question | Status |
+|----|---------|----------|--------|
+| D5 | B3 Git VM | Sandbox host | **OPEN — blocks B3 impl.** Railway sidecar vs external provider. Not `spawn('git')` on the SQLite web service. |
+
+B3 TTL / idle / concurrency numbers in §B3.2 are **proposed defaults** for the impl PR (tune after D5), not a Product-open question.
 
 ---
 
 ## B1 — AI in-browser practice (first impl PR)
 
-Guest-usable on Prompt Engineering / AI-for-DE lessons. Prefer fully client-side (no paid tutor, no third-party API keys in the browser). If any server proxy: rate-limit, no PII storage, no secrets in logs. Honest chrome: **Local practice** — not a live Claude/GPT account. No Coming soon; **Copy** remains the fallback if the model is unavailable.
+**Product stamp (wording locked):**
+
+- Guest-usable on Prompt Eng / AI-for-DE lessons
+- Prefer fully client-side (no paid tutor, no third-party API keys in browser)
+- If any server proxy: rate-limit, no PII storage, no secrets in logs
+- Honest chrome: Local practice — not a live Claude/GPT account
+- No Coming soon; Copy remains fallback if model unavailable
 
 ### B1.1 Goal / non-goals
 
@@ -139,7 +147,7 @@ If a proxy exists: rate-limit, **no PII storage**, **no secrets in logs**. App-o
 
 ### B1.3 Data model
 
-**No SQLite table.** Do not create `user_api_keys`. Do not persist prompts or completions (D3). Progress = existing `lesson_progress` / localStorage only if the lesson already writes `stepIndex`.
+**No SQLite table.** Do not create `user_api_keys`. Do not persist prompts or completions. Progress = existing `lesson_progress` / localStorage only if the lesson already writes `stepIndex`.
 
 ### B1.4 Security
 
@@ -229,9 +237,15 @@ Enable B1 client chrome without B2/B3. Enabling a proxy without a stamp is a fai
 
 ---
 
-## B2 — Practice Engine / auto-check (second impl PR)
+## B2 — Practice Engine (auto-check) (second impl PR)
 
-Auto-check expected output for SQL (DuckDB) and Python (Pyodide) lab exercises. Assert **row count / columns / key values** — not free-form LLM grading in v1. **Client-side preferred**; if an API is needed: CSRF + rate-limit + auth optional (guest OK). No remote DB, no arbitrary code exec beyond the existing lab sandboxes. Show **pass/fail + hint**. Guest progress via the existing `stepIndex` / quiz model.
+**Product stamp (wording locked):**
+
+- Auto-check expected output for SQL (DuckDB) and Python (Pyodide) lab exercises
+- Assert row count / columns / key values — not free-form LLM grading in v1
+- Client-side preferred; if API: CSRF + rate-limit + auth optional (guest OK)
+- No remote DB, no arbitrary code exec beyond existing lab sandboxes
+- Show pass/fail + hint; guest progress via existing stepIndex/quiz model
 
 ### B2.1 Goal / non-goals
 
@@ -248,7 +262,7 @@ Auto-check expected output for SQL (DuckDB) and Python (Pyodide) lab exercises. 
 - Free-form LLM grading in v1.
 - Remote warehouse / learner-uploaded datasets / URLs.
 - Arbitrary shell or a new exec runtime beyond DuckDB-WASM + Pyodide.
-- Permanent submission archive (D3).
+- Permanent submission archive.
 - Replacing **Run** (Check is separate).
 - Real Snowflake / Databricks cloud connect.
 
@@ -408,7 +422,13 @@ Ship **after B1**. Production stays off until Security + QA stamp this section. 
 
 ## B3 — Git Practice VM (third impl PR)
 
-Ephemeral real-git sandbox for the Git track (beyond Play Lab A viz). Deny-by-default egress; short TTL; CPU / time / disk caps; rate-limit session create. No secrets/mounts; no docker-in-docker; kill on idle/timeout. **Guest sessions OK** with IP rate-limit; signed-in can have slightly higher caps. UI: open → run git cmds → graph/state → TTL countdown → destroy.
+**Product stamp (wording locked):**
+
+- Ephemeral real-git sandbox for Git track (beyond Play Lab A viz)
+- Deny-by-default egress; short TTL; CPU/time/disk caps; rate-limit session create
+- No secrets/mounts; no docker-in-docker; kill on idle/timeout
+- Guest sessions OK with IP rate-limit; signed-in can have slightly higher caps
+- UI: open → run git cmds → graph/state → TTL countdown → destroy
 
 **This is the heavy Backend surface.** Separate PR from B1 and B2. **D5 (sandbox host) must be stamped before code.**
 
@@ -432,7 +452,7 @@ Ephemeral real-git sandbox for the Git track (beyond Play Lab A viz). Deny-by-de
 
 ### B3.2 API sketch
 
-Prefix: `/api/git-vm`. CSRF on `POST`/`DELETE`. Auth **optional** (guest OK, D4). Ownership = session user **or** unguessable session id bound to IP hash + HttpOnly session cookie we already have, or a dedicated **httpOnly** `dth_gitvm` cookie **only if** Security prefers not to reuse auth cookies — **proposed: do not add a cookie**; use signed session id in memory + existing CSRF. Guests: create/exec keyed by IP + returned `id` (unguessable). **OPEN (impl):** guest session binding without a new cookie vs. a short-lived httpOnly `dth_gitvm` (`SameSite=lax`). Prefer no new cookie if the unguessable id + CSRF + IP bind is enough.
+Prefix: `/api/git-vm`. CSRF on `POST`/`DELETE`. Auth **optional** (guest OK). Ownership = session user when signed in; guests use an unguessable `id` + IP bind + existing CSRF. **Proposed: do not add a cookie.** Prefer no new cookie if that bind is enough.
 
 | Method | Path | Auth | CSRF | Purpose |
 |--------|------|------|------|---------|
@@ -467,7 +487,7 @@ Stdout/stderr cap: **8 000** chars combined. Over → `truncated: true`.
 
 **`DELETE`** — `200` `{ "ok": true }` even if already dead. Foreign `:id` → `404`.
 
-**Rate / concurrency** (D6 — proposed; guests use IP buckets only):
+**Rate / concurrency** (proposed defaults; guests use IP buckets only):
 
 | Control | Guest (IP) | Signed-in |
 |---------|------------|-----------|
