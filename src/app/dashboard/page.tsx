@@ -67,6 +67,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "sql-slowly-changing-dimensions",
     "sql-explain-plan-lab",
     "sql-staging-mart-etl",
+    "sql-catalog-views-metrics",
   ],
   databricks: [
     "dbx-spark-select-nulls",
@@ -89,6 +90,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "dbx-dlt-pipelines",
     "dbx-liquid-clustering",
     "dbx-medallion-etl-builder",
+    "dbx-catalog-views-metrics",
   ],
   snowflake: [
     "sf-select-filter-nulls",
@@ -111,6 +113,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "sf-zero-copy-clone-dev",
     "sf-cortex-vs-snowpark",
     "sf-warehouse-etl-builder",
+    "sf-catalog-views-metrics",
   ],
   "forward-deployed": [
     "fde-what-an-fde-is",

@@ -15,6 +15,8 @@ export const DATABRICKS_LAB_SLUGS = [
   "dbx-semi-joins-leftovers",
   "dbx-delta-table-contracts",
   "dbx-dates-partition-filters",
+  "dbx-unity-catalog",
+  "dbx-catalog-views-metrics",
 ] as const;
 
 export const SNOWFLAKE_LAB_SLUGS = [
@@ -30,6 +32,7 @@ export const SNOWFLAKE_LAB_SLUGS = [
   "sf-exists-semi-joins",
   "sf-ddl-constraints",
   "sf-dates-injection",
+  "sf-catalog-views-metrics",
 ] as const;
 
 export const SQL_LAB_SLUGS = [
@@ -41,6 +44,7 @@ export const SQL_LAB_SLUGS = [
   "sql-ddl-constraints",
   "sql-dates-injection",
   "sql-joins-set-logic-recap",
+  "sql-catalog-views-metrics",
 ] as const;
 
 export type DatabricksLabSlug = (typeof DATABRICKS_LAB_SLUGS)[number];
@@ -528,41 +532,153 @@ WHERE status = 'pending' AND order_date <= DATE '2026-09-02'
 ORDER BY order_id;`,
     note: "The local lab is read-only. Preview the set a MERGE would hit before you run it in an account.",
   },
+  {
+    id: "lab-catalogs",
+    label: "Local catalogs (same-origin)",
+    sql: `SELECT catalog, schema, object_name, object_type
+FROM lab_catalog_objects
+ORDER BY catalog, schema, object_name;`,
+    note: "Same-origin DuckDB inventory. No remote catalog, no cloud attach. Unity Catalog / Snowflake account names are teaching labels on local objects.",
+  },
+  {
+    id: "lab-schemas",
+    label: "Local schemas",
+    sql: `SELECT catalog_name, schema_name
+FROM information_schema.schemata
+WHERE schema_name IN ('bronze', 'silver', 'gold', 'metrics', 'aurora', 'analytics', 'main')
+ORDER BY catalog_name, schema_name;`,
+    note: "Schemas group tables. The local catalog is in-browser memory — not a remote Unity or Snowflake catalog.",
+  },
+  {
+    id: "lab-views",
+    label: "Local views",
+    sql: `SELECT table_schema, table_name
+FROM information_schema.views
+WHERE table_schema IN ('silver', 'gold', 'aurora', 'analytics')
+ORDER BY table_schema, table_name;`,
+    note: "Views are stored SELECTs. This lab still will not run CREATE VIEW — inspect, then copy DDL to a warehouse.",
+  },
+  {
+    id: "lab-current-catalog",
+    label: "Current catalog + schema",
+    sql: `SELECT current_catalog() AS catalog, current_schema() AS schema;`,
+    note: "Three-level names are catalog.schema.table. Here the catalog is the in-memory DuckDB database.",
+  },
+  {
+    id: "dbx-qualified-silver",
+    label: "silver.orders (schema.table)",
+    sql: `SELECT order_id, region, status, amount
+FROM silver.orders
+WHERE status = 'ok'
+ORDER BY order_id;`,
+    note: "Unqualified silver_orders still works. schema.table is the Unity Catalog habit without a remote catalog.",
+  },
+  {
+    id: "dbx-ok-view",
+    label: "silver.ok_orders view",
+    sql: `SELECT order_id, region, amount
+FROM silver.ok_orders
+ORDER BY order_id;`,
+    note: "A view over ok silver rows. Gold should read a contract, not re-filter bronze in every notebook.",
+  },
+  {
+    id: "dbx-metric-view",
+    label: "Metric-style gold (stand-in)",
+    sql: `SELECT dim_order_date, dim_region, measure_order_count, measure_revenue
+FROM metrics.orders_daily
+ORDER BY dim_order_date, dim_region;`,
+    note: "DuckDB table stand-in for a Unity Catalog Metric View. dim_* vs measure_* are named — not a live UC object.",
+  },
+  {
+    id: "sf-qualified-orders",
+    label: "analytics.orders (schema.table)",
+    sql: `SELECT order_id, status, amount, promo_code
+FROM analytics.orders
+WHERE status = 'paid'
+ORDER BY amount DESC;`,
+    note: "database.schema.table in an account. This lab uses schema.table on the local catalog — the warehouse name is still compute.",
+  },
+  {
+    id: "sf-paid-view",
+    label: "analytics.paid_orders view",
+    sql: `SELECT order_id, amount, promo_code
+FROM analytics.paid_orders
+ORDER BY order_id;`,
+    note: "A view is a stored SELECT. Dynamic Tables persist a grain; this view does not.",
+  },
+  {
+    id: "sf-metric-view",
+    label: "Metric-style daily revenue",
+    sql: `SELECT dim_order_date, dim_region, measure_order_count, measure_revenue
+FROM metrics.sf_daily_revenue
+ORDER BY dim_order_date, dim_region;`,
+    note: "Stand-in for a Snowflake semantic / metric view. Local table — not Cortex and not a live account object.",
+  },
+  {
+    id: "aurora-qualified-orders",
+    label: "aurora.orders (schema.table)",
+    sql: `SELECT order_id, status, amount, promo_code
+FROM aurora.orders
+WHERE status = 'paid'
+ORDER BY amount DESC
+LIMIT 5;`,
+    note: "Same grain as aurora_orders in main. Qualify the schema when more than one contract shares a name.",
+  },
+  {
+    id: "aurora-paid-view",
+    label: "aurora.paid_orders view",
+    sql: `SELECT order_id, amount, promo_code
+FROM aurora.paid_orders
+ORDER BY order_id;`,
+    note: "A view over paid orders. Marts persist this grain; do not treat a view as a load contract.",
+  },
+  {
+    id: "aurora-metric-view",
+    label: "Metric-style region revenue",
+    sql: `SELECT dim_region, measure_paid_orders, measure_revenue
+FROM metrics.aurora_region_revenue
+ORDER BY measure_revenue DESC;`,
+    note: "Metric-view–style table: dimensions + measures. Not a BI semantic layer SaaS — just a local fixture.",
+  },
 ];
 
 const BY_LESSON: Record<DatabricksLabSlug | SnowflakeLabSlug | SqlLabSlug, string[]> = {
-  "dbx-workspace-cluster-basics": ["catalog-objects", "medallion-counts", "dbx-schema"],
+  "dbx-workspace-cluster-basics": ["catalog-objects", "medallion-counts", "dbx-schema", "lab-catalogs"],
   "dbx-lakehouse-fundamentals": ["medallion-counts", "silver-quality", "gold-revenue", "dbx-gold-having"],
   "dbx-delta-lake-basics": ["upsert-shape", "silver-quality", "medallion-counts", "dbx-bronze-nulls"],
   "dbx-spark-sql-performance": ["partition-filter", "gold-revenue", "silver-quality", "dbx-date-window"],
   "dbx-sql-warehouses": ["gold-revenue", "partition-filter", "medallion-counts", "dbx-gold-having"],
   "dbx-spark-select-nulls": ["dbx-silver-limit", "dbx-bronze-nulls", "silver-quality"],
   "dbx-delta-write-preview": ["upsert-shape", "dbx-bronze-nulls", "dbx-exists-ok"],
-  "dbx-gold-aggregates": ["gold-revenue", "dbx-gold-having", "silver-quality"],
+  "dbx-gold-aggregates": ["gold-revenue", "dbx-gold-having", "silver-quality", "dbx-metric-view"],
   "dbx-silver-patterns-case": ["dbx-like-region", "dbx-case-status", "dbx-silver-limit"],
   "dbx-semi-joins-leftovers": ["dbx-exists-ok", "upsert-shape", "medallion-counts"],
-  "dbx-delta-table-contracts": ["dbx-schema", "catalog-objects", "medallion-counts"],
+  "dbx-delta-table-contracts": ["dbx-schema", "catalog-objects", "medallion-counts", "lab-schemas"],
   "dbx-dates-partition-filters": ["partition-filter", "dbx-date-window", "gold-revenue"],
-  "sf-day0-objects": ["sf-account-map", "sf-warehouses", "sf-schema"],
+  "dbx-unity-catalog": ["lab-catalogs", "lab-current-catalog", "dbx-qualified-silver", "dbx-metric-view"],
+  "dbx-catalog-views-metrics": ["lab-catalogs", "lab-schemas", "lab-views", "dbx-ok-view", "dbx-metric-view"],
+  "sf-day0-objects": ["sf-account-map", "sf-warehouses", "sf-schema", "lab-catalogs"],
   "sf-architecture": ["sf-warehouses", "sf-account-map", "sf-orders-customers"],
   "sf-time-travel-clones": ["sf-time-travel", "sf-orders-customers", "sf-date-window"],
-  "sf-dynamic-tables": ["sf-daily-mart", "sf-orders-customers", "sf-agg-having"],
+  "sf-dynamic-tables": ["sf-daily-mart", "sf-orders-customers", "sf-agg-having", "sf-metric-view"],
   "sf-performance-cost": ["sf-prune-filter", "sf-warehouses", "sf-daily-mart"],
   "sf-select-filter-nulls": ["sf-paid-limit", "sf-null-promo", "sf-orders-customers"],
   "sf-dml-write-path": ["sf-dml-preview", "sf-null-promo", "sf-paid-limit"],
   "sf-aggregates-group-having": ["sf-daily-mart", "sf-agg-having", "sf-null-promo"],
   "sf-patterns-aliases-case": ["sf-like-promo", "sf-case-bucket", "sf-paid-limit"],
   "sf-exists-semi-joins": ["sf-exists-buyers", "sf-orders-customers", "sf-paid-limit"],
-  "sf-ddl-constraints": ["sf-schema", "sf-account-map", "sf-paid-limit"],
+  "sf-ddl-constraints": ["sf-schema", "sf-account-map", "sf-paid-limit", "lab-schemas"],
   "sf-dates-injection": ["sf-date-window", "sf-time-travel", "sf-like-promo"],
+  "sf-catalog-views-metrics": ["lab-catalogs", "lab-schemas", "lab-views", "sf-paid-view", "sf-metric-view"],
   "sql-select-filter-nulls": ["aurora-paid-select", "aurora-distinct-nulls", "aurora-null-promo"],
   "sql-dml-write-path": ["aurora-dml-preview", "aurora-null-promo", "aurora-paid-select"],
   "sql-aggregates-group-having": ["aurora-agg-revenue", "aurora-distinct-nulls", "aurora-paid-select"],
   "sql-patterns-aliases-case": ["aurora-like-in", "aurora-case-bucket", "aurora-paid-select"],
   "sql-exists-any-all": ["aurora-exists-paid", "aurora-any-threshold", "aurora-join-lane"],
-  "sql-ddl-constraints": ["aurora-schema", "aurora-paid-select"],
+  "sql-ddl-constraints": ["aurora-schema", "aurora-paid-select", "lab-schemas", "aurora-qualified-orders"],
   "sql-dates-injection": ["aurora-date-window", "aurora-like-in", "aurora-paid-select"],
   "sql-joins-set-logic-recap": ["aurora-join-lane", "aurora-exists-paid", "aurora-paid-select"],
+  "sql-catalog-views-metrics": ["lab-catalogs", "lab-schemas", "lab-views", "aurora-paid-view", "aurora-metric-view"],
 };
 
 export function samplesForLesson(slug: string): LabSample[] {
@@ -575,113 +691,4 @@ export function samplesForLesson(slug: string): LabSample[] {
     .filter((s): s is LabSample => Boolean(s));
 }
 
-/** Seed tables for the in-browser lab (DuckDB). Databricks/Delta dialect is not required. */
-export const LAB_SEED_SQL = `
-CREATE OR REPLACE TABLE workspace_objects AS
-SELECT * FROM (VALUES
-  ('main', 'bronze', 'orders_raw', 'bronze'),
-  ('main', 'silver', 'orders', 'silver'),
-  ('main', 'gold', 'orders_daily', 'gold'),
-  ('main', 'gold', 'revenue_by_region', 'gold')
-) AS t(catalog, schema, table_name, layer);
-
-CREATE OR REPLACE TABLE bronze_orders AS
-SELECT * FROM (VALUES
-  (1, DATE '2026-09-01', 'west', 'ok', 12.50),
-  (2, DATE '2026-09-01', 'east', 'ok', 40.00),
-  (3, DATE '2026-09-02', 'west', 'corrupt', NULL),
-  (4, DATE '2026-09-02', 'east', 'ok', 18.25),
-  (5, DATE '2026-09-03', 'west', 'ok', 99.00),
-  (6, DATE '2026-09-03', 'east', 'returned', 15.00)
-) AS t(order_id, order_date, region, status, amount);
-
-CREATE OR REPLACE TABLE silver_orders AS
-SELECT order_id, order_date, region, status, amount
-FROM bronze_orders
-WHERE status <> 'corrupt';
-
-CREATE OR REPLACE TABLE gold_daily_orders AS
-SELECT
-  order_date,
-  region,
-  COUNT(*) AS orders,
-  ROUND(SUM(amount), 2) AS revenue
-FROM silver_orders
-GROUP BY order_date, region;
-
-CREATE OR REPLACE TABLE sf_account_objects AS
-SELECT * FROM (VALUES
-  ('analytics', 'raw', 'orders', 'table'),
-  ('analytics', 'analytics', 'orders_daily', 'table'),
-  ('analytics', 'marts', 'revenue_by_region', 'table'),
-  ('sandbox', 'public', 'scratch', 'table')
-) AS t(database, schema, object_name, object_type);
-
-CREATE OR REPLACE TABLE sf_warehouses AS
-SELECT * FROM (VALUES
-  ('learn_wh', 'XSMALL', 60, 'suspended'),
-  ('etl_wh', 'SMALL', 60, 'suspended'),
-  ('bi_wh', 'MEDIUM', 300, 'running')
-) AS t(name, size, auto_suspend_sec, status);
-
-CREATE OR REPLACE TABLE sf_customers AS
-SELECT * FROM (VALUES
-  (1, 'west', 'active'),
-  (2, 'east', 'active'),
-  (3, 'west', 'churned')
-) AS t(customer_id, region, status);
-
-CREATE OR REPLACE TABLE sf_orders AS
-SELECT * FROM (VALUES
-  (101, 1, DATE '2026-09-01', 12.50, 2, 'paid', 'FALL26'),
-  (102, 2, DATE '2026-09-01', 40.00, 2, 'paid', NULL),
-  (103, 1, DATE '2026-09-02', 18.25, 2, 'pending', 'FALL26'),
-  (104, 2, DATE '2026-09-03', 99.00, 2, 'paid', 'VIP')
-) AS t(order_id, customer_id, order_date, amount, as_of_version, status, promo_code);
-
-CREATE OR REPLACE TABLE sf_orders_history AS
-SELECT * FROM (VALUES
-  (101, 1, DATE '2026-09-01', 10.00, 1),
-  (101, 1, DATE '2026-09-01', 12.50, 2),
-  (102, 2, DATE '2026-09-01', 40.00, 1),
-  (102, 2, DATE '2026-09-01', 40.00, 2)
-) AS t(order_id, customer_id, order_date, amount, as_of_version);
-
-CREATE OR REPLACE TABLE aurora_customers AS
-SELECT * FROM (VALUES
-  (1, 'west', 'active', 'ada@aurora.dev', DATE '2026-01-04'),
-  (2, 'east', 'active', NULL, DATE '2026-02-11'),
-  (3, 'west', 'churned', 'kai@aurora.dev', DATE '2025-11-20'),
-  (4, 'latam', 'active', 'luz@aurora.dev', DATE '2026-03-01')
-) AS t(customer_id, region, status, email, signup_date);
-
-CREATE OR REPLACE TABLE aurora_orders AS
-SELECT * FROM (VALUES
-  (1001, 1, DATE '2026-09-01', 'paid', 42.50, 'FALL26'),
-  (1002, 2, DATE '2026-09-01', 'paid', 18.00, NULL),
-  (1003, 1, DATE '2026-09-02', 'pending', 99.00, 'FALL26'),
-  (1004, 3, DATE '2026-09-02', 'cancelled', 12.00, 'WIN25'),
-  (1005, 2, DATE '2026-09-03', 'paid', 64.25, 'VIP'),
-  (1006, 4, DATE '2026-09-04', 'returned', 22.00, NULL),
-  (1007, 1, DATE '2026-09-10', 'paid', 7.50, 'FLASH')
-) AS t(order_id, customer_id, order_date, status, amount, promo_code);
-
-CREATE OR REPLACE TABLE aurora_order_items AS
-SELECT * FROM (VALUES
-  (1001, 'SKU-LANE', 2, 12.50),
-  (1001, 'SKU-HUB', 1, 17.50),
-  (1002, 'SKU-LANE', 1, 18.00),
-  (1003, 'SKU-CORE', 1, 99.00),
-  (1005, 'SKU-HUB', 1, 40.00),
-  (1005, 'SKU-LANE', 1, 24.25),
-  (1006, 'SKU-LANE', 2, 11.00),
-  (1007, 'SKU-HUB', 1, 7.50)
-) AS t(order_id, sku, qty, unit_price);
-
-CREATE OR REPLACE TABLE aurora_products AS
-SELECT * FROM (VALUES
-  ('SKU-LANE', 'compute', 'Aurora Lane'),
-  ('SKU-HUB', 'platform', 'Aurora Hub'),
-  ('SKU-CORE', 'compute', 'Aurora Core')
-) AS t(sku, category, product_name);
-`;
+export { LAB_SEED_SQL } from "./seed";

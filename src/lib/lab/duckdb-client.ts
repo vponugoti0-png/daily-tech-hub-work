@@ -1,4 +1,4 @@
-import { LAB_SEED_SQL } from "./samples";
+import { LAB_OPTIONAL_CATALOG_SQL, LAB_SEED_SQL, seedStatements } from "./seed";
 import { assertSafeLabSql, LAB_RESULT_ROW_LIMIT } from "./sql-guard";
 import { cellText, headerText } from "./render";
 
@@ -39,7 +39,16 @@ async function initDb() {
   await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
   const conn = await db.connect();
   try {
-    await conn.query(LAB_SEED_SQL);
+    for (const stmt of seedStatements(LAB_SEED_SQL)) {
+      await conn.query(stmt);
+    }
+    try {
+      for (const stmt of seedStatements(LAB_OPTIONAL_CATALOG_SQL)) {
+        await conn.query(stmt);
+      }
+    } catch {
+      // Extra in-memory catalogs are optional. Core schemas/views still load.
+    }
   } finally {
     await conn.close();
   }

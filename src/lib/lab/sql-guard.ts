@@ -2,7 +2,8 @@ const BLOCKED =
   /\b(ATTACH|DETACH|COPY|EXPORT|IMPORT|INSTALL|LOAD|PRAGMA|CALL|CHECKPOINT|SET|RESET|CREATE\s+SECRET|CREATE\s+MACRO|PIVOT)\b/i;
 
 /**
- * Lab v1 is SQL samples only — read-only SELECT/WITH against local DuckDB tables.
+ * Lab v1 is SQL samples only — read-only SELECT/WITH against local DuckDB
+ * tables, views, schemas, and metric-view–style fixtures.
  * Rejects multi-statement and remote/extension surfaces even though the engine
  * is in-browser (defense in depth; no cloud credentials exist).
  */
