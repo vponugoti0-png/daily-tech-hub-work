@@ -53,9 +53,7 @@ test.describe("SQL local practice lab + exercise path", () => {
     );
     await lab.getByRole("button", { name: "Run SQL sample" }).click();
     await expect(table).toBeVisible({ timeout: 45_000 });
-    const amount12 = table.locator("tbody td").filter({ hasText: /^(12\.50|12\.5)$/ });
-    await expect(amount12.first()).toHaveText(/^(12\.50|12\.5)$/);
-    await expectCleanLabCells(table, ["SKU-LANE"]);
+    await expectCleanLabCells(table, ["12.50", "SKU-LANE"]);
 
     await expect(lab.getByText(/Lab step saved on this device/i)).toBeVisible();
 
