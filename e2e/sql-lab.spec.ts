@@ -69,17 +69,18 @@ test.describe("SQL local practice lab + exercise path", () => {
   test("training → SQL track → new SELECT lesson", async ({ page }) => {
     await page.goto("/training");
     await expect(page.getByRole("heading", { name: "Interactive course tracks" })).toBeVisible();
-    await page.getByRole("link", { name: /SQL for Analytics Engineering/i }).click();
+    await page.locator('a.panel[href="/training/sql"]').click();
 
     await expect(page).toHaveURL(/\/training\/sql\/?$/);
     await expect(page.getByRole("heading", { name: "SQL for Analytics Engineering" })).toBeVisible();
     await expect(page.getByRole("heading", { name: /SELECT, filters, NULLs, and LIMIT/i })).toBeVisible();
 
-    await page.getByRole("link", { name: /SELECT, filters, NULLs, and LIMIT/i }).click();
+    await page.locator('a[href="/training/sql/sql-select-filter-nulls"]').first().click();
     await expect(page).toHaveURL(/\/training\/sql\/sql-select-filter-nulls/);
     await expect(page.locator("#learn")).toHaveText(/SELECT, filters, NULLs, and LIMIT/i);
-    await expect(page.getByRole("link", { name: /Run in local lab/i }).first()).toBeVisible();
-    await page.getByRole("link", { name: /Run in local lab/i }).first().click();
+    const tryItLab = page.getByRole("link", { name: /Open local practice lab/i }).first();
+    await expect(tryItLab).toBeVisible();
+    await tryItLab.click();
     await expect(page.locator("#lab").getByRole("heading", { name: "Local practice lab" })).toBeVisible();
   });
 
