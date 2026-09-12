@@ -1442,18 +1442,34 @@ delta = [{"order_id": 1, "status": "paid", "amount": 12.5}, {"order_id": 2, "sta
 print(upsert_by_id(silver, delta))`,
     note: "Same key twice → last write wins. No file, no SQL, no Spark session.",
   },
+,
+  {
+    id: "py-read-orders-csv",
+    label: "Read /data/orders.csv",
+    code: `import csv
+from pathlib import Path
 
+path = Path("/data/orders.csv")
+with path.open(encoding="utf-8", newline="") as f:
+    rows = list(csv.DictReader(f))
+print(len(rows))
+print(rows[0]["order_id"], rows[0]["status"], rows[0]["amount"])
+for row in rows:
+    if row["promo_code"] == "":
+        print("empty promo", row["order_id"])`,
+    note: "stdlib csv — not pandas. The lab seeds /data/orders.csv. Empty promo_code is fine; empty order_id is not.",
+  }
 ];
 
 const PYTHON_BY_LESSON: Record<PythonLabSlug, string[]> = {
   "python-none-dicts-rows": ["py-unknown-promos", "py-assert-row", "py-paid-only", "py-promo-lookup"],
   "python-functions-pure-transforms": ["py-paid-only", "py-no-mutate", "py-assert-row", "py-promo-lookup"],
-  "python-pathlib-extracts": ["py-landing-glob", "py-assert-row", "py-parse-landing", "py-returns-landing"],
+  "python-pathlib-extracts": ["py-landing-glob", "py-read-orders-csv", "py-assert-row", "py-parse-landing", "py-returns-landing"],
   "python-exceptions-retries": ["py-loud-transform", "py-assert-row", "py-unknown-promos", "py-retry-shape"],
   "python-datetimes-watermarks": ["py-watermark", "py-project-filter", "py-window-overlap"],
   "python-comprehensions-chunks": ["py-project-filter", "py-chunk-ids", "py-paid-only", "py-chunk-landing"],
   "python-logging-not-print": ["py-job-log", "py-paid-only", "py-parse-landing"],
-  "python-dataframe-contracts": ["py-assert-row", "py-paid-only", "py-unknown-promos"],
+  "python-dataframe-contracts": ["py-assert-row", "py-paid-only", "py-read-orders-csv", "py-unknown-promos"],
   "python-typing-for-pipelines": ["py-typed-row", "py-assert-row", "py-paid-only"],
   "python-testing-spark-logic": ["py-unittest-row", "py-assert-row", "py-loud-transform"],
   "python-idempotent-writers": ["py-upsert-dict", "py-no-mutate", "py-assert-row"],

@@ -19,8 +19,8 @@ test.describe("Wave A — hub, datasets, labs, deep-dive", () => {
     await page.goto("/training");
 
     await expect(page.getByRole("heading", { name: "Interactive course tracks" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "All tools & tracks" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Track cards" })).toBeVisible();
+    const index = page.getByTestId("training-track-index");
+    await expect(index.getByRole("heading", { name: "All tracks" })).toBeVisible();
 
     const inventory = page.getByRole("list", { name: "All training tracks" });
     await expect(inventory.getByRole("link", { name: "Prompt Engineering" })).toBeVisible();
@@ -49,9 +49,10 @@ test.describe("Wave A — hub, datasets, labs, deep-dive", () => {
     await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
     const schema = lab.getByRole("complementary", { name: "Sample database schema" });
     await expect(schema).toBeVisible();
-    await expect(schema.getByRole("button", { name: /aurora_orders/ })).toBeVisible();
+    await expect(schema.getByTestId("lab-schema-table-aurora_orders")).toBeVisible();
+    await expect(schema.getByTestId("lab-schema-table-aurora_shipments")).toBeVisible();
 
-    await lab.getByRole("button", { name: "Restore sample DB" }).click();
+    await lab.getByRole("button", { name: "Restore sample database" }).click();
     await expect(lab.getByText(/Sample database restored/i)).toBeVisible({ timeout: 45_000 });
 
     await lab.getByLabel("SQL to run").fill("INSERT INTO aurora_orders VALUES (1)");
