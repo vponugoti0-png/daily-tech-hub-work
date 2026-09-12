@@ -38,6 +38,27 @@ test.describe("search form (hydration-resilient GET)", () => {
         page.getByRole("heading", { level: 3 }).first(),
       ),
     ).toBeVisible();
+    await expect(page.getByRole("status")).toHaveText(/\d+ results? for “window”/);
+  });
+
+  test("search result count is visible for hits and zero matches", async ({ page }) => {
+    await page.goto("/search?q=window");
+    await expect(page.getByRole("status")).toHaveText(/\d+ results? for “window”/);
+    await expect(page.getByRole("heading", { name: /Find anything in the hub/i })).toBeVisible();
+
+    await page.goto("/search?q=zzzxqnotfound123");
+    await expect(page.getByRole("status")).toHaveText(/0 results for “zzzxqnotfound123”/);
+    await expect(page.getByRole("heading", { name: "No matches" })).toBeVisible();
+    await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
+  });
+
+  test("git query prefers git lessons over body-only noise", async ({ page }) => {
+    await page.goto("/search?q=git");
+    await expect(page.getByRole("status")).toHaveText(/\d+ results? for “git”/);
+    await expect(
+      page.getByRole("link", { name: /rebase|commit hygiene|bisect|branching|PR templates/i }).first(),
+    ).toBeVisible();
+    await expect(page.getByRole("link", { name: /Practice with agents & Cortex functions/i })).toHaveCount(0);
   });
 
   test("native GET submit works without JavaScript handlers", async ({ browser }) => {
