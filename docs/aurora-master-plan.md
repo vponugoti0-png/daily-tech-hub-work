@@ -512,7 +512,7 @@ Phase 1 = one shell that *looks* like Tryit on lessons that already have labs. P
 
 ## 8. Backend — auth, progress, sandboxes
 
-Backend does **not** become a new product in this plan. Phase 1 Unified Editor and the school IA reuse what is already on `main`. Detail: [`docs/auth-and-progress.md`](./auth-and-progress.md). Wave B B2/B3: [`docs/wave-b-backend-ac.md`](./wave-b-backend-ac.md) (**held**). **B1 is shipped on `main` (#42)** — grandfathered; no further B1 work until the Editor shell ships.
+Backend does **not** become a new product in this plan. Phase 1 Unified Editor and the school IA reuse what is already on `main`. New APIs, cookies, or sandboxes wait for a stamp — Wave B AC for B2/B3, this file for Product non-goals. Detail for sessions and progress: [`docs/auth-and-progress.md`](./auth-and-progress.md). Wave B AC: [`docs/wave-b-backend-ac.md`](./wave-b-backend-ac.md). **B1 is shipped on `main` (#42)** — grandfathered; no further B1 work until the Editor shell ships. B2/B3 stay **held**.
 
 ### 8.0 Room AC (docs — Product ACCEPT)
 
@@ -545,7 +545,7 @@ v1 practice stays **client-side**. DuckDB-WASM, Pyodide, the Git Play Lab engine
 |------------|------|
 | **Progress** | Reuse `track` / `slug` + `stepIndex` / quiz fields. **No new progress tables** for v1 Tryit. |
 | **Seeds** | Same-origin fixtures. Restore = client seed reset. **No remote DB.** |
-| **Run → results** | W3-style loop does **not** need new APIs in Phase 1. Locked: existing `GET`/`POST /api/progress` only — **no new progress model** (§8.0 / §16.4). |
+| **Run → results** | W3-style loop does **not** need new APIs in Phase 1. |
 
 Phase 1 Editor work is Frontend + Content. Backend’s job is: do not invent a grade / proxy / sandbox to “support” the shell.
 
@@ -553,14 +553,14 @@ Phase 1 Editor work is Frontend + Content. Backend’s job is: do not invent a g
 
 | Item | Status |
 |------|--------|
-| **B1 AI Local practice** | **Shipped on `main` (#42) — grandfathered.** Client rubric. Kill-switch `NEXT_PUBLIC_AI_LAB=0`. **Not unshipped.** No further B1 work until Phase 1 Editor shell ships. |
-| **B2 Practice Engine auto-check** | **Held** — [`docs/wave-b-backend-ac.md`](./wave-b-backend-ac.md). Not Phase 1. |
-| **B3 Git Practice VM** | **Held** — same Wave B doc. D5 Railway sidecar. Never `spawn('git')` on the web/SQLite service. |
+| **B1 AI Local practice** | **Shipped** (#42). Client rubric. Kill-switch `NEXT_PUBLIC_AI_LAB=0`. Already on `main` is OK — **grandfathered, not unshipped.** This plan does not ask to revert it. No further B1 work until the Phase 1 Editor shell ships. |
+| **B2 Practice Engine auto-check** | **Held.** Client preferred. If an API exists later: CSRF + rate-limit; fixed fixtures only; no LLM grading in v1. |
+| **B3 Git Practice VM** | **Held.** D5 locked to **Railway sidecar** (separate service, deny-egress, short TTL). Never `spawn('git')` on the web/SQLite service. |
 | **Cloud warehouses** | Still omit real Snowflake / Databricks credential connect. |
 
-This plan does **not** unlock B2 or B3 and does **not** schedule more B1.
+This plan does **not** unlock B2 or B3.
 
-### 8.4 Explicit non-goals until user stamp
+### 8.4 Explicit non-goals until plan stamp
 
 Do not start these from an IA-cleanup or Editor PR:
 
@@ -571,7 +571,7 @@ Do not start these from an IA-cleanup or Editor PR:
 
 ### 8.5 Backend open questions for Product
 
-Not in the UX list (§13). Product already stamped Q1–Q18; these stay B3/Phase-3 decisions:
+Not in the UX list (§13). Defaults until stamp:
 
 1. **Guest vs signed-in caps if B3 ever unlocks?** **Default: decide in the B3 impl stamp**, not here. Guests stay local-only until then.  
 2. **Path certificates — server-issued records (Phase 3) vs client-only badges?** **Default: wait for Phase 3.** If server-issued, reuse `readSession` + existing progress keys; do not invent a second transcript store in Phase 1.
