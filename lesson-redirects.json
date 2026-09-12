@@ -433,5 +433,205 @@
     "source": "/training/snowflake/02-time-travel-clones",
     "destination": "/training/snowflake/sf-time-travel-clones",
     "permanent": true
+  },
+  {
+    "source": "/training/sql/00-joins-set-logic",
+    "destination": "/training/sql/sql-joins-set-logic",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/joins-set-logic",
+    "destination": "/training/sql/sql-joins-set-logic",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/00-workspace-cluster-basics",
+    "destination": "/training/databricks/dbx-workspace-cluster-basics",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/workspace-cluster-basics",
+    "destination": "/training/databricks/dbx-workspace-cluster-basics",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/00-databases-schemas-warehouses",
+    "destination": "/training/snowflake/sf-databases-schemas-warehouses",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/databases-schemas-warehouses",
+    "destination": "/training/snowflake/sf-databases-schemas-warehouses",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/08-deduping-late-data",
+    "destination": "/training/sql/sql-deduping-late-data",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/deduping-late-data",
+    "destination": "/training/sql/sql-deduping-late-data",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/08-copy-stages-ingestion",
+    "destination": "/training/snowflake/sf-copy-stages-ingestion",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/copy-stages-ingestion",
+    "destination": "/training/snowflake/sf-copy-stages-ingestion",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/08-autoloader-ingestion",
+    "destination": "/training/databricks/dbx-autoloader-ingestion",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/autoloader-ingestion",
+    "destination": "/training/databricks/dbx-autoloader-ingestion",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/09-capstone-dynamic-table-mart",
+    "destination": "/training/snowflake/sf-capstone-dynamic-table-mart",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/capstone-dynamic-table-mart",
+    "destination": "/training/snowflake/sf-capstone-dynamic-table-mart",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/09-capstone-medallion-job",
+    "destination": "/training/databricks/dbx-capstone-medallion-job",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/capstone-medallion-job",
+    "destination": "/training/databricks/dbx-capstone-medallion-job",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/09-shared-capstone-checklist",
+    "destination": "/training/sql/sql-shared-capstone-checklist",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/shared-capstone-checklist",
+    "destination": "/training/sql/sql-shared-capstone-checklist",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/09-capstone-cli-package",
+    "destination": "/training/python/python-capstone-cli-package",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/capstone-cli-package",
+    "destination": "/training/python/python-capstone-cli-package",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/10-slowly-changing-dimensions",
+    "destination": "/training/sql/sql-slowly-changing-dimensions",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/slowly-changing-dimensions",
+    "destination": "/training/sql/sql-slowly-changing-dimensions",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/11-explain-plan-lab",
+    "destination": "/training/sql/sql-explain-plan-lab",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/explain-plan-lab",
+    "destination": "/training/sql/sql-explain-plan-lab",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/10-dlt-pipelines",
+    "destination": "/training/databricks/dbx-dlt-pipelines",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/dlt-pipelines",
+    "destination": "/training/databricks/dbx-dlt-pipelines",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/11-liquid-clustering",
+    "destination": "/training/databricks/dbx-liquid-clustering",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/liquid-clustering",
+    "destination": "/training/databricks/dbx-liquid-clustering",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/10-zero-copy-clone-dev",
+    "destination": "/training/snowflake/sf-zero-copy-clone-dev",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/zero-copy-clone-dev",
+    "destination": "/training/snowflake/sf-zero-copy-clone-dev",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/11-cortex-vs-snowpark",
+    "destination": "/training/snowflake/sf-cortex-vs-snowpark",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/cortex-vs-snowpark",
+    "destination": "/training/snowflake/sf-cortex-vs-snowpark",
+    "permanent": true
+  },
+  {
+    "source": "/training/ai-data-eng/08-practice-nonsf-agents",
+    "destination": "/training/ai-data-eng/ai-de-practice-nonsf-agents",
+    "permanent": true
+  },
+  {
+    "source": "/training/ai-data-eng/practice-nonsf-agents",
+    "destination": "/training/ai-data-eng/ai-de-practice-nonsf-agents",
+    "permanent": true
+  },
+  {
+    "source": "/training/git/04-branching-dbt-sql",
+    "destination": "/training/git/git-branching-dbt-sql",
+    "permanent": true
+  },
+  {
+    "source": "/training/git/branching-dbt-sql",
+    "destination": "/training/git/git-branching-dbt-sql",
+    "permanent": true
+  },
+  {
+    "source": "/training/git/05-pr-templates-data-diffs",
+    "destination": "/training/git/git-pr-templates-data-diffs",
+    "permanent": true
+  },
+  {
+    "source": "/training/git/pr-templates-data-diffs",
+    "destination": "/training/git/git-pr-templates-data-diffs",
+    "permanent": true
+  },
+  {
+    "source": "/training/prompt-engineering/07-de-role-prompt-library",
+    "destination": "/training/prompt-engineering/pe-de-role-prompt-library",
+    "permanent": true
+  },
+  {
+    "source": "/training/prompt-engineering/de-role-prompt-library",
+    "destination": "/training/prompt-engineering/pe-de-role-prompt-library",
+    "permanent": true
   }
 ]

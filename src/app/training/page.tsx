@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllLessons, getLesson, getLessonsByTrack } from "@/lib/content";
 import { SectionHeader } from "@/components/SectionHeader";
-import { TRACKS } from "@/lib/tracks";
+import { META_DE_OVERLAY, TRACKS } from "@/lib/tracks";
 import { TrainingFilters } from "@/components/training/TrainingFilters";
 
 export const metadata: Metadata = {
@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 export default function TrainingPage() {
   const lessons = getAllLessons();
   const practiceLesson = getLesson("ai-data-eng", "ai-de-practice-agents");
+  const capstoneChecklist = getLesson("sql", "sql-shared-capstone-checklist");
   return (
     <div className="space-y-10">
       <SectionHeader
@@ -21,6 +22,26 @@ export default function TrainingPage() {
         title="Interactive course tracks"
         description="Bite-sized lessons with try-it shells, quizzes, and cert-style checkpoints. No paywalls."
       />
+
+      <div className="panel rounded-3xl p-5">
+        <p className="font-display text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--sky)]">
+          {META_DE_OVERLAY.eyebrow}
+        </p>
+        <h2 className="mt-1 font-display text-xl font-bold text-[var(--ink-fg)]">
+          {META_DE_OVERLAY.title}
+        </h2>
+        <p className="mt-2 max-w-3xl text-sm text-[var(--muted)]">{META_DE_OVERLAY.blurb}</p>
+        <ul className="mt-3 space-y-1 text-sm text-[var(--ink-fg)]">
+          <li>
+            <span className="font-semibold text-[var(--mint)]">SQL · </span>
+            {META_DE_OVERLAY.sqlOrder}
+          </li>
+          <li>
+            <span className="font-semibold text-[var(--sun)]">Python · </span>
+            {META_DE_OVERLAY.pythonOrder}
+          </li>
+        </ul>
+      </div>
 
       {practiceLesson ? (
         <Link
@@ -40,6 +61,26 @@ export default function TrainingPage() {
             </p>
           </div>
           <span className="btn-primary shrink-0 self-start sm:self-center">Open lesson →</span>
+        </Link>
+      ) : null}
+
+      {capstoneChecklist ? (
+        <Link
+          href={`/training/${capstoneChecklist.track}/${capstoneChecklist.slug}`}
+          className="panel glass-hover flex flex-col gap-3 rounded-3xl border-2 border-[var(--mint)]/35 p-5 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div>
+            <p className="font-display text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--mint)]">
+              Shared capstone · Orders → daily revenue mart
+            </p>
+            <h2 className="mt-1 font-display text-xl font-bold text-[var(--ink-fg)]">
+              {capstoneChecklist.title}
+            </h2>
+            <p className="mt-1 max-w-2xl text-sm text-[var(--muted)]">
+              {capstoneChecklist.description} Cross-track checklist — not a new nav item.
+            </p>
+          </div>
+          <span className="btn-ghost shrink-0 self-start sm:self-center">Open checklist →</span>
         </Link>
       ) : null}
 

@@ -44,9 +44,20 @@ export default async function LessonPage({
   const isAiTrack =
     lesson.track === "prompt-engineering" || lesson.track === "ai-data-eng";
   const trackTitle = getTrackMeta(lesson.track)?.title ?? lesson.track;
-  const tryItEntries = isAiTrack
-    ? (lesson.cheatSheet ?? []).filter((e) => e.code).slice(0, 4)
-    : [];
+  const tryItLimit = isAiTrack ? 4 : 2;
+  const tryItEntries = (lesson.cheatSheet ?? []).filter((e) => e.code).slice(0, tryItLimit);
+  const tryItDialect =
+    lesson.track === "sql"
+      ? "ANSI SQL"
+      : lesson.track === "snowflake"
+        ? "Snowflake SQL"
+        : lesson.track === "databricks"
+          ? "Spark SQL / PySpark"
+          : lesson.track === "python"
+            ? "Python"
+            : lesson.track === "git"
+              ? "Git"
+              : "AI chat";
 
   return (
     <div className="flex flex-col gap-4 lg:flex-row lg:gap-8">
@@ -134,18 +145,19 @@ export default async function LessonPage({
         {tryItEntries.map((entry, i) => {
           const code = entry.code.replace(/\\n/g, "\n");
           const isSql = /SNOWFLAKE\.CORTEX/i.test(code);
+          const dialect = isSql ? "Snowflake SQL" : isAiTrack ? "AI chat" : tryItDialect;
+          const defaultHint = isAiTrack
+            ? isSql
+              ? "Copy into a Snowflake worksheet. Treat model output as untrusted."
+              : "Paste into Claude, Copilot Chat, or Grok — then iterate."
+            : "Copy into your warehouse, notebook, or repo. Live Run is not on this page.";
           return (
             <TryItBox
               key={`${entry.label}-${i}`}
-              title={i === 0 ? "Try this prompt" : entry.label}
+              title={isAiTrack && i === 0 ? "Try this prompt" : i === 0 ? "Try it" : entry.label}
               code={code}
-              dialect={isSql ? "Snowflake SQL" : "AI chat"}
-              hint={
-                entry.note ??
-                (isSql
-                  ? "Copy into a Snowflake worksheet. Treat model output as untrusted."
-                  : "Paste into Claude, Copilot Chat, or Grok — then iterate.")
-              }
+              dialect={dialect}
+              hint={entry.note ?? defaultHint}
             />
           );
         })}
