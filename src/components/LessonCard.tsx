@@ -7,6 +7,7 @@ import { SoftBadge } from "./Badge";
 import { BookOpen, CheckCircle2, Clock } from "lucide-react";
 import { getLessonProgress } from "@/lib/progress";
 import { getTrackMeta } from "@/lib/tracks";
+import { displayLessonTitle } from "@/lib/learner-paths";
 
 export function LessonCard({ lesson }: { lesson: TrainingLesson }) {
   const [done, setDone] = useState(false);
@@ -33,7 +34,7 @@ export function LessonCard({ lesson }: { lesson: TrainingLesson }) {
       </div>
       <div className="mb-1 flex items-start justify-between gap-2">
         <h3 className="font-display text-base font-bold text-[var(--ink-fg)] group-hover:text-[var(--coral)]">
-          {lesson.title}
+          {displayLessonTitle(lesson.title)}
         </h3>
         <BookOpen className="h-4 w-4 shrink-0 text-[var(--muted)]" aria-hidden />
       </div>

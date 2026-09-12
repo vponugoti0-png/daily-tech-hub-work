@@ -1,32 +1,32 @@
 import Link from "next/link";
-import { FlaskConical, Keyboard, Sparkles, Table2 } from "lucide-react";
+import { Compass, Sparkles, Table2 } from "lucide-react";
 import { JargonChips, JargonTip } from "@/components/JargonTip";
-import { FIRST_LESSON_HREF, STARTER_PRACTICE_HREF } from "@/lib/learner-paths";
+import { FIRST_LESSON_HREF, PATHS_HREF } from "@/lib/learner-paths";
 
 const CHOICES = [
   {
     href: FIRST_LESSON_HREF,
-    title: "Learn with AI prompts",
-    blurb: "Ask better questions and practice with Claude, Copilot, or Grok.",
-    icon: Sparkles,
-    accent: "text-[var(--sun)] border-[var(--sun)]/35 hover:border-[var(--sun)]/60",
-    chip: "Beginner",
-  },
-  {
-    href: "/training/sql/sql-select-filter-nulls",
-    title: "Learn SQL",
-    blurb: "Talk to databases with simple queries — windows, joins, and checks.",
+    title: "Start Zero→Hero",
+    blurb: "Write a real SELECT in the SQL lab — filters, NULLs, and LIMIT.",
     icon: Table2,
     accent: "text-[var(--mint)] border-[var(--mint)]/35 hover:border-[var(--mint)]/60",
-    chip: "Popular",
+    chip: "Front door",
   },
   {
-    href: "/shortcuts",
-    title: "Explore shortcuts",
-    blurb: "Copy-paste keyboard, CLI, SQL, and AI tips you can use today.",
-    icon: Keyboard,
+    href: PATHS_HREF,
+    title: "Skip ahead",
+    blurb: "Already know SQL? Jump a level on the Zero→Hero outline.",
+    icon: Compass,
     accent: "text-[var(--sky)] border-[var(--sky)]/35 hover:border-[var(--sky)]/60",
-    chip: "Quick win",
+    chip: "Experienced",
+  },
+  {
+    href: "/training/prompt-engineering/pe-ask-better-questions",
+    title: "Prompt Engineering",
+    blurb: "Ask better questions — an L0 elective, not the DE front door.",
+    icon: Sparkles,
+    accent: "text-[var(--sun)] border-[var(--sun)]/35 hover:border-[var(--sun)]/60",
+    chip: "Elective",
   },
 ] as const;
 
@@ -46,13 +46,12 @@ export function StartHere() {
             id="start-here-title"
             className="mt-1 font-display text-2xl font-bold text-[var(--ink-fg)] sm:text-3xl"
           >
-            Pick one path — no wrong answer
+            Zero→Hero starts in SQL
           </h2>
           <p className="mt-1 max-w-2xl text-sm text-[var(--muted)]">
-            Three friendly doors. The first lesson is Ask AI better questions — tap any card
-            and you&apos;re learning{" "}
+            The front door is a real query — not Prompt Engineering.{" "}
             <JargonTip term="DE">DE</JargonTip> /{" "}
-            <JargonTip term="ETL">ETL</JargonTip> words in Plain English as you go.
+            <JargonTip term="ETL">ETL</JargonTip> words stay in Plain English as you go.
           </p>
         </div>
       </div>
@@ -76,33 +75,12 @@ export function StartHere() {
               <h3 className="mt-3 font-display text-lg font-bold text-[var(--ink-fg)] group-hover:underline">
                 {c.title}
               </h3>
-              <p className="mt-1 text-sm leading-snug text-[var(--muted)]">{c.blurb}</p>
+              <p className="mt-1 line-clamp-2 text-sm leading-snug text-[var(--muted)]">{c.blurb}</p>
               <span className="mt-3 text-xs font-bold text-[var(--coral)]">Let&apos;s go →</span>
             </Link>
           );
         })}
       </div>
-      <Link
-        href={STARTER_PRACTICE_HREF}
-        data-testid="practice-cta"
-        className="mt-4 flex flex-col gap-2 rounded-2xl border-2 border-[var(--mint)]/40 bg-[var(--mint)]/10 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
-      >
-        <span className="flex items-start gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--panel)]">
-            <FlaskConical className="h-5 w-5 text-[var(--mint)]" aria-hidden />
-          </span>
-          <span>
-            <span className="block font-display text-sm font-bold text-[var(--ink-fg)]">
-              Practice in the SQL lab
-            </span>
-            <span className="mt-0.5 block text-sm text-[var(--muted)]">
-              Run a real <JargonTip term="SQL">SQL</JargonTip> sample in the browser — not a live
-              warehouse. Same Training routes; no extra header item.
-            </span>
-          </span>
-        </span>
-        <span className="btn-primary shrink-0 self-start sm:self-center">Open practice →</span>
-      </Link>
       <div className="plain-english-panel mt-4">
         <p className="mb-2 font-display text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--sky)]">
           Plain English

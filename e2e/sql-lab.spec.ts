@@ -84,7 +84,7 @@ test.describe("SQL local practice lab + exercise path", () => {
 
   test("training → SQL track → new SELECT lesson", async ({ page }) => {
     await page.goto("/training");
-    await expect(page.getByRole("heading", { name: "Interactive course tracks" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Your school" })).toBeVisible();
     await page.locator('a.panel[href="/training/sql"]').click();
 
     await expect(page).toHaveURL(/\/training\/sql\/?$/);

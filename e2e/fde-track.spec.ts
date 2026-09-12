@@ -20,7 +20,7 @@ test.describe("FDE training track", () => {
   test("training index lists the Forward Deployed Engineer card", async ({ page }) => {
     await page.goto("/training");
 
-    await expect(page.getByRole("heading", { name: "Interactive course tracks" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Your school" })).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Forward Deployed Engineer", exact: true }),
     ).toBeVisible();

@@ -3,15 +3,12 @@ import { expect, test } from "@playwright/test";
 const PRACTICE = "/training/ai-data-eng/ai-de-practice-agents";
 
 test.describe("training catalog", () => {
-  test("index lists AI for Data Engineers and the practice start card", async ({ page }) => {
+  test("index lists AI for Data Engineers as an elective", async ({ page }) => {
     await page.goto("/training");
 
-    await expect(page.getByRole("heading", { name: "Interactive course tracks" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "AI for Data Engineers" })).toBeVisible();
-    await expect(page.getByText(/Start here · Practice with agents/i)).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: /Practice with agents & Cortex functions/i }).first(),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Your school" })).toBeVisible();
+    await expect(page.getByTestId("learn-electives").getByRole("heading", { name: "AI for Data Engineers" })).toBeVisible();
+    await expect(page.getByText(/Start here · Practice with agents/i)).toHaveCount(0);
   });
 
   test("ai-data-eng track lists the practice lesson", async ({ page }) => {
@@ -21,7 +18,7 @@ test.describe("training catalog", () => {
     await expect(
       page.getByRole("heading", { name: /Practice with agents & Cortex functions/i }),
     ).toBeVisible();
-    await expect(page.getByText(/practice with agents and Cortex functions/i)).toBeVisible();
+    await expect(page.getByText(/practice agent prompts locally/i)).toBeVisible();
   });
 
   test("practice lesson shows TryIt, quiz, Shortcuts, and back-to-track", async ({ page }) => {

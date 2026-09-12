@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { TrainingLesson } from "@/lib/types";
 import { getLessonProgress } from "@/lib/progress";
+import { displayLessonTitle } from "@/lib/learner-paths";
 import { cn } from "@/lib/utils";
 import { Check, ChevronDown } from "lucide-react";
 
@@ -20,7 +21,7 @@ function OutlineList({
 }) {
   return (
     <ol className="space-y-1">
-      {lessons.map((l, i) => {
+      {lessons.map((l) => {
         const active = l.slug === currentSlug;
         return (
           <li key={l.slug}>
@@ -41,9 +42,9 @@ function OutlineList({
                     : "bg-[var(--panel-2)] text-[var(--muted)]",
                 )}
               >
-                {done[l.slug] ? <Check className="h-3 w-3" /> : i + 1}
+                {done[l.slug] ? <Check className="h-3 w-3" /> : <span aria-hidden />}
               </span>
-              <span className="leading-snug">{l.title}</span>
+              <span className="leading-snug">{displayLessonTitle(l.title)}</span>
             </Link>
           </li>
         );
