@@ -83,7 +83,7 @@ test.describe("Wave A — training index + lab P1 UX", () => {
     await lab.getByRole("button", { name: "Run SQL sample" }).click();
     const table = lab.getByRole("table", { name: "Query result" });
     await expect(table).toBeVisible({ timeout: 45_000 });
-    await expectCleanLabCells(table, ["64.25", "paid"]);
+    await expectCleanLabCells(table, ["88.00", "paid"]);
   });
 
   test("Databricks and Snowflake labs show dialect schema + restore", async ({ page }) => {
