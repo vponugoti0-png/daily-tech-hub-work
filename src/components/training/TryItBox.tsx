@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Play, Sparkles } from "lucide-react";
 import { CopyButton } from "@/components/CopyButton";
 import { TRYIT_RUN_EVENT, type TryItRunDetail } from "@/lib/lab/events";
@@ -22,13 +22,20 @@ export function TryItBox({
 }) {
   const [draft, setDraft] = useState(code);
   const [showHint, setShowHint] = useState(false);
+  const editorRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     setDraft(code);
   }, [code]);
 
+  function editorValue() {
+    return editorRef.current?.value ?? draft;
+  }
+
   function runInLab() {
-    const detail: TryItRunDetail = { code: draft };
+    const next = editorValue();
+    setDraft(next);
+    const detail: TryItRunDetail = { code: next };
     window.dispatchEvent(new CustomEvent<TryItRunDetail>(TRYIT_RUN_EVENT, { detail }));
     document.getElementById("lab")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -68,7 +75,7 @@ export function TryItBox({
               Run
             </button>
           ) : null}
-          <CopyButton text={draft} label={labHref ? "Copy" : "Copy to practice"} />
+          <CopyButton text={editorValue()} label={labHref ? "Copy" : "Copy to practice"} />
           {labHref ? (
             <a
               href={labHref}
@@ -91,6 +98,7 @@ export function TryItBox({
       <label className="block px-3 pt-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--muted)]">
         Editor
         <textarea
+          ref={editorRef}
           className="field mt-1 min-h-[140px] w-full resize-y font-mono text-[12px] leading-relaxed text-[var(--ink-fg)]"
           value={draft}
           spellCheck={false}

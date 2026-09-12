@@ -22,8 +22,8 @@ test.describe("Practice UX — layout, editor Run, Python lab", () => {
   test("SQL lesson order is Cheat sheet → Try it → Local lab", async ({ page }) => {
     await page.goto(SQL_SELECT);
 
-    await expect(page.getByRole("heading", { name: "Cheat sheet" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Try it", exact: true }).or(page.locator(".tryit").first())).toBeVisible();
+    await expect(page.locator("#cheat-sheet").getByRole("heading", { name: "Cheat sheet" })).toBeVisible();
+    await expect(page.locator(".tryit").first()).toBeVisible();
     await expect(page.locator("#cheat-sheet")).toBeVisible();
     await expect(page.locator(".tryit").first()).toBeVisible();
     await expect(page.locator("#lab")).toBeVisible();
@@ -58,7 +58,12 @@ test.describe("Practice UX — layout, editor Run, Python lab", () => {
     const edited = original.includes("LIMIT 5")
       ? original.replace("LIMIT 5", "LIMIT 2")
       : `${original.replace(/;+\s*$/, "")}\nLIMIT 2`;
-    await editor.fill(edited);
+    await editor.evaluate((el, value) => {
+      const node = el as HTMLTextAreaElement;
+      const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value")?.set;
+      setter?.call(node, value);
+      node.dispatchEvent(new Event("input", { bubbles: true }));
+    }, edited);
 
     await tryit.getByRole("button", { name: "Run in local lab" }).click();
 
@@ -103,7 +108,13 @@ test.describe("Practice UX — layout, editor Run, Python lab", () => {
     const tryit = page.locator(".tryit").first();
     const editor = tryit.getByLabel("Try it editor");
     await expect(editor).toBeVisible();
-    await editor.fill('rows = [{"promo_code": None}, {"promo_code": "VIP"}]\nprint(sum(1 for r in rows if r["promo_code"] is None))');
+    const py = 'rows = [{"promo_code": None}, {"promo_code": "VIP"}]\nprint(sum(1 for r in rows if r["promo_code"] is None))';
+    await editor.evaluate((el, value) => {
+      const node = el as HTMLTextAreaElement;
+      const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value")?.set;
+      setter?.call(node, value);
+      node.dispatchEvent(new Event("input", { bubbles: true }));
+    }, py);
     await tryit.getByRole("button", { name: "Run in local lab" }).click();
 
     const lab = page.locator("#lab");
