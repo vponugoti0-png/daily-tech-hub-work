@@ -1,6 +1,6 @@
 # Aurora / Daily Tech Hub — Training & Practice Improvements
 
-> **Superseded for IA / vision / nav / paths.** Product north star is [`docs/aurora-master-plan.md`](./aurora-master-plan.md). Product + UX **ACCEPT** 2026-09-12 (Q1–Q18 + Tryit AC + four-item nav / lesson loop). Feature freeze continues until the **user** stamps Acceptance (§15). **B1 is already on `main` (#42)** — grandfathered; no further B1/B2/B3 until the Phase 1 Unified Editor shell ships. This file remains a **tactical lab/P1 backlog and older peer notes**.
+> **Superseded for IA / vision / nav / paths.** Product north star is [`docs/aurora-master-plan.md`](./aurora-master-plan.md). Product + UX **ACCEPT** 2026-09-12 (Q1–Q18 + Tryit AC + four-item nav / lesson loop). Feature freeze continues until the **user** stamps Acceptance (§14). **B1 is already on `main` (#42)** — grandfathered; no further B1/B2/B3 until the Phase 1 Unified Editor shell ships. This file remains a **tactical lab/P1 backlog and older peer notes**.
 
 **Audience:** Product, Frontend, Backend, QA, Security  
 **Date:** 2026-09-12  
