@@ -69,19 +69,23 @@ test.describe("Python local practice lab — file editor + VFS", () => {
 
     const lab = page.locator("#lab");
     await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
+    await expect(lab).toHaveAttribute("data-lab-ready", "1");
     await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
 
-    const csvTab = lab.getByRole("tab", { name: "orders.csv" });
+    await expect(lab.getByLabel("Python to run")).toBeVisible();
+    const csvTab = lab.getByRole("tab", { name: "orders.csv", exact: true });
     await expect(csvTab).toBeVisible();
     await csvTab.click();
+    await expect(csvTab).toHaveAttribute("aria-selected", "true");
     const dataEditor = lab.getByLabel("Lab file orders.csv");
     await expect(dataEditor).toBeVisible();
     await expect(dataEditor).toHaveValue(/order_id,status,amount/);
     await expect(dataEditor).toHaveValue(/1001,paid,42.50,FALL26/);
-    await expect(lab.getByText(/\/data\/orders\.csv/)).toBeVisible();
+    await expect(lab.getByText(/Seeded VFS/)).toBeVisible();
+    await expect(lab.locator("span.font-mono", { hasText: "/data/orders.csv" })).toBeVisible();
 
-    await lab.getByRole("tab", { name: "main.py" }).click();
-    await lab.getByLabel("Python sample").selectOption({ label: "Read /data/orders.csv" });
+    await lab.getByRole("tab", { name: "main.py", exact: true }).click();
+    await lab.getByLabel("Python sample", { exact: true }).selectOption({ label: "Read /data/orders.csv" });
     await expect(lab.getByLabel("Python to run")).toHaveValue(/\/data\/orders\.csv/);
 
     await lab.getByRole("button", { name: "Run Python sample" }).click();

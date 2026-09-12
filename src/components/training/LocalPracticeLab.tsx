@@ -39,6 +39,11 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
   const [failCount, setFailCount] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [restoreStatus, setRestoreStatus] = useState<string | null>(null);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   useEffect(() => {
     setActiveTab(MAIN_TAB);
@@ -163,6 +168,7 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
     <section
       id="lab"
       aria-labelledby={titleId}
+      data-lab-ready={hydrated ? "1" : undefined}
       className="tryit lab-surface my-6 scroll-mt-24 overflow-hidden rounded-2xl border border-[var(--ink-border)] bg-[var(--panel)]"
     >
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--ink-border)] bg-[var(--panel-2)] px-3 py-2">
