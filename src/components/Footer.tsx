@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FIRST_LESSON_HREF } from "@/lib/learner-paths";
 
 export function Footer({ lastUpdated }: { lastUpdated?: string }) {
   return (
@@ -16,7 +17,7 @@ export function Footer({ lastUpdated }: { lastUpdated?: string }) {
         <div className="flex flex-col gap-1 sm:items-end">
           {lastUpdated ? <p>Digest updated {lastUpdated}</p> : null}
           <p>
-            <Link href="/#start-here" className="hover:text-[var(--coral)]">
+            <Link href={FIRST_LESSON_HREF} className="hover:text-[var(--coral)]">
               Start here
             </Link>
             {" · "}

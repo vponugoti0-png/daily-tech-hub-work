@@ -15,6 +15,7 @@ import { TryItBox } from "@/components/training/TryItBox";
 import { StepCards } from "@/components/training/StepCards";
 import { LocalPracticeLab } from "@/components/training/LocalPracticeLab";
 import { GitPlayLab } from "@/components/training/git/GitPlayLab";
+import { JargonChips } from "@/components/JargonTip";
 import { isGitPlayLesson, isLabLesson } from "@/lib/lab/samples";
 
 export function generateStaticParams() {
@@ -51,6 +52,7 @@ export default async function LessonPage({
   const showLab = isLabLesson(lesson.track, lesson.slug);
   const showGitLab = isGitPlayLesson(lesson.track, lesson.slug);
   const showPractice = showLab || showGitLab;
+  const showStarterJargon = idx === 0 || (lesson.level === "beginner" && lesson.order <= 1);
   const tryItLimit = isAiTrack || isFdeTrack || lesson.track === "python" ? 4 : 3;
   const tryItEntries = (lesson.cheatSheet ?? []).filter((e) => e.code).slice(0, tryItLimit);
   const tryItDialect =
@@ -96,6 +98,12 @@ export default async function LessonPage({
           {lesson.title}
         </h1>
         <p className="mt-3 text-base text-[var(--muted)]">{lesson.description}</p>
+
+        {showStarterJargon ? (
+          <div className="plain-english-panel mt-6">
+            <JargonChips />
+          </div>
+        ) : null}
 
         <div className="mt-4 flex flex-wrap gap-1.5">
           {lesson.topics.map((t) => (

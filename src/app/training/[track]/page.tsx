@@ -6,6 +6,7 @@ import { getTrackMeta, TRACK_IDS } from "@/lib/tracks";
 import { labEntrySlug } from "@/lib/lab/samples";
 import { LessonCard } from "@/components/LessonCard";
 import { TrackProgressBar } from "@/components/training/ProgressBar";
+import { JargonChips } from "@/components/JargonTip";
 import { ArrowLeft } from "lucide-react";
 
 import { TrackSceneClient } from "@/components/three/TrackSceneClient";
@@ -79,6 +80,9 @@ export default async function TrackPage({
                 {track === "git" ? "Practice · Git Play Lab →" : "Practice · local lab →"}
               </Link>
             ) : null}
+          </div>
+          <div className="plain-english-panel mt-6 max-w-xl">
+            <JargonChips />
           </div>
         </div>
         <TrackSceneClient track={track} />

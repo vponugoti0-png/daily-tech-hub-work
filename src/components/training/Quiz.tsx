@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import type { QuizQuestion } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { upsertLessonProgress } from "@/lib/progress";
+import { whyWrongCopy } from "@/lib/quiz-copy";
 
 function tallyScore(questions: QuizQuestion[], answers: Record<number, number>) {
   return questions.reduce((acc, q, i) => acc + (answers[i] === q.answer ? 1 : 0), 0);
@@ -87,8 +88,20 @@ export function Quiz({
                 );
               })}
             </div>
-            {submitted && q.explanation ? (
-              <p className="text-xs text-[var(--muted)]">{q.explanation}</p>
+            {submitted && answers[qi] !== undefined && answers[qi] !== q.answer ? (
+              <p
+                data-testid="quiz-why-wrong"
+                className="rounded-xl border border-[var(--coral)]/35 bg-[var(--coral)]/10 px-3 py-2 text-sm text-[var(--ink-fg)]"
+                role="status"
+              >
+                <span className="block font-bold text-[var(--coral)]">Why that was off</span>
+                <span className="mt-0.5 block">{whyWrongCopy(q, answers[qi])}</span>
+              </p>
+            ) : null}
+            {submitted && answers[qi] === q.answer && q.explanation ? (
+              <p className="text-xs text-[var(--muted)]" data-testid="quiz-why-right">
+                {q.explanation}
+              </p>
             ) : null}
           </fieldset>
         ))}

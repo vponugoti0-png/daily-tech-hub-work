@@ -55,15 +55,41 @@ export function JargonTip({
   );
 }
 
+/** Kid-friendly chips shown on Home + Training (DE / DBX / ETL / …). */
+export const HOME_TRAINING_JARGON = ["DE", "DBX", "ETL", "SQL", "Pipeline"] as const;
+
+export function JargonChips({
+  terms = HOME_TRAINING_JARGON,
+}: {
+  terms?: readonly string[];
+}) {
+  const entries = terms
+    .map((term) => findJargon(term))
+    .filter((e): e is JargonEntry => Boolean(e));
+
+  return (
+    <div data-testid="jargon-chips" aria-label="Plain English jargon" className="flex flex-wrap gap-2">
+      {entries.map((e) => (
+        <JargonTip key={e.term} term={e.term} className="max-w-full">
+          <span className="jargon-chip inline-flex items-center gap-1.5 rounded-full border border-dashed border-[var(--sky)]/45 bg-[var(--sky)]/10 px-2.5 py-1 text-xs">
+            <span className="font-bold">{e.term}</span>
+            <span className="font-medium text-[var(--muted)]">= {e.plain}</span>
+          </span>
+        </JargonTip>
+      ))}
+    </div>
+  );
+}
+
 export function JargonLegend({ entries = [] as JargonEntry[] }: { entries?: JargonEntry[] }) {
   const list = entries.length
     ? entries
     : [
         findJargon("DE")!,
         findJargon("DBX")!,
-        findJargon("CLI")!,
+        findJargon("ETL")!,
         findJargon("SQL")!,
-        findJargon("Cortex")!,
+        findJargon("Pipeline")!,
       ].filter(Boolean);
 
   return (

@@ -26,7 +26,11 @@ function writeJson(rel, data) {
 }
 
 function todayParts(d = new Date()) {
-  return { date: d.toISOString().slice(0, 10), lastUpdated: d.toISOString() };
+  // Local civil date — UTC slice() is a day behind in US evening timezones.
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return { date: `${y}-${m}-${day}`, lastUpdated: d.toISOString() };
 }
 
 function hashDate(dateStr) {

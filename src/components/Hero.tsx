@@ -4,7 +4,8 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { formatDate, formatDateTime, relativeTime } from "@/lib/dates";
+import { formatCalendarDate, formatDate, formatDateTime, relativeTime } from "@/lib/dates";
+import { FIRST_LESSON_HREF } from "@/lib/learner-paths";
 import type { DigestMeta } from "@/lib/types";
 import { BookOpen, CalendarDays, Keyboard, RefreshCw, Sparkles } from "lucide-react";
 
@@ -19,6 +20,12 @@ function RelativeUpdated({ value }: { value: string }) {
       {mounted ? <span className="hidden sm:inline"> · {absolute}</span> : null}
     </>
   );
+}
+
+/** Digest civil date — date-only strings never shift with timezone. */
+function DigestDate({ date, lastUpdated }: { date: string; lastUpdated: string }) {
+  const label = formatCalendarDate(date) ?? formatDate(lastUpdated);
+  return <span data-testid="digest-date">{label}</span>;
 }
 
 const HeroScene = dynamic(
@@ -54,19 +61,14 @@ export function Hero({ digest }: { digest: DigestMeta }) {
   });
 
   return (
-    <section className="relative overflow-hidden rounded-[1.5rem] border border-[var(--ink-border)] bg-[var(--panel)] p-6 sm:p-9">
-      {allow3d ? (
-        <div className="pointer-events-none absolute inset-0 opacity-75" aria-hidden>
-          <HeroScene />
-        </div>
-      ) : null}
-      {/* Playful illustration blobs — static fallback / mobile */}
+    <section className="relative isolate overflow-hidden rounded-[1.5rem] border border-[var(--ink-border)] bg-[var(--panel)] p-6 sm:p-9">
+      {/* Decorative blobs stay behind type; 3D is confined to the right column. */}
       <div className="pointer-events-none absolute -right-10 -top-10 h-44 w-44 rounded-full bg-[var(--violet)]/25 blur-3xl" aria-hidden />
       <div className="pointer-events-none absolute bottom-0 left-1/3 h-36 w-36 rounded-full bg-[var(--coral)]/20 blur-3xl" aria-hidden />
       <div className="pointer-events-none absolute -left-8 top-1/2 h-28 w-28 rounded-full bg-[var(--sky)]/20 blur-2xl" aria-hidden />
 
-      <div className="relative grid gap-6 lg:grid-cols-[1.4fr_0.8fr] lg:items-center">
-        <div>
+      <div className="relative z-10 grid gap-6 lg:grid-cols-[minmax(0,1.45fr)_minmax(16rem,0.8fr)] lg:items-start">
+        <div className="relative rounded-2xl bg-[color-mix(in_oklab,var(--panel)_92%,transparent)] py-1">
           <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-[var(--muted)]">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--violet)]/20 px-3 py-1 font-bold text-[var(--violet)] ring-1 ring-[var(--violet)]/35">
               <Sparkles className="h-3.5 w-3.5" aria-hidden />
@@ -75,16 +77,16 @@ export function Hero({ digest }: { digest: DigestMeta }) {
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--coral)]/15 px-3 py-1 font-bold text-[var(--coral)] ring-1 ring-[var(--coral)]/30">
               <span className="live-dot h-1.5 w-1.5 rounded-full bg-[var(--coral)]" />
               <CalendarDays className="h-3.5 w-3.5" aria-hidden />
-              Today · {formatDate(digest.date)}
+              Today · <DigestDate date={digest.date} lastUpdated={digest.lastUpdated} />
             </span>
             <span className="inline-flex items-center gap-1.5">
               <RefreshCw className="h-3.5 w-3.5" aria-hidden />
               <RelativeUpdated value={digest.lastUpdated} />
             </span>
-</div>
+          </div>
           <motion.h1
             {...fade(0)}
-            className="max-w-3xl font-display text-3xl font-bold tracking-tight text-[var(--ink-fg)] sm:text-4xl lg:text-[2.75rem] lg:leading-[1.1]"
+            className="max-w-3xl font-display text-3xl font-bold tracking-tight text-[var(--ink-fg)] sm:text-4xl lg:text-[2.6rem] lg:leading-[1.15]"
           >
             {digest.headline}
           </motion.h1>
@@ -95,7 +97,7 @@ export function Hero({ digest }: { digest: DigestMeta }) {
             {digest.blurb}
           </motion.p>
           <motion.div {...fade(0.08)} className="mt-6 flex flex-wrap gap-3">
-            <Link href="#start-here" className="btn-primary">
+            <Link href={FIRST_LESSON_HREF} className="btn-primary" data-testid="start-here-cta">
               <BookOpen className="h-4 w-4" aria-hidden />
               Start here
             </Link>
@@ -108,11 +110,19 @@ export function Hero({ digest }: { digest: DigestMeta }) {
 
         <motion.div
           {...fade(0.1)}
-          className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1"
+          className="relative grid min-h-[10rem] gap-3 sm:grid-cols-2 lg:grid-cols-1"
         >
+          {allow3d ? (
+            <div
+              className="pointer-events-none absolute -inset-8 hidden opacity-55 lg:block"
+              aria-hidden
+            >
+              <HeroScene />
+            </div>
+          ) : null}
           <Link
-            href="/training/prompt-engineering"
-            className="rounded-2xl border border-[var(--ink-border)] bg-[var(--panel-2)]/90 p-4 backdrop-blur-sm transition hover:border-[var(--coral)]/40"
+            href={FIRST_LESSON_HREF}
+            className="relative z-10 rounded-2xl border border-[var(--ink-border)] bg-[var(--panel-2)]/95 p-4 backdrop-blur-sm transition hover:border-[var(--coral)]/40"
           >
             <p className="flex items-center gap-1.5 font-display text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--sun)]">
               <Sparkles className="h-3 w-3" /> Friendly first step
@@ -124,7 +134,7 @@ export function Hero({ digest }: { digest: DigestMeta }) {
           </Link>
           <Link
             href="/dashboard"
-            className="rounded-2xl border border-[var(--ink-border)] bg-[var(--panel-2)]/90 p-4 backdrop-blur-sm transition hover:border-[var(--mint)]/40"
+            className="relative z-10 rounded-2xl border border-[var(--ink-border)] bg-[var(--panel-2)]/95 p-4 backdrop-blur-sm transition hover:border-[var(--mint)]/40"
           >
             <p className="font-display text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--mint)]">
               My progress · free

@@ -29,6 +29,7 @@ quiz:
       - "A joke to warm up the model"
       - "Nothing — constraints slow AI down"
     answer: 1
+    explanation: "Constraints tell the model the fences — dialect, length, no secrets, tools you already have — so it does not invent a stack you cannot run."
 ---
 
 # Ask AI better questions
