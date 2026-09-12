@@ -45,9 +45,10 @@ export default async function LessonPage({
   const next = idx >= 0 && idx < siblings.length - 1 ? siblings[idx + 1] : undefined;
   const isAiTrack =
     lesson.track === "prompt-engineering" || lesson.track === "ai-data-eng";
+  const isFdeTrack = lesson.track === "forward-deployed";
   const trackTitle = getTrackMeta(lesson.track)?.title ?? lesson.track;
   const showLab = isLabLesson(lesson.track, lesson.slug);
-  const tryItLimit = isAiTrack ? 4 : 3;
+  const tryItLimit = isAiTrack || isFdeTrack ? 4 : 3;
   const tryItEntries = (lesson.cheatSheet ?? []).filter((e) => e.code).slice(0, tryItLimit);
   const tryItDialect =
     lesson.track === "sql"
@@ -60,7 +61,9 @@ export default async function LessonPage({
             ? "Python"
             : lesson.track === "git"
               ? "Git"
-              : "AI chat";
+              : lesson.track === "forward-deployed"
+                ? "FDE checklist"
+                : "AI chat";
 
   return (
     <div className="flex flex-col gap-4 lg:flex-row lg:gap-8">
@@ -121,6 +124,14 @@ export default async function LessonPage({
               { title: "Quiz", body: "Check understanding, then mark the checkpoint." },
             ]}
           />
+        ) : isFdeTrack ? (
+          <StepCards
+            steps={[
+              { title: "Learn", body: "Read the engagement pattern — keep it customer-shaped." },
+              { title: "Copy a card", body: "Cheat sheets are checklists you paste into a ticket." },
+              { title: "Quiz", body: "Check understanding, then mark the checkpoint." },
+            ]}
+          />
         ) : showLab ? (
           <StepCards
             steps={[
@@ -161,7 +172,9 @@ export default async function LessonPage({
             ? isSql
               ? "Copy into a Snowflake worksheet. Treat model output as untrusted."
               : "Paste into Claude, Copilot Chat, or Grok — then iterate."
-            : "Copy into your warehouse, notebook, or repo. Live Run is not on this page.";
+            : isFdeTrack
+              ? "Copy into a ticket, runbook, or customer notes. No live cloud deploy on this page."
+              : "Copy into your warehouse, notebook, or repo. Live Run is not on this page.";
           return (
             <TryItBox
               key={`${entry.label}-${i}`}

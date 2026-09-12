@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-/** Generate prompt-engineering + ai-data-eng lessons and AI shortcut packs */
+/** Generate prompt-engineering + ai-data-eng lessons and AI shortcut packs.
+ *  FDE (content/training/forward-deployed/) is hand-authored — do not clobber.
+ */
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";

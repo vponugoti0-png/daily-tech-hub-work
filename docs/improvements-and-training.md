@@ -41,6 +41,7 @@
 - **100% free forever**, guest progress without signup
 - **Aurora Play Lab** brand (coral/mint/sky/sun) — playful, not cyan SaaS
 - **W0–W4 zero-to-hero content** across SQL / Databricks / Snowflake / Python / AI tracks (live)
+- **Forward Deployed Engineer track** (`/training/forward-deployed`, 10 lessons) — customer-facing DE/AI delivery; quizzes + copy cards; no new WASM lab or header nav
 - Honest chrome (“Coming soon · live Run” → Local practice lab) beats fake “cloud” claims
 - Shortcuts packs (Claude / Copilot / Grok) adjacent to lessons
 
@@ -77,6 +78,8 @@
 - Real Databricks / Snowflake cloud credentials in-browser
 - Paid AI tutor clone
 - Collaboration / multiplayer notebooks
+- FDE v1 live cloud deploy / CRM / paid cert (lessons + quizzes only)
+- FDE v1 DuckDB Practice Lab expansion (reuse DBX/SF labs; Python runtime still deferred)
 
 ---
 
@@ -100,7 +103,7 @@ Build ETL (one lesson per tool)
   · DBX     dbx-medallion-etl-builder
   · SF      sf-warehouse-etl-builder
       ↓
-FDE track — not on main as of 2026-09-12; do not invent nav
+FDE track (`/training/forward-deployed`, 10 lessons) — after ETL builders on the cert path
 ```
 
 **Practice Lab dialects:**
@@ -110,6 +113,8 @@ FDE track — not on main as of 2026-09-12; do not invent nav
 4. Python (deferred — different runtime; **do not** build)
 
 In-app path chrome (no new top-level nav): META overlay on `/training`, `orderNote` on the four tool tracks, **Build ETL · four tool tracks** card.
+
+**FDE track (added):** Intermediate overlay after Databricks / Snowflake on the cert path. Discover → scope → integrate → deploy → secure → hand off, plus AI evals and a fictional Northwind capstone. Same guest progress model. Not a Practice Lab dialect.
 
 ---
 

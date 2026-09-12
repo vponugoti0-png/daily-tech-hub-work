@@ -21,9 +21,8 @@ Practice labs   Databricks + Snowflake local labs (DuckDB-WASM)
       ↓
 Build ETL       One builder lesson per major tool track (W5)
       ↓
-FDE track       Not on main / no open PR as of 2026-09-12.
-                Slot reserved after ETL builders. Do not duplicate if a concurrent
-                Forward-Deployed Engineer PR appears — stay on ETL.
+FDE track       `/training/forward-deployed` (10 lessons) after ETL builders.
+                Customer-facing DE/AI delivery — not a new header nav item.
 ```
 
 Header nav is unchanged: News · Training · Releases · Shortcuts · Dashboard.
@@ -48,7 +47,7 @@ Each lesson: objectives, DE body, cheat-sheet TryIt cards, 3 quiz questions, ~30
 
 ## FDE
 
-A **Forward-Deployed Engineer** track is **not** on `main` and there was **no open FDE PR** when this path shipped. If one lands, do not clone it here. This wave only adds ETL builders + path docs.
+A **Forward Deployed Engineer** track (`/training/forward-deployed`, 10 lessons) now sits after the ETL builders on the cert path. Same Training grid / guest progress — not a new header nav item and not a Practice Lab dialect.
 
 ## Authoring notes
 

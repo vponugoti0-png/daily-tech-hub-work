@@ -8,7 +8,7 @@ import { TrainingFilters } from "@/components/training/TrainingFilters";
 export const metadata: Metadata = {
   title: "Training",
   description:
-    "Free interactive tracks: Prompt Engineering, AI for DE, Python, SQL, Databricks, Snowflake, Git.",
+    "Free interactive tracks: Prompt Engineering, AI for DE, Python, SQL, Databricks, Snowflake, Forward Deployed Engineer, Git.",
 };
 
 export default function TrainingPage() {
@@ -118,8 +118,8 @@ export default function TrainingPage() {
           </h2>
           <p className="mt-1 max-w-3xl text-sm text-[var(--muted)]">
             After W0–W4 and the Databricks / Snowflake Practice labs, build one ETL per tool.
-            Same Training routes — not a new nav item. Forward-Deployed Engineer is not on
-            main yet.
+            Same Training routes — not a new nav item. Forward Deployed Engineer is a separate
+            card on this page (after the tool tracks, before Git).
           </p>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
             {etlBuilders.map((lesson) => (

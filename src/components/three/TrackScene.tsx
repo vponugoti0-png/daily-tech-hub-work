@@ -36,6 +36,7 @@ const COLORS: Record<string, string> = {
   sql: "#1fba84",
   databricks: "#ff6b4a",
   snowflake: "#3aa8d8",
+  "forward-deployed": "#2ee59d",
   git: "#6b6490",
 };
 
