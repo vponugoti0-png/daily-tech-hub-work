@@ -53,17 +53,16 @@ test.describe("Practice UX — layout, editor Run, Python lab", () => {
     const tryit = page.locator(".tryit").first();
     const editor = tryit.getByLabel("Try it editor");
     await expect(editor).toBeVisible();
-    const original = await editor.inputValue();
-    expect(original.length).toBeGreaterThan(10);
-    const edited = original.includes("LIMIT 5")
-      ? original.replace("LIMIT 5", "LIMIT 2")
-      : `${original.replace(/;+\s*$/, "")}\nLIMIT 2`;
-    await editor.evaluate((el, value) => {
+    await expect(editor).toHaveValue(/LIMIT 5/i);
+    await editor.click();
+    await editor.evaluate((el) => {
       const node = el as HTMLTextAreaElement;
-      const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value")?.set;
-      setter?.call(node, value);
-      node.dispatchEvent(new Event("input", { bubbles: true }));
-    }, edited);
+      const idx = node.value.lastIndexOf("LIMIT 5");
+      node.focus();
+      if (idx >= 0) node.setSelectionRange(idx + 6, idx + 7);
+    });
+    await page.keyboard.type("2");
+    await expect(editor).toHaveValue(/LIMIT 2/i);
 
     await tryit.getByRole("button", { name: "Run in local lab" }).click();
 
