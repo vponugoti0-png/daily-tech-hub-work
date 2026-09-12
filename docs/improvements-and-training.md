@@ -1,6 +1,6 @@
 # Aurora / Daily Tech Hub — Training & Practice Improvements
 
-> **Superseded for IA / vision / nav / paths.** Product north star is [`docs/aurora-master-plan.md`](./aurora-master-plan.md). **User stamped §14** 2026-09-12. Phase 1 tickets live in that plan’s §17. **B1 is already on `main` (#42)** — grandfathered; no further B1/B2/B3 until the Phase 1 Unified Editor shell ships. This file remains a **tactical lab/P1 backlog and older peer notes**.
+> **Superseded for IA / vision / nav / paths.** Product north star is [`docs/aurora-master-plan.md`](./aurora-master-plan.md). **User stamp COMPLETE** 2026-09-12 — ready for Product merge release. Phase 1–3 tickets: that plan’s §17. **B1 is already on `main` (#42)** — grandfathered; no further B1/B2/B3 until the Phase 1 Unified Editor shell ships. This file remains a **tactical lab/P1 backlog and older peer notes**.
 
 **Audience:** Product, Frontend, Backend, QA, Security  
 **Date:** 2026-09-12  
