@@ -49,7 +49,7 @@ export function TrainingFilters({ lessons }: { lessons: TrainingLesson[] }) {
               className={cn(
                 "rounded-full px-3 py-1 text-xs font-medium",
                 track === t
-                  ? "bg-[var(--coral)] font-bold text-white"
+                  ? "bg-[var(--coral)] font-bold text-[#1a1430]"
                   : "bg-[var(--panel-2)] text-[var(--ink-fg)] ring-1 ring-[var(--ink-border)]",
               )}
             >

@@ -65,6 +65,21 @@ html:not(.dark) {
   color-scheme: light;
 }
 
+/* Theme toggle icons follow html.dark (set by the FOUC script) so the
+   first paint matches the page instead of React's default light state. */
+.theme-toggle-sun {
+  display: none;
+}
+.theme-toggle-moon {
+  display: block;
+}
+html.dark .theme-toggle-sun {
+  display: block;
+}
+html.dark .theme-toggle-moon {
+  display: none;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
