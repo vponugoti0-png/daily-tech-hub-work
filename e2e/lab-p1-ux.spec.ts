@@ -23,7 +23,7 @@ test.describe("Wave A — training index + lab P1 UX", () => {
     await page.goto("/training");
 
     const index = page.getByTestId("training-track-index");
-    await expect(index.getByRole("heading", { name: "All tracks" })).toBeVisible();
+    await expect(index.getByRole("heading", { name: "Tracks" })).toBeVisible();
 
     for (const title of ALL_TRACKS) {
       await expect(
@@ -34,16 +34,14 @@ test.describe("Wave A — training index + lab P1 UX", () => {
     }
 
     const labs = page.getByTestId("training-practice-labs");
-    await expect(labs.getByRole("link", { name: /Practice · SQL lab/i })).toBeVisible();
-    await expect(labs.getByRole("link", { name: /Practice · Databricks lab/i })).toBeVisible();
-    await expect(labs.getByRole("link", { name: /Practice · Snowflake lab/i })).toBeVisible();
-    await expect(labs.getByRole("link", { name: /Practice · Python lab/i })).toBeVisible();
-    await expect(labs.getByRole("link", { name: /Practice · Git Play Lab/i })).toBeVisible();
-    await expect(labs.getByRole("link", { name: /Practice · Prompt lab/i })).toBeVisible();
-    await expect(labs.getByRole("link", { name: /Practice · AI lab/i })).toBeVisible();
+    await expect(labs.getByTestId("open-practice")).toHaveCount(1);
+    await expect(labs.getByTestId("open-practice")).toHaveAttribute(
+      "href",
+      "/training/sql/sql-select-filter-nulls#lab",
+    );
 
     const nav = page.getByRole("navigation", { name: "Primary" });
-    await expect(nav.getByRole("link", { name: "Training" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Learn" })).toBeVisible();
     await expect(nav.getByRole("link", { name: /Play Lab/i })).toHaveCount(0);
     await expect(nav.getByRole("link", { name: /^Lab$/i })).toHaveCount(0);
     await expect(page.getByText(/Coming soon/i)).toHaveCount(0);

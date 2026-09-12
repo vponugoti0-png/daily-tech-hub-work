@@ -11,7 +11,7 @@ export default function NotFound() {
           href="/"
           className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-zinc-900"
         >
-          Today’s digest
+          Home
         </Link>
         <Link
           href="/search"

@@ -53,7 +53,7 @@ export default async function TrackPage({
           <h1 className="mt-2 font-display text-3xl font-bold text-[var(--ink-fg)] sm:text-4xl">
             {meta.title}
           </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--muted)]">{meta.blurb}</p>
+          <p className="mt-3 max-w-2xl line-clamp-2 text-sm leading-relaxed text-[var(--muted)]">{meta.blurb}</p>
           {meta.orderNote ? (
             <p className="mt-3 max-w-2xl rounded-xl border border-[var(--sky)]/30 bg-[var(--sky)]/10 px-3 py-2 text-sm leading-relaxed text-[var(--ink-fg)]">
               <span className="font-display text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--sky)]">

@@ -143,6 +143,8 @@ export interface TrackMeta {
   difficulty: string;
   estimatedHours: number;
   badge?: string;
+  /** Quiet catalog label, e.g. "L1 SQL" — not a filename number. */
+  pathLevel?: string;
   /** Optional reading-path note (W0). Catalog `order` stays as-is. */
   orderNote?: string;
 }

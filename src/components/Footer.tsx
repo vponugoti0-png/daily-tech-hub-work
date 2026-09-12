@@ -21,16 +21,41 @@ export function Footer({ lastUpdated }: { lastUpdated?: string }) {
               Start here
             </Link>
             {" · "}
-            <Link href="/signup" className="hover:text-[var(--coral)]">
-              Optional account
+            <Link href="/training" className="hover:text-[var(--mint)]">
+              Learn
+            </Link>
+            {" · "}
+            <Link href="/practice" className="hover:text-[var(--coral)]">
+              Practice
+            </Link>
+            {" · "}
+            <Link href="/paths" className="hover:text-[var(--sky)]">
+              Paths
+            </Link>
+            {" · "}
+            <Link href="/dashboard" className="hover:text-[var(--sun)]">
+              Progress
+            </Link>
+          </p>
+          <p>
+            <Link href="/" className="hover:text-[var(--ink-fg)]">
+              Today
             </Link>
             {" · "}
             <Link href="/shortcuts" className="hover:text-[var(--sky)]">
               Shortcuts
             </Link>
             {" · "}
-            <Link href="/training" className="hover:text-[var(--mint)]">
-              Training
+            <Link href="/news" className="hover:text-[var(--ink-fg)]">
+              News
+            </Link>
+            {" · "}
+            <Link href="/releases" className="hover:text-[var(--ink-fg)]">
+              Releases
+            </Link>
+            {" · "}
+            <Link href="/signup" className="hover:text-[var(--coral)]">
+              Optional account
             </Link>
           </p>
           <p>

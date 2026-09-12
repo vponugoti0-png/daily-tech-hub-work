@@ -5,9 +5,9 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { formatDate, formatDateTime, relativeTime, todayISODate } from "@/lib/dates";
-import { FIRST_LESSON_HREF } from "@/lib/learner-paths";
+import { FIRST_LESSON_HREF, PATHS_HREF } from "@/lib/learner-paths";
 import type { DigestMeta } from "@/lib/types";
-import { BookOpen, CalendarDays, Keyboard, RefreshCw, Sparkles } from "lucide-react";
+import { BookOpen, CalendarDays, Compass, RefreshCw, Sparkles } from "lucide-react";
 
 function RelativeUpdated({ value }: { value: string }) {
   const [mounted, setMounted] = useState(false);
@@ -102,9 +102,9 @@ export function Hero({ digest }: { digest: DigestMeta }) {
               <BookOpen className="h-4 w-4" aria-hidden />
               Start here
             </Link>
-            <Link href="/shortcuts" className="btn-ghost">
-              <Keyboard className="h-4 w-4" aria-hidden />
-              Shortcuts
+            <Link href={PATHS_HREF} className="btn-ghost">
+              <Compass className="h-4 w-4" aria-hidden />
+              Skip ahead
             </Link>
           </motion.div>
         </div>
@@ -118,12 +118,12 @@ export function Hero({ digest }: { digest: DigestMeta }) {
             className="rounded-2xl border border-[var(--ink-border)] bg-[var(--panel-2)]/95 p-4 backdrop-blur-sm transition hover:border-[var(--coral)]/40"
           >
             <p className="flex items-center gap-1.5 font-display text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--sun)]">
-              <Sparkles className="h-3 w-3" /> Friendly first step
+              <Sparkles className="h-3 w-3" /> Zero→Hero
             </p>
             <p className="mt-1 font-display text-base font-bold text-[var(--ink-fg)]">
-              Learn with AI prompts
+              Write your first query
             </p>
-            <p className="mt-1 text-xs text-[var(--muted)]">Short lessons · copy & try</p>
+            <p className="mt-1 text-xs text-[var(--muted)]">SQL lab · in the browser</p>
           </Link>
           <Link
             href="/dashboard"

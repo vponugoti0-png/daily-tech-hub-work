@@ -18,28 +18,15 @@ async function expectLessonChrome(
 }
 
 test.describe("W0–W4 training waves", () => {
-  test("training index shows overlay, day-0 tracks, and shared capstone", async ({ page }) => {
+  test("training hub lists day-0 tracks without the META overlay", async ({ page }) => {
     await page.goto("/training");
 
-    await expect(page.getByRole("heading", { name: "Interactive course tracks" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: /Suggested cert-style order/i })).toBeVisible();
-    await expect(
-      page.getByText(/CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured/).first(),
-    ).toBeVisible();
-    await expect(
-      page
-        .getByText(/contracts → config\/secrets → typing → testing → writers → orchestration → perf → packaging/)
-        .first(),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Your school" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Suggested cert-style order/i })).toHaveCount(0);
 
     await expect(page.getByRole("heading", { name: "SQL for Analytics Engineering" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Databricks (DBX)" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Snowflake", exact: true }).first()).toBeVisible();
-
-    await expect(page.getByText(/Shared capstone · Orders → daily revenue mart/i)).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: /Shared capstone checklist/i }).first(),
-    ).toBeVisible();
   });
 
   test("SQL track lists day-0 joins and recommended order", async ({ page }) => {

@@ -73,7 +73,7 @@ test.describe("Databricks local practice lab v1", () => {
   test("does not add a top-level Lab nav item or a Python-track lab", async ({ page }) => {
     await page.goto("/");
     const nav = page.getByRole("navigation", { name: "Primary" });
-    await expect(nav.getByRole("link", { name: "Training" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Learn" })).toBeVisible();
     await expect(nav.getByRole("link", { name: /^Lab$/i })).toHaveCount(0);
 
     await page.goto("/training/python/python-dataframe-contracts");

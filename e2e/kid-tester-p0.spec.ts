@@ -1,9 +1,10 @@
 import { expect, test } from "@playwright/test";
 
-const FIRST_LESSON = "/training/prompt-engineering/pe-ask-better-questions";
+const FIRST_LESSON = "/training/sql/sql-select-filter-nulls#lab";
+const PE_LESSON = "/training/prompt-engineering/pe-ask-better-questions";
 
 test.describe("Kid Tester P0s — learner UX", () => {
-  test("Start here opens Prompt Engineering lesson 1", async ({ page }) => {
+  test("Start here opens the Zero→Hero SQL lab", async ({ page }) => {
     await page.goto("/");
 
     const start = page.getByTestId("start-here-cta");
@@ -11,13 +12,14 @@ test.describe("Kid Tester P0s — learner UX", () => {
     await expect(start).toHaveAttribute("href", FIRST_LESSON);
     await start.click();
 
-    await expect(page).toHaveURL(/\/training\/prompt-engineering\/pe-ask-better-questions\/?$/);
-    await expect(page.locator("#learn")).toHaveText(/Ask AI better questions/i);
+    await expect(page).toHaveURL(/\/training\/sql\/sql-select-filter-nulls/);
+    await expect(page.locator("#learn")).toHaveText(/SELECT, filters, NULLs, and LIMIT/i);
+    await expect(page.locator("#lab")).toBeVisible();
     await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
   });
 
   test("quiz shows why-wrong and cheer after a mixed submit", async ({ page }) => {
-    await page.goto(FIRST_LESSON);
+    await page.goto(PE_LESSON);
 
     const quiz = page.locator("#quiz");
     await quiz.scrollIntoViewIfNeeded();

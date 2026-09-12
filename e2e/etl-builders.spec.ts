@@ -32,20 +32,14 @@ const ETL = [
 ] as const;
 
 test.describe("ETL builder lessons", () => {
-  test("training index overlay lists the ETL spine and four builders", async ({ page }) => {
+  test("training hub is not an ETL overlay; no ETL nav", async ({ page }) => {
     await page.goto("/training");
 
-    await expect(page.getByRole("heading", { name: /Suggested cert-style order/i })).toBeVisible();
-    await expect(page.getByText(/ETL spine/i)).toBeVisible();
-    await expect(page.getByText(/Build ETL · Python job/i)).toBeVisible();
-    await expect(page.getByRole("heading", { name: /Extract → transform → load/i })).toBeVisible();
-
-    for (const row of ETL) {
-      await expect(page.getByRole("link", { name: row.title }).first()).toBeVisible();
-    }
+    await expect(page.getByRole("heading", { name: /Suggested cert-style order/i })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: /Extract → transform → load/i })).toHaveCount(0);
 
     const nav = page.getByRole("navigation", { name: "Primary" });
-    await expect(nav.getByRole("link", { name: "Training" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Learn" })).toBeVisible();
     await expect(nav.getByRole("link", { name: /^ETL$/i })).toHaveCount(0);
   });
 

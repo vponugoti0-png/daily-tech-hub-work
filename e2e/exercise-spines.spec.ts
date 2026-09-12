@@ -11,7 +11,7 @@ const PROGRESS_KEY = "dth-progress-v3";
 test.describe("Sibling exercise spines (DBX + SF + Python)", () => {
   test("training → Databricks track → Spark SQL SELECT lesson + TryIt lab", async ({ page }) => {
     await page.goto("/training");
-    await expect(page.getByRole("heading", { name: "Interactive course tracks" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Your school" })).toBeVisible();
     await page.locator('a.panel[href="/training/databricks"]').click();
 
     await expect(page).toHaveURL(/\/training\/databricks\/?$/);
@@ -134,7 +134,7 @@ test.describe("Sibling exercise spines (DBX + SF + Python)", () => {
   test("does not add a top-level Lab or ETL nav item", async ({ page }) => {
     await page.goto("/");
     const nav = page.getByRole("navigation", { name: "Primary" });
-    await expect(nav.getByRole("link", { name: "Training" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Learn" })).toBeVisible();
     await expect(nav.getByRole("link", { name: /^Lab$/i })).toHaveCount(0);
     await expect(nav.getByRole("link", { name: /^ETL$/i })).toHaveCount(0);
   });

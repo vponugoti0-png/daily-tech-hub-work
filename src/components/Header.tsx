@@ -11,11 +11,9 @@ import { PlainEnglishToggle } from "@/components/PlainEnglishToggle";
 import { loginHref, signupHref } from "@/lib/safe-path";
 
 const NAV = [
-  { href: "/", label: "Today" },
-  { href: "/training", label: "Training" },
-  { href: "/shortcuts", label: "Shortcuts" },
-  { href: "/news", label: "News" },
-  { href: "/releases", label: "Releases" },
+  { href: "/training", label: "Learn" },
+  { href: "/practice", label: "Practice" },
+  { href: "/paths", label: "Paths" },
   { href: "/dashboard", label: "Progress" },
 ];
 
@@ -49,6 +47,7 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
         <Link
           href="/"
+          aria-label="Home"
           className="flex min-w-0 items-center gap-2 font-display font-bold text-[var(--ink-fg)]"
         >
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] bg-[var(--coral)] text-[#1a1430] shadow-[0_0_24px_var(--glow)]">

@@ -6,11 +6,14 @@ import { ReleaseCard } from "@/components/ReleaseCard";
 import { ShortcutCard } from "@/components/ShortcutCard";
 import { FreeForeverBanner } from "@/components/FreeForeverBanner";
 import { StartHere } from "@/components/StartHere";
+import { NextStepCard } from "@/components/NextStepCard";
 import { JargonTip } from "@/components/JargonTip";
 import { getFeaturedBundle, getLessonsByTrack } from "@/lib/content";
-import { PRIMARY_TRACKS } from "@/lib/tracks";
+import { CORE_TRACKS, ELECTIVE_TRACKS } from "@/lib/tracks";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+
+const HOME_TRACKS = [...CORE_TRACKS.filter((t) => t.id !== "git"), ...ELECTIVE_TRACKS];
 
 const FRIENDLY_BLURB: Record<string, string> = {
   "prompt-engineering": "Practice asking AI clear questions.",
@@ -28,6 +31,7 @@ export default function HomePage() {
   return (
     <div className="space-y-10">
       <Hero digest={digest} />
+      <NextStepCard variant="home" />
       <StartHere />
       <FreeForeverBanner />
 
@@ -44,7 +48,7 @@ export default function HomePage() {
           </Link>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {PRIMARY_TRACKS.map((t) => {
+          {HOME_TRACKS.map((t) => {
             const count = getLessonsByTrack(t.id).length;
             return (
               <Link
