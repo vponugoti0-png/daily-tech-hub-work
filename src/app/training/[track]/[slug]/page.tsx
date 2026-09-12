@@ -73,27 +73,30 @@ export default async function LessonPage({
           lab: isLabLesson(catalogPrev.track, catalogPrev.slug),
         }
       : undefined;
-  const next = l1Nav.next
-    ? {
-        track: l1Nav.next.track,
-        slug: l1Nav.next.slug,
-        title: l1Nav.next.title,
-        lab: Boolean(l1Nav.next.lab),
-      }
-    : catalogNext
+  const next = l1Nav.finishHref
+    ? undefined
+    : l1Nav.next
       ? {
-          track: catalogNext.track,
-          slug: catalogNext.slug,
-          title: catalogNext.title,
-          lab: isLabLesson(catalogNext.track, catalogNext.slug),
+          track: l1Nav.next.track,
+          slug: l1Nav.next.slug,
+          title: l1Nav.next.title,
+          lab: Boolean(l1Nav.next.lab),
         }
-      : undefined;
+      : catalogNext
+        ? {
+            track: catalogNext.track,
+            slug: catalogNext.slug,
+            title: catalogNext.title,
+            lab: isLabLesson(catalogNext.track, catalogNext.slug),
+          }
+        : undefined;
   const prevHref = prev
     ? `/training/${prev.track}/${prev.slug}${prev.lab ? "#lab" : ""}`
     : undefined;
-  const nextHref = next
-    ? `/training/${next.track}/${next.slug}${next.lab ? "#lab" : ""}`
-    : undefined;
+  const nextHref =
+    l1Nav.finishHref ??
+    (next ? `/training/${next.track}/${next.slug}${next.lab ? "#lab" : ""}` : undefined);
+  const nextTitle = l1Nav.finishTitle ?? next?.title;
   const isAiTrack =
     lesson.track === "prompt-engineering" || lesson.track === "ai-data-eng";
   const isFdeTrack = lesson.track === "forward-deployed";
@@ -246,18 +249,18 @@ export default async function LessonPage({
             track={lesson.track}
             slug={lesson.slug}
             nextHref={nextHref}
-            nextTitle={next?.title}
+            nextTitle={nextTitle}
           />
           <p className="text-xs text-[var(--muted)]">
             Progress saves on this device. Sign-in is optional.
           </p>
-          {next && nextHref ? (
+          {nextHref && nextTitle ? (
             <Link
               href={nextHref}
               data-testid="lesson-next-cta"
               className="inline-flex min-h-[44px] items-center rounded-[14px] border border-[var(--coral)]/40 bg-[var(--coral)]/10 px-4 py-2 text-sm font-bold text-[var(--ink-fg)] hover:bg-[var(--coral)]/20"
             >
-              Next checkpoint: {next.title} →
+              Next checkpoint: {nextTitle} →
             </Link>
           ) : null}
         </div>
@@ -274,13 +277,13 @@ export default async function LessonPage({
           ) : (
             <span />
           )}
-          {next && nextHref ? (
+          {nextHref && nextTitle ? (
             <Link
               href={nextHref}
               data-testid="lesson-next-footer"
               className="text-sm text-[var(--muted)] hover:text-[var(--ink-fg)] sm:text-right"
             >
-              {next.title} →
+              {nextTitle} →
             </Link>
           ) : null}
         </nav>

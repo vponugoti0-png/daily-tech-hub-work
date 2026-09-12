@@ -12,7 +12,7 @@ const L1 = [
   "sql-dates-injection",
 ] as const;
 
-const L2_NEXT = "/training/python/python-none-dicts-rows#lab";
+const L1_FINISH = "/paths/l1-complete";
 const OFF_PATH = /sql-window-functions|sql-slowly-changing|sql-staging-mart-etl|sql-deduping/i;
 
 test.describe("Phase 1 Prompt D — L1 SQL closed loop", () => {
@@ -38,7 +38,7 @@ test.describe("Phase 1 Prompt D — L1 SQL closed loop", () => {
     for (let i = 0; i < L1.length; i++) {
       const current = L1[i];
       const expected =
-        i < L1.length - 1 ? `/training/sql/${L1[i + 1]}#lab` : L2_NEXT;
+        i < L1.length - 1 ? `/training/sql/${L1[i + 1]}#lab` : L1_FINISH;
 
       await page.goto(`/training/sql/${current}`);
       const next = page.getByTestId("lesson-next-cta");
