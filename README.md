@@ -81,9 +81,9 @@ npm run seed:demo   # prints credentials
 | Databricks | 21 | Exercise path (Spark SQL→dates) plus lakehouse, Delta, Unity Catalog, Jobs, Streaming, warehouses, catalogs/views/metrics, medallion ETL |
 | Snowflake | 21 | Exercise path (SELECT→dates) plus architecture, Time Travel, Streams/Tasks, Dynamic Tables, cost, RBAC, catalogs/views/metrics, warehouse ETL |
 | Forward Deployed Engineer | 10 | Customer-facing DE/AI delivery: discover, scope, integrate, deploy, secure, hand off |
-| Git (bonus) | 3 | Rebase, hygiene, bisect |
+| Git (bonus) | 5 | Rebase, hygiene, bisect, dbt/SQL branching, data-diff PRs + in-browser **Git Play Lab** |
 
-Lessons include objectives, try-it shells, **Databricks + Snowflake + SQL local practice labs** (DuckDB-WASM in-browser SQL samples — not live workspaces), a **Python local practice lab** on the exercise path (Pyodide — not a live cloud kernel), quizzes, outlines (mobile disclosure), and progress (localStorage + SQLite when signed in).
+Lessons include objectives, try-it shells, **Databricks + Snowflake + SQL local practice labs** (DuckDB-WASM in-browser SQL samples — not live workspaces), a **Python local practice lab** on the exercise path (Pyodide — not a live cloud kernel), **Git Play Lab** (commit graph + CLI, no VM), quizzes, outlines (mobile disclosure), and progress (localStorage + SQLite when signed in).
 
 ### Shortcuts
 

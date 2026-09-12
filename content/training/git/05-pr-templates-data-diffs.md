@@ -16,6 +16,9 @@ cheatSheet:
   - label: "PR template (drop in .github/pull_request_template.md)"
     code: "## Summary\n- Grain changed? (old → new)\n- Tables: bronze / silver / gold\n\n## Data diff\n- Row counts (before → after) for 2 dates\n- Duplicate key query (must be 0)\n- Late overlap days: __\n\n## Risk\n- [ ] Idempotent replay\n- [ ] No secrets / PII in fixtures\n- [ ] Cost / warehouse note\n\n## Capstone scorecard\n- [ ] Shared orders → daily revenue checks (if this PR is that story)"
     note: "Reviewers read this before the SQL. Empty checkboxes are a fail."
+  - label: "Fetch + rebase before the data-diff PR"
+    code: "git fetch origin\ngit rebase origin/main"
+    note: "Play remotes in Git Play Lab. Push stays simulated — no GitHub network."
   - label: "Count diff sketch"
     code: "SELECT event_date, COUNT(*) AS cnt, SUM(amount) AS revenue\nFROM gold.orders_daily\nGROUP BY 1\nORDER BY 1;"
     note: "Paste before/after for the backfill window — not the whole history if it is huge."
@@ -38,7 +41,7 @@ quiz:
     explanation: "The shared capstone fails if silver keys collide."
 ---
 
-Data diffs are not app diffs. A 20-line SQL change can double revenue. Make that visible.
+Data diffs are not app diffs. A 20-line SQL change can double revenue. Make that visible. **Git Play Lab** on this page starts at remotes: fetch the teammate silver MERGE, rebase your gold branch, then write the template.
 
 ## Template
 

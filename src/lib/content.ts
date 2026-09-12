@@ -15,7 +15,7 @@ import type {
   TrackId,
 } from "./types";
 import { TRACK_IDS } from "./tracks";
-import { isLabLesson } from "./lab/samples";
+import { isPracticeLesson } from "./lab/samples";
 
 const CONTENT_ROOT = path.join(process.cwd(), "content");
 
@@ -96,7 +96,7 @@ export function getAllLessons(): TrainingLesson[] {
           deriveSteps(
             body,
             Boolean(quiz?.length),
-            isLabLesson(String(data.track), String(data.slug)),
+            isPracticeLesson(String(data.track), String(data.slug)),
           ),
         updatedAt: String(data.updatedAt),
       });

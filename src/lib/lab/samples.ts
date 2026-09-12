@@ -2,6 +2,7 @@ export const DATABRICKS_LAB_ENTRY_SLUG = "dbx-workspace-cluster-basics";
 export const SNOWFLAKE_LAB_ENTRY_SLUG = "sf-day0-objects";
 export const SQL_LAB_ENTRY_SLUG = "sql-select-filter-nulls";
 export const PYTHON_LAB_ENTRY_SLUG = "python-none-dicts-rows";
+export const GIT_LAB_ENTRY_SLUG = "git-rebase-vs-merge";
 
 export const DATABRICKS_LAB_SLUGS = [
   "dbx-workspace-cluster-basics",
@@ -58,10 +59,19 @@ export const PYTHON_LAB_SLUGS = [
   "python-logging-not-print",
 ] as const;
 
+export const GIT_LAB_SLUGS = [
+  "git-rebase-vs-merge",
+  "git-commit-hygiene",
+  "git-bisect-and-blame",
+  "git-branching-dbt-sql",
+  "git-pr-templates-data-diffs",
+] as const;
+
 export type DatabricksLabSlug = (typeof DATABRICKS_LAB_SLUGS)[number];
 export type SnowflakeLabSlug = (typeof SNOWFLAKE_LAB_SLUGS)[number];
 export type SqlLabSlug = (typeof SQL_LAB_SLUGS)[number];
 export type PythonLabSlug = (typeof PYTHON_LAB_SLUGS)[number];
+export type GitLabSlug = (typeof GIT_LAB_SLUGS)[number];
 
 /** stepIndex written after a successful local lab run (does not complete the lesson). */
 export const LAB_STEP_INDEX = 1;
@@ -95,6 +105,10 @@ export function isPythonLabLesson(track: string, slug: string): boolean {
   return track === "python" && (PYTHON_LAB_SLUGS as readonly string[]).includes(slug);
 }
 
+export function isGitPlayLesson(track: string, slug: string): boolean {
+  return track === "git" && (GIT_LAB_SLUGS as readonly string[]).includes(slug);
+}
+
 export function isLabLesson(track: string, slug: string): boolean {
   return (
     isDatabricksLabLesson(track, slug) ||
@@ -104,11 +118,17 @@ export function isLabLesson(track: string, slug: string): boolean {
   );
 }
 
+/** DuckDB SQL labs or the in-browser Git Play Lab (outline / deriveSteps). */
+export function isPracticeLesson(track: string, slug: string): boolean {
+  return isLabLesson(track, slug) || isGitPlayLesson(track, slug);
+}
+
 export function labEntrySlug(track: string): string | undefined {
   if (track === "databricks") return DATABRICKS_LAB_ENTRY_SLUG;
   if (track === "snowflake") return SNOWFLAKE_LAB_ENTRY_SLUG;
   if (track === "sql") return SQL_LAB_ENTRY_SLUG;
   if (track === "python") return PYTHON_LAB_ENTRY_SLUG;
+  if (track === "git") return GIT_LAB_ENTRY_SLUG;
   return undefined;
 }
 

@@ -11,7 +11,14 @@ objectives:
   - Know when to rebase personal branches
   - Avoid rebasing shared history
   - Resolve conflicts with intent
-updatedAt: "2026-09-11"
+updatedAt: "2026-09-12"
+cheatSheet:
+  - label: "Rebase a personal branch"
+    code: "git fetch origin\ngit rebase origin/main"
+    note: "Personal branches only. Play rebase hygiene in Git Play Lab — no GitHub push."
+  - label: "Merge on a shared branch"
+    code: "git checkout main\ngit merge feat/orders"
+    note: "Shared release history: merge, do not rebase teammates."
 quiz:
   - question: "When is rebasing onto main usually appropriate?"
     options:
@@ -31,6 +38,8 @@ quiz:
 ---
 
 # Rebase vs merge for analytics repos
+
+Practice the graph in **Git Play Lab** on this page (`#lab`): rebase a personal gold branch onto main, or merge onto a shared release. In-browser only — no practice VM.
 
 ## Default recommendation
 

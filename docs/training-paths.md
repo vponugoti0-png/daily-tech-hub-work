@@ -30,6 +30,9 @@ Build ETL       One builder lesson per major tool track (W5)
       ↓
 FDE track       `/training/forward-deployed` (10 lessons) after ETL builders.
                 Customer-facing DE/AI delivery — not a new header nav item.
+      ↓
+Git Play Lab    `/training/git` Practice CTA → first lesson `#lab`.
+                In-browser commit graph + CLI (no practice VM, no GitHub push).
 ```
 
 Header nav is unchanged: News · Training · Releases · Shortcuts · Dashboard.
@@ -43,7 +46,7 @@ Header nav is unchanged: News · Training · Releases · Shortcuts · Dashboard.
 | Databricks | `dbx-medallion-etl-builder` | Autoloader bronze → silver MERGE → DQ → gold (Job-shaped) |
 | Snowflake | `sf-warehouse-etl-builder` | COPY/stages → Stream/Task MERGE → Dynamic Table gold |
 
-Each lesson: objectives, DE body, cheat-sheet TryIt cards, 3 quiz questions, ~30 min. Copy is primary where no lab is wired (AI / FDE / Git / ETL builders / older Python depth). SQL / Databricks / Snowflake exercise-path lessons host the DuckDB **Local practice lab**; Python exercise-path lessons host the Pyodide lab. ETL builders stay copy-to-repo / copy-to-warehouse.
+Each lesson: objectives, DE body, cheat-sheet TryIt cards, 3 quiz questions, ~30 min. Copy is primary where no lab is wired (AI / FDE / ETL builders / older Python depth). SQL / Databricks / Snowflake exercise-path lessons host the DuckDB **Local practice lab**; Python exercise-path lessons host the Pyodide lab; Git lessons host **Git Play Lab**. ETL builders stay copy-to-repo / copy-to-warehouse.
 
 ## Exercise paths (W6 SQL · W7 siblings)
 
@@ -65,13 +68,17 @@ Short lessons (`sql-catalog-views-metrics`, `dbx-catalog-views-metrics`, `sf-cat
 ## Where the path shows up in the app
 
 - **Training index** — META overlay (SQL / Python / DBX / SF orders + ETL spine) and a **Build ETL · four tool tracks** card (not a nav item)
-- **Track pages** — `orderNote` “Recommended order” callout on Python, SQL, Databricks, Snowflake
+- **Track pages** — `orderNote` “Recommended order” callout on Python, SQL, Databricks, Snowflake, Git
 - **Dashboard** — same META blurb (optional overlay)
 - **Related wave lessons** — Autoloader, COPY, capstones, and the shared checklist link to the builders
 
 ## FDE
 
 A **Forward Deployed Engineer** track (`/training/forward-deployed`, 10 lessons) now sits after the ETL builders on the cert path. Same Training grid / guest progress — not a new header nav item and not a Practice Lab dialect.
+
+## Git Play Lab (bonus track)
+
+In-browser commit graph + CLI on every `/training/git` lesson. Entry: track **Practice · Git Play Lab** → `git-rebase-vs-merge#lab`. Goal-tree levels: commit / branch / merge / rebase / relative refs / cherry-pick / remotes. Guest progress writes `stepIndex` only (same model as DuckDB labs). No practice VM, no GitHub push, no new header nav.
 
 ## Authoring notes
 

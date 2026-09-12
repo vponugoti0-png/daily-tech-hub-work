@@ -78,10 +78,14 @@ export const TRACKS: TrackMeta[] = [
   {
     id: "git",
     title: "Git (bonus)",
-    blurb: "Rebase, hygiene, bisect, dbt/SQL branching, and PR templates for data diffs.",
+    blurb:
+      "Rebase, hygiene, bisect, dbt/SQL branching, and PR templates — plus an in-browser Git Play Lab (commit graph + CLI). No practice VM.",
     accent: "from-[#A9A3C2] to-[#5C5675]",
     difficulty: "Intermediate",
-    estimatedHours: 2.5,
+    estimatedHours: 3,
+    badge: "Play Lab",
+    orderNote:
+      "Cheat sheet → Try it → Git Play Lab on every lesson. Levels: commit/branch → merge/rebase → relative refs → cherry-pick → remotes (fetch/rebase origin). No GitHub push.",
   },
 ];
 
@@ -109,7 +113,7 @@ export const META_DE_OVERLAY = {
   eyebrow: "Meta DE path · optional overlay",
   title: "Suggested cert-style order (no new nav)",
   blurb:
-    "Use the tracks you already have. Overnight spine: W0 recommended-order overlay → W1–W4 waves → Practice labs (Databricks + Snowflake + SQL DuckDB labs; Python Pyodide lab on the exercise path) → exercise-path siblings → Build ETL on each tool track → Forward Deployed Engineer. Suggested cert-style order: Prompt Engineering → AI for DE → Python → SQL → Snowflake → Databricks → Forward Deployed Engineer → Git.",
+    "Use the tracks you already have. Overnight spine: W0 recommended-order overlay → W1–W4 waves → Practice labs (Databricks + Snowflake + SQL DuckDB labs; Python Pyodide lab on the exercise path) → exercise-path siblings → Build ETL on each tool track → Forward Deployed Engineer → Git Play Lab (in-browser graph + CLI). Suggested cert-style order: Prompt Engineering → AI for DE → Python → SQL → Snowflake → Databricks → Forward Deployed Engineer → Git.",
   sqlOrder:
     "SELECT/filters → DML → Aggregates → Patterns/CASE → EXISTS → DDL → Dates/injection → Joins recap. Then CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL → Catalogs/views/metrics",
   pythonOrder:

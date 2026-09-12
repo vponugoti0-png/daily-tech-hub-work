@@ -15,7 +15,7 @@ updatedAt: "2026-09-12"
 cheatSheet:
   - label: "Branch from main"
     code: "git fetch origin\ngit checkout main\ngit pull\ngit checkout -b feat/orders-daily-late-events"
-    note: "Name the grain or model. feat/ + scope beats fix2-final."
+    note: "Name the grain or model. feat/ + scope beats fix2-final. Play it in Git Play Lab."
   - label: "Small PR slice"
     code: "# one story per branch\nmodels/silver/orders.sql\nmodels/gold/orders_daily.sql\ntests/assert_unique_order_id.sql"
     note: "If you must touch 20 models, split landing vs mart."
@@ -38,7 +38,7 @@ quiz:
     explanation: "Short-lived branches off main. Merge when the mart slice is reviewable."
 ---
 
-Analytics repos (dbt, SQLX, warehouse SQL) fail reviews when the branch is a junk drawer.
+Analytics repos (dbt, SQLX, warehouse SQL) fail reviews when the branch is a junk drawer. The **Git Play Lab** on this page starts on the story-branch level — one late-events grain, then remotes if you keep playing.
 
 ## Defaults
 
