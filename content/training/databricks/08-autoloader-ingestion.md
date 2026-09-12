@@ -71,7 +71,7 @@ COPY-style `spark.read.format("json").load(...)` is fine for a one-off. Autoload
 
 ## After bronze
 
-Dedupe and late events are the [SQL late-data lesson](/training/sql/sql-deduping-late-data). The Job graph is the [medallion capstone](/training/databricks/dbx-capstone-medallion-job).
+Dedupe and late events are the [SQL late-data lesson](/training/sql/sql-deduping-late-data). Assemble Autoloader + silver + gold in [Build medallion ETL](/training/databricks/dbx-medallion-etl-builder). The Job graph scorecard is the [medallion capstone](/training/databricks/dbx-capstone-medallion-job).
 
 ## Exercises
 

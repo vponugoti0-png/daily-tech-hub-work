@@ -38,7 +38,7 @@ quiz:
     explanation: "Bronze is the replay log. Silver applies late events. Gold aggregates."
 ---
 
-Capstone for Databricks. Shared story: **Orders → late events → daily revenue mart**. Use the [shared checklist](/training/sql/sql-shared-capstone-checklist) as the scorecard.
+Capstone for Databricks. Shared story: **Orders → late events → daily revenue mart**. Copy-ready Autoloader → silver → gold lives in [Build medallion ETL](/training/databricks/dbx-medallion-etl-builder). Use the [shared checklist](/training/sql/sql-shared-capstone-checklist) as the scorecard.
 
 ## Job graph
 

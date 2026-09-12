@@ -40,6 +40,11 @@ export const WAVE_LESSONS = [
   { wave: "W4", track: "git", file: "04-branching-dbt-sql.md", slug: "git-branching-dbt-sql", title: "Branching for dbt/SQL repos" },
   { wave: "W4", track: "git", file: "05-pr-templates-data-diffs.md", slug: "git-pr-templates-data-diffs", title: "PR templates for data diffs" },
   { wave: "W4", track: "prompt-engineering", file: "07-de-role-prompt-library.md", slug: "pe-de-role-prompt-library", title: "DE role prompt library (on-call / PR / incident)" },
+  // W5 — ETL builders (one per major tool track)
+  { wave: "W5", track: "python", file: "12-etl-pipeline-builder.md", slug: "python-etl-pipeline-builder", title: "Build an ETL job — extract, transform, load" },
+  { wave: "W5", track: "sql", file: "12-staging-mart-etl.md", slug: "sql-staging-mart-etl", title: "Build staging→mart ETL with DQ gates" },
+  { wave: "W5", track: "databricks", file: "12-medallion-etl-builder.md", slug: "dbx-medallion-etl-builder", title: "Build medallion ETL — Autoloader to gold" },
+  { wave: "W5", track: "snowflake", file: "12-warehouse-etl-builder.md", slug: "sf-warehouse-etl-builder", title: "Build warehouse ETL — COPY, Streams, Dynamic Tables" },
 ];
 
 export const WAVE_FILES_BY_TRACK = WAVE_LESSONS.reduce((acc, l) => {
@@ -83,8 +88,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.error("Missing wave lesson files:\n" + missing.map((m) => `  - ${m}`).join("\n"));
     process.exit(1);
   }
-  console.log(`✓ ${WAVE_LESSONS.length} W1–W4 lessons present`);
-  for (const wave of ["W1", "W2", "W3", "W4"]) {
+  console.log(`✓ ${WAVE_LESSONS.length} W1–W5 lessons present`);
+  for (const wave of ["W1", "W2", "W3", "W4", "W5"]) {
     const rows = WAVE_LESSONS.filter((l) => l.wave === wave);
     console.log(`  ${wave}: ${rows.map((r) => r.slug).join(", ")}`);
   }
