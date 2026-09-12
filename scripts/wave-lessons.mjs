@@ -79,6 +79,17 @@ export const WAVE_LESSONS = [
   { wave: "W8", track: "sql", file: "20-catalog-views-metrics.md", slug: "sql-catalog-views-metrics", title: "Catalogs, schemas, views, and metric-style tables" },
   { wave: "W8", track: "databricks", file: "20-catalog-views-metrics.md", slug: "dbx-catalog-views-metrics", title: "Catalogs, views, and metric views (local)" },
   { wave: "W8", track: "snowflake", file: "20-catalog-views-metrics.md", slug: "sf-catalog-views-metrics", title: "Databases, views, and semantic metrics (local)" },
+  // W9 — Wave A practice expansion (datasets, DE prompts, DBX deep-dive)
+  { wave: "W9", track: "prompt-engineering", file: "08-practice-de-reviews.md", slug: "pe-practice-de-reviews", title: "Practice — DE review prompts" },
+  { wave: "W9", track: "ai-data-eng", file: "09-practice-sql-review.md", slug: "ai-de-practice-sql-review", title: "Practice — review SQL and Python with AI" },
+  { wave: "W9", track: "python", file: "20-vfs-datasets.md", slug: "python-vfs-datasets", title: "Practice data files in the local lab" },
+  { wave: "W9", track: "sql", file: "21-shipments-events.md", slug: "sql-shipments-events", title: "Shipments, events, and tickets (local datasets)" },
+  { wave: "W9", track: "databricks", file: "21-notebook-cell-types.md", slug: "dbx-notebook-cell-types", title: "Notebook cell types — md, sql, python" },
+  { wave: "W9", track: "databricks", file: "22-dbutils-notebook.md", slug: "dbx-dbutils-notebook", title: "dbutils — widgets, fs, notebooks (secrets copy-only)" },
+  { wave: "W9", track: "databricks", file: "23-delta-merge-deep.md", slug: "dbx-delta-merge-deep", title: "Delta MERGE deep-dive — MATCHED and leftovers" },
+  { wave: "W9", track: "snowflake", file: "21-copy-history-practice.md", slug: "sf-copy-history-practice", title: "COPY history practice (local)" },
+  { wave: "W9", track: "git", file: "06-conflict-practice.md", slug: "git-conflict-practice", title: "Conflict practice for dbt/SQL branches" },
+  { wave: "W9", track: "forward-deployed", file: "11-practice-runbooks.md", slug: "fde-practice-runbooks", title: "Practice — runbooks and handoff checklists" },
 ];
 
 export const WAVE_FILES_BY_TRACK = WAVE_LESSONS.reduce((acc, l) => {
@@ -122,8 +133,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.error("Missing wave lesson files:\n" + missing.map((m) => `  - ${m}`).join("\n"));
     process.exit(1);
   }
-  console.log(`✓ ${WAVE_LESSONS.length} W1–W8 lessons present`);
-  for (const wave of ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8"]) {
+  console.log(`✓ ${WAVE_LESSONS.length} W1–W9 lessons present`);
+  for (const wave of ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9"]) {
     const rows = WAVE_LESSONS.filter((l) => l.wave === wave);
     console.log(`  ${wave}: ${rows.map((r) => r.slug).join(", ")}`);
   }

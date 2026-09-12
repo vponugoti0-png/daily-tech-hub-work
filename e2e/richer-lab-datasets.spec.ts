@@ -99,8 +99,8 @@ test.describe("Phase 3 richer lab datasets", () => {
     await expect(table.locator("tbody tr").first()).toBeVisible();
   });
 
-  test("older Python depth lesson stays copy-only — no fake Run", async ({ page }) => {
-    await page.goto("/training/python/python-dataframe-contracts");
+  test("Python performance lesson stays copy-only — no fake Run", async ({ page }) => {
+    await page.goto("/training/python/python-performance-de");
     await expect(page.locator("#lab")).toHaveCount(0);
     await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
     const tryit = page.locator(".tryit").first();

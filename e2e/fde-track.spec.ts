@@ -14,6 +14,7 @@ const LESSON_TITLES = [
   "AI, RAG, and agents with evals",
   "Stakeholder demos and writing",
   "Capstone — DE platform engagement checklist",
+  "Practice — runbooks and handoff checklists",
 ];
 
 test.describe("FDE training track", () => {
@@ -29,13 +30,13 @@ test.describe("FDE training track", () => {
     ).toBeVisible();
   });
 
-  test("track page lists all ten lessons", async ({ page }) => {
+  test("track page lists all eleven lessons", async ({ page }) => {
     await page.goto(TRACK);
 
     await expect(
       page.getByRole("heading", { name: "Forward Deployed Engineer", exact: true }),
     ).toBeVisible();
-    await expect(page.getByText(/10 lessons/i)).toBeVisible();
+    await expect(page.getByText(/11 lessons/i)).toBeVisible();
     for (const title of LESSON_TITLES) {
       await expect(page.getByRole("heading", { name: title })).toBeVisible();
     }

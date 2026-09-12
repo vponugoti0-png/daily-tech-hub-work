@@ -104,12 +104,12 @@ test.describe("SQL local practice lab + exercise path", () => {
     await expect(page.locator("#lab").getByRole("heading", { name: "Local practice lab" })).toBeVisible();
   });
 
-  test("does not add a top-level Lab nav; older Python lessons stay copy-only", async ({ page }) => {
+  test("does not add a top-level Lab nav; packaging/perf Python lessons stay copy-only", async ({ page }) => {
     await page.goto("/");
     const nav = page.getByRole("navigation", { name: "Primary" });
     await expect(nav.getByRole("link", { name: /^Lab$/i })).toHaveCount(0);
 
-    await page.goto("/training/python/python-dataframe-contracts");
+    await page.goto("/training/python/python-performance-de");
     await expect(page.locator("#lab")).toHaveCount(0);
     const tryit = page.locator(".tryit").first();
     await expect(tryit).toBeVisible();
