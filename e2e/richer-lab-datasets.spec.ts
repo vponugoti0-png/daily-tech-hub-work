@@ -46,7 +46,7 @@ test.describe("Phase 3 richer lab datasets", () => {
     await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
     await expect(page.getByText(/lab_catalog_objects|silver.ok_orders|metrics.orders_daily/i).first()).toBeVisible();
 
-    const select = lab.getByLabel("SQL sample");
+    const select = lab.getByLabel("SQL sample", { exact: true });
     await select.selectOption("dbx-metric-view");
     await lab.getByRole("button", { name: "Run SQL sample" }).click();
 
