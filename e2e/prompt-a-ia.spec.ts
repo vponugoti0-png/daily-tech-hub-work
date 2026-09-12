@@ -121,7 +121,7 @@ test.describe("Phase 1 Prompt A — IA / door & navigation", () => {
     await page.goto("/paths");
     await expect(page.getByRole("heading", { name: "One school, two doors" })).toBeVisible();
     await expect(page.getByTestId("paths-zero-to-hero")).toBeVisible();
-    await expect(page.getByTestId("paths-outline").getByRole("link")).toHaveCount(7);
+    await expect(page.getByTestId("paths-outline").getByRole("link")).toHaveCount(8);
     await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
 
     await page.getByTestId("paths-zero-to-hero").click();

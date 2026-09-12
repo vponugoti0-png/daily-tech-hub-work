@@ -153,22 +153,58 @@ export function sortLessonsForDisplay<T extends { track: string; slug: string; o
   });
 }
 
+export type PathLevelId = "L0" | "L1" | "L2" | "L3" | "L4" | "L5" | "L6" | "L7";
+
+export type PathOutlineNode = {
+  track: string;
+  slug: string;
+  title: string;
+  lab?: boolean;
+  elective?: boolean;
+};
+
 export type ZeroToHeroLevel = {
-  id: string;
+  id: PathLevelId;
   name: string;
   blurb: string;
   href: string;
   hrefLabel: string;
+  nodes: PathOutlineNode[];
 };
 
-/** Outline for the /paths stub — links existing training only. */
+export function pathNodeHref(node: PathOutlineNode): string {
+  return `/training/${node.track}/${node.slug}${node.lab ? "#lab" : ""}`;
+}
+
+export function levelById(id: string): ZeroToHeroLevel | undefined {
+  return ZERO_TO_HERO_LEVELS.find((level) => level.id === id);
+}
+
+/** Independent skill path — not a Zero→Hero gate and not L0's only door. */
+export const GIT_SKILL_PATH = {
+  id: "git",
+  name: "Git",
+  blurb: "Rebase, hygiene, and Play Lab. A skill path — not a Hero gate.",
+  href: "/training/git/git-rebase-vs-merge",
+  hrefLabel: "Open Git concepts",
+} as const;
+
+/** Outline for /paths — existing slugs only. FDE is an L6 elective node. */
 export const ZERO_TO_HERO_LEVELS: ZeroToHeroLevel[] = [
   {
     id: "L0",
     name: "Fundamentals",
-    blurb: "Files vs tables, CLI comfort, first Git concepts. Prompt Engineering is optional here.",
-    href: "/training/git/git-rebase-vs-merge",
-    hrefLabel: "Open Git concepts",
+    blurb: "Files vs tables and first questions. Prompt Engineering is optional. Git is its own skill path.",
+    href: "/training/prompt-engineering/pe-ask-better-questions",
+    hrefLabel: "Optional: ask better questions",
+    nodes: [
+      {
+        track: "prompt-engineering",
+        slug: "pe-ask-better-questions",
+        title: "Ask better questions",
+        elective: true,
+      },
+    ],
   },
   {
     id: "L1",
@@ -176,6 +212,12 @@ export const ZERO_TO_HERO_LEVELS: ZeroToHeroLevel[] = [
     blurb: "SELECT through joins and a staging filter — the Zero→Hero front door.",
     href: FIRST_LESSON_HREF,
     hrefLabel: "Open the SQL lab",
+    nodes: L1_SQL_SPINE.map((s) => ({
+      track: s.track,
+      slug: s.slug,
+      title: s.title,
+      lab: s.lab,
+    })),
   },
   {
     id: "L2",
@@ -183,6 +225,13 @@ export const ZERO_TO_HERO_LEVELS: ZeroToHeroLevel[] = [
     blurb: "Dicts and rows → functions → pathlib → exceptions → logging a job.",
     href: "/training/python/python-none-dicts-rows#lab",
     hrefLabel: "Open the Python lab",
+    nodes: [
+      { track: "python", slug: "python-none-dicts-rows", title: "None, dicts, and pipeline rows", lab: true },
+      { track: "python", slug: "python-functions-pure-transforms", title: "Functions and pure transforms", lab: true },
+      { track: "python", slug: "python-pathlib-extracts", title: "pathlib extracts", lab: true },
+      { track: "python", slug: "python-exceptions-retries", title: "Exceptions and retries", lab: true },
+      { track: "python", slug: "python-logging-not-print", title: "Logging, not print", lab: true },
+    ],
   },
   {
     id: "L3",
@@ -190,6 +239,12 @@ export const ZERO_TO_HERO_LEVELS: ZeroToHeroLevel[] = [
     blurb: "Incremental load, DQ gates, and one builder on a tool you already know.",
     href: "/training/sql/sql-staging-mart-etl",
     hrefLabel: "Open staging→mart ETL",
+    nodes: [
+      { track: "sql", slug: "sql-incremental-loads", title: "Incremental loads" },
+      { track: "sql", slug: "sql-data-quality", title: "Data quality checks in SQL" },
+      { track: "sql", slug: "sql-staging-mart-etl", title: "Build staging→mart ETL" },
+      { track: "python", slug: "python-etl-pipeline-builder", title: "Python ETL pipeline builder" },
+    ],
   },
   {
     id: "L4",
@@ -197,6 +252,11 @@ export const ZERO_TO_HERO_LEVELS: ZeroToHeroLevel[] = [
     blurb: "Snowflake objects, COPY/stages, and one warehouse-shaped ETL.",
     href: "/training/snowflake/sf-day0-objects#lab",
     hrefLabel: "Open Snowflake day-0",
+    nodes: [
+      { track: "snowflake", slug: "sf-day0-objects", title: "Day-0 objects", lab: true },
+      { track: "snowflake", slug: "sf-copy-stages-ingestion", title: "COPY INTO and stages" },
+      { track: "snowflake", slug: "sf-warehouse-etl-builder", title: "Warehouse ETL builder" },
+    ],
   },
   {
     id: "L5",
@@ -204,13 +264,43 @@ export const ZERO_TO_HERO_LEVELS: ZeroToHeroLevel[] = [
     blurb: "Spark SQL, Delta, medallion, and one Job-shaped builder.",
     href: "/training/databricks/dbx-spark-select-nulls#lab",
     hrefLabel: "Open the Databricks lab",
+    nodes: [
+      { track: "databricks", slug: "dbx-spark-select-nulls", title: "Spark SQL SELECT and NULLs", lab: true },
+      { track: "databricks", slug: "dbx-delta-write-preview", title: "Delta write preview", lab: true },
+      { track: "databricks", slug: "dbx-autoloader-ingestion", title: "Autoloader ingestion" },
+      { track: "databricks", slug: "dbx-medallion-etl-builder", title: "Build medallion ETL" },
+    ],
   },
   {
     id: "L6",
     name: "Projects",
-    blurb: "Shared orders→revenue mart plus a tool capstone. FDE is an elective after you can ship a mart.",
+    blurb: "Shared orders→revenue mart plus a tool capstone. FDE is an L6 Elective after you can ship a mart.",
     href: "/training/sql/sql-shared-capstone-checklist",
     hrefLabel: "Open the shared capstone",
+    nodes: [
+      { track: "sql", slug: "sql-shared-capstone-checklist", title: "Shared capstone checklist" },
+      { track: "snowflake", slug: "sf-capstone-dynamic-table-mart", title: "Snowflake Dynamic Table mart" },
+      { track: "databricks", slug: "dbx-capstone-medallion-job", title: "Databricks medallion Job capstone" },
+      { track: "python", slug: "python-capstone-cli-package", title: "Python CLI package capstone" },
+      {
+        track: "forward-deployed",
+        slug: "fde-capstone-engagement",
+        title: "FDE Northwind engagement",
+        elective: true,
+      },
+    ],
+  },
+  {
+    id: "L7",
+    name: "Interview",
+    blurb: "Talk a pipeline and debug late data with lessons you already have — not a fake interview track.",
+    href: "/training/sql/sql-deduping-late-data",
+    hrefLabel: "Open late-data debug",
+    nodes: [
+      { track: "sql", slug: "sql-shared-capstone-checklist", title: "Talk the shared pipeline" },
+      { track: "sql", slug: "sql-deduping-late-data", title: "Deduping and late data" },
+      { track: "sql", slug: "sql-joins-set-logic-recap", title: "Joins and set-logic recap", lab: true },
+    ],
   },
 ];
 
