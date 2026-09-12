@@ -30,6 +30,32 @@ quiz:
       - "UI themes"
       - "Stages"
     answer: 0
+  - question: "Prune with a date filter early so that…"
+    options:
+      - "The profile shows less scanned — credits follow bytes scanned and warehouse time"
+      - "Time Travel turns off"
+      - "RBAC is bypassed"
+      - "AUTO_SUSPEND is ignored"
+    answer: 0
+    explanation: "The prune-filter sample is the habit. Read a query profile in a real account."
+  - question: "Spilling / a too-small warehouse is a signal to…"
+    options:
+      - "Always jump to 3XL"
+      - "Filter/project first, then size — do not buy compute to hide a SELECT *"
+      - "Disable clustering"
+      - "Paste the query into a public chat with results"
+    answer: 1
+    explanation: "Cost control is SQL shape, then size."
+  - question: "Keep ETL off bi_wh because…"
+    options:
+      - "BI warehouses cannot SELECT"
+      - "Dashboards and MERGE should not fight for the same credits"
+      - "etl_wh cannot MERGE"
+      - "Suspend deletes gold"
+    answer: 1
+    explanation: "The seed’s two warehouses exist for this sentence."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Performance & cost control

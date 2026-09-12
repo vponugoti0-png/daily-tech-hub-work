@@ -19,6 +19,9 @@ cheatSheet:
   - label: "Merge on a shared branch"
     code: "git checkout main\ngit merge feat/orders"
     note: "Shared release history: merge, do not rebase teammates."
+  - label: "Play Lab first"
+    code: "# Personal branch (Play Lab / your clone)\ngit fetch origin\ngit rebase origin/main\n# Shared release: merge, do not rebase teammates"
+    note: "No GitHub push from this page. No practice VM."
 quiz:
   - question: "When is rebasing onto main usually appropriate?"
     options:
@@ -35,6 +38,24 @@ quiz:
       - "It deletes remote tags"
       - "It disables CI"
     answer: 1
+  - question: "Force-pushing a rebased personal branch is…"
+    options:
+      - "Required on main"
+      - "OK only if nobody else based work on those commits — still prefer --force-with-lease"
+      - "How you update prod gold"
+      - "Banned in all cases including your laptop"
+    answer: 1
+    explanation: "Lease protects teammates. Never force-push main."
+  - question: "Merge vs rebase on a dbt PR: default here is…"
+    options:
+      - "Rebase shared release branches"
+      - "Rebase your personal branch for a linear review; merge shared history"
+      - "Rewrite main nightly"
+      - "Skip git entirely"
+    answer: 1
+    explanation: "Reviewable personal history. Honest shared history."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Rebase vs merge for analytics repos

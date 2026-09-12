@@ -22,6 +22,9 @@ cheatSheet:
   - label: "Incident write-up"
     code: "Role: You are writing the incident doc, not the blame doc.\nGoal: Turn my notes into Problem / Impact / Timeline / Checks / Follow-ups.\nContext: Daily revenue mart missed late refunds for 2026-09-10.\nConstraints: no customer PII, no tokens, under 150 words plus a 5-item follow-up list.\nOutput format: those five headings only."
     note: "Good closer: ask what evidence is still missing."
+  - label: "On-call first message"
+    code: "Role: incident scribe\nGoal: Turn this page into a 5-line timeline + one next check\nContext: Aurora gold_daily_orders is stale; last Job run 02:14 UTC\nConstraints: no secrets, no blame\nOutput: timeline, impact grain, next SELECT"
+    note: "Incidents need a grain and a next check — not a novel."
 quiz:
   - question: "An on-call prompt should always include…"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "CERT_PATH tracks"
     answer: 1
     explanation: "Library, not a product surface. Training already has the route."
+  - question: "A PR-review prompt should ask the model to…"
+    options:
+      - "Approve the PR automatically"
+      - "List grain risks, secret leaks, and missing tests — you still decide"
+      - "Rewrite history on main"
+      - "Post to Slack as you"
+    answer: 1
+    explanation: "The model drafts a review. You own the merge."
+  - question: "Why keep a library of role prompts instead of one mega-prompt?"
+    options:
+      - "Mega-prompts always win"
+      - "On-call, PR, and incident asks need different constraints and formats"
+      - "Libraries are required by Snowflake"
+      - "So you can paste prod keys once"
+    answer: 1
+    explanation: "Different jobs, different fences. Reuse the skeleton; swap the role."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 A **role library**, not a chatbot product. Same four-line skeleton as [Ask better questions](/training/prompt-engineering/pe-ask-better-questions): Goal, Context, Constraints, Output format.

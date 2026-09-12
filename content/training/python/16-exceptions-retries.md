@@ -22,6 +22,9 @@ cheatSheet:
   - label: "Keep the reason"
     code: "quarantine = []\n\ndef split_or_raise(row: dict):\n    try:\n        amount = row[\"amount\"]\n        if amount is None:\n            raise ValueError(\"amount is None\")\n        return {\"ok\": row}\n    except (KeyError, ValueError, TypeError) as exc:\n        quarantine.append({\"row\": row, \"reason\": str(exc)})\n        return None"
     note: "If you skip a row, persist the reason. Silent continue is the same as coerce-to-zero."
+  - label: "Retry timeouts only"
+    code: "try:\n    return extract()\nexcept TimeoutError:\n    retry()\n# KeyError / ValueError on a missing order_id: fail loud, do not retry."
+    note: "Retries are for transient I/O. Contract breaks are not transient."
 quiz:
   - question: "Which failure should you retry?"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "ValueError cannot be raised"
     answer: 1
     explanation: "Narrow catches keep fail-loud behavior for contracts. Broad catches hide pages."
+  - question: "extract() raises KeyError('order_id'). Should the job retry?"
+    options:
+      - "Yes, three times"
+      - "No — a missing contract key will fail the same way on retry"
+      - "Yes, until gold looks full"
+      - "Swallow it and return []"
+    answer: 1
+    explanation: "Empty success is a lie. Raise on contract breaks; retry only timeouts."
+  - question: "Why is `except Exception: pass` a pipeline smell?"
+    options:
+      - "It is slower than a bare except"
+      - "It turns a broken landing into a successful empty window"
+      - "Python forbids Exception"
+      - "It prints too much"
+    answer: 1
+    explanation: "On-call wants a loud failure, not a quiet zero-row gold table."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Exceptions are how jobs **page**. Retries are how they survive blips. Mixing the two is how gold goes quiet.

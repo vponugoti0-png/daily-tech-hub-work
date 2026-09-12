@@ -36,6 +36,24 @@ quiz:
       - "CURRENT_DATE only"
     answer: 1
     explanation: "Partition by the business identity. Order by the recency columns you trust."
+  - question: "ROW_NUMBER() … QUALIFY/filter rn = 1 is a dedupe when…"
+    options:
+      - "You partition by the business key and order by the recency column you trust"
+      - "You DISTINCT the whole row blindly"
+      - "You LIMIT 1 the table"
+      - "You delete bronze"
+    answer: 0
+    explanation: "Name the key and the winner rule (latest load_ts)."
+  - question: "Late data after a daily load should…"
+    options:
+      - "Be dropped so gold stays pretty"
+      - "Have a written policy: lookback MERGE or a late-arrivals table"
+      - "Force a full reload every time by default"
+      - "Be inserted with a new random order_id"
+    answer: 1
+    explanation: "Late is expected. A policy beats surprise duplicates."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Ingestion reality: the same `order_id` shows up twice, and Tuesday's refund lands on Thursday. This lesson is the SQL half of the shared story **Orders → late events → daily revenue mart**.

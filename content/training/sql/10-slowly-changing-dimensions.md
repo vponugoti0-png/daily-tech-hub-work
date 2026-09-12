@@ -36,6 +36,24 @@ quiz:
       - "Dedupes bronze"
     answer: 1
     explanation: "Current-only joins rewrite the past. Use valid_from/valid_to for PIT."
+  - question: "SCD2 keeps history by…"
+    options:
+      - "Overwriting the dim row in place with no dates"
+      - "Closing the old row (valid_to) and inserting a new current row"
+      - "Deleting the customer"
+      - "Using DISTINCT region"
+    answer: 1
+    explanation: "Effective dating. Facts point at the version that was true on the event date."
+  - question: "A fact’s customer_id should join to…"
+    options:
+      - "Whatever row happens to be current, even for last year’s order"
+      - "The dim version valid on the fact’s order_date (or a durable natural key + dates)"
+      - "A random surrogate"
+      - "The warehouse name"
+    answer: 1
+    explanation: "Point-in-time. Current-only joins rewrite history."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Dimensional modeling named SCD2. This lab writes the SQL.

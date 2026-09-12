@@ -22,6 +22,9 @@ cheatSheet:
   - label: "AND / OR without surprise"
     code: "SELECT order_id, status, amount, promo_code\nFROM sf_orders\nWHERE status IN ('paid', 'pending')\n  AND NOT (amount < 15)\n  AND (promo_code IS NOT NULL OR amount >= 20)\nORDER BY order_id;"
     note: "Parenthesize OR. The warehouse name is compute — it is not in the table path."
+  - label: "North / LATAM paid"
+    code: "SELECT o.order_id, c.region, o.amount, o.promo_code\nFROM sf_orders o\nJOIN sf_customers c ON c.customer_id = o.customer_id\nWHERE o.status = 'paid' AND c.region IN ('north', 'latam');"
+    note: "Wave A1 SAMPLE customers. promo_code = NULL is never TRUE."
 quiz:
   - question: "You need every paid sf_orders row, including unknown promo_code. Which predicate is safe?"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "The warehouse is XSMALL"
     answer: 1
     explanation: "DISTINCT hides grain. Name the key first. Revenue uses SUM/GROUP BY, not DISTINCT amount."
+  - question: "COUNT(promo_code) on sf_orders counts…"
+    options:
+      - "All SAMPLE orders"
+      - "Rows with a non-NULL promo — COUNT(*) is the order count"
+      - "Warehouses"
+      - "Time Travel versions"
+    answer: 1
+    explanation: "Same NULL lesson as Aurora SQL."
+  - question: "LIMIT 5 on a SAMPLE worksheet is…"
+    options:
+      - "A Task incremental"
+      - "A sample cap — Tasks / DTs use a stream or a date window"
+      - "How you drop pending rows"
+      - "A clone"
+    answer: 1
+    explanation: "Exploration vs pipeline."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 True-zero Snowflake SQL for warehouse work. Guest-friendly — run the samples in the **local practice lab** on this page (DuckDB in the browser, **not a live Snowflake account**).

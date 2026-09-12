@@ -42,6 +42,24 @@ quiz:
       - "Security is skipped"
       - "You can hold prod admin forever"
     answer: 1
+  - question: "Smallest valuable deploy means…"
+    options:
+      - "Rewrite every mart in week one"
+      - "One Job / DT in DEV that a named user actually runs"
+      - "A slide-only architecture"
+      - "A clone of their entire prod to your laptop"
+    answer: 1
+    explanation: "Used beats complete."
+  - question: "Why refuse a “boil the lakehouse” week-one scope?"
+    options:
+      - "FDE work cannot touch gold"
+      - "You will miss security, owners, and a demo-able grain"
+      - "Jobs cannot be small"
+      - "Customers hate DEV catalogs"
+    answer: 1
+    explanation: "Scope is a delivery skill."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Scope the smallest valuable deploy

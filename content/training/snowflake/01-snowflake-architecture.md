@@ -30,6 +30,32 @@ quiz:
       - "Git hosting"
       - "DNS"
     answer: 1
+  - question: "Storage and compute separate so that…"
+    options:
+      - "You can scale a warehouse without copying tables"
+      - "Tables live inside the warehouse size"
+      - "Time Travel is disabled"
+      - "You need ACCOUNTADMIN to SELECT"
+    answer: 0
+    explanation: "Classic Snowflake pitch — and it is the day-0 habit."
+  - question: "A BI warehouse and an ETL warehouse should be different because…"
+    options:
+      - "They cannot share a database"
+      - "ETL should not steal serving credits (and vice versa)"
+      - "BI cannot run SQL"
+      - "ETL cannot use MERGE"
+    answer: 1
+    explanation: "The seed’s etl_wh vs bi_wh is the picture."
+  - question: "Cloud services layer (auth, metadata) is…"
+    options:
+      - "Your virtual warehouse"
+      - "The control plane — warehouses still do the heavy scans"
+      - "A Dynamic Table"
+      - "A stage URL"
+    answer: 1
+    explanation: "Do not confuse metadata with a MEDIUM warehouse."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Snowflake architecture for practitioners

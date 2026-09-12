@@ -22,6 +22,9 @@ cheatSheet:
   - label: "Scalar stand-in for > ANY"
     code: "SELECT order_id, region, amount\nFROM silver_orders\nWHERE amount > (\n  SELECT AVG(amount) FROM silver_orders WHERE status = 'ok'\n)\nORDER BY amount DESC;"
     note: "amount > ANY (SELECT amount …) is easy to misread. A named scalar (avg ok ticket) reviews faster."
+  - label: "Bronze event leftovers"
+    code: "SELECT b.event_id, b.event_type\nFROM bronze_events b\nWHERE NOT EXISTS (SELECT 1 FROM silver_events s WHERE s.event_id = b.event_id);"
+    note: "Same anti-join habit as leftover order keys."
 quiz:
   - question: "Why use EXISTS instead of joining bronze to silver when you only need leftover keys?"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "Unity Catalog hid it"
     answer: 1
     explanation: "Quality contracts remove rows from silver. Anti-join those keys so you can quarantine or alert — do not pretend gold is complete."
+  - question: "Leftover bronze keys after silver writes mean…"
+    options:
+      - "Silver is broken always"
+      - "A quality rule dropped them — prove it with NOT EXISTS, do not hide with DISTINCT"
+      - "You should DELETE bronze nightly"
+      - "Unity Catalog failed"
+    answer: 1
+    explanation: "This seed’s leftover is the corrupt row. Name the rule."
+  - question: "EXISTS as a semi-join is better than JOIN when…"
+    options:
+      - "You need every bronze column in gold"
+      - "You only care that a silver key exists — JOIN can fan out"
+      - "You want to UPDATE"
+      - "You are in %sh"
+    answer: 1
+    explanation: "Existence vs projection."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Leftover keys are a **metric**. Autoloader can land a corrupt file; silver should drop it; someone should still count the leftovers.

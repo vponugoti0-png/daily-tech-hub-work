@@ -36,6 +36,24 @@ quiz:
       - "You should SELECT *"
     answer: 1
     explanation: "Spill is a cost/perf smell: narrow columns, filter earlier, or size up briefly."
+  - question: "You read an explain plan to…"
+    options:
+      - "Change the catalog color"
+      - "See scans, joins, and whether a date filter can prune"
+      - "Skip WHERE clauses"
+      - "Disable DQ gates"
+    answer: 1
+    explanation: "Plans are a habit, not a vendor trophy. Filter early, project less."
+  - question: "A plan that shows a full table scan plus a late FILTER on order_date suggests…"
+    options:
+      - "Perfect pruning"
+      - "The predicate may not be pushable / typed as DATE — fix the filter shape"
+      - "You should SELECT *"
+      - "You should add LIMIT 1 in prod"
+    answer: 1
+    explanation: "Pruning fails when the column is wrapped or typed as text."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 A lab, not a vendor certification. Open any `EXPLAIN` / query profile (Snowflake, Spark SQL, or your warehouse) and answer four questions.

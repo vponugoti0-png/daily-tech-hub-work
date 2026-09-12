@@ -47,6 +47,24 @@ quiz:
       - "availableNow deletes bronze"
     answer: 0
     explanation: "Daily/hourly marts want a finite task. Continuous is for low-latency ops."
+  - question: "Autoloader bronze → MERGE silver → DQ → gold is ordered that way because…"
+    options:
+      - "Gold must run first"
+      - "You never persist a mart from unvalidated silver"
+      - "MERGE cannot run on silver"
+      - "Autoloader writes gold directly"
+    answer: 1
+    explanation: "Land, clean, gate, serve."
+  - question: "The builder stays copy-to-workspace because…"
+    options:
+      - "This site is a live Databricks workspace"
+      - "The local lab is DuckDB SELECT/WITH — Jobs/Autoloader syntax is educational copy"
+      - "%sh is enabled here"
+      - "Unity Catalog is attached to your cloud"
+    answer: 1
+    explanation: "Honest lab. No Wave B runtime."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 This is the **Databricks ETL builder**: a copy-ready **Autoloader → bronze → silver → DQ → gold** path. It sits between [Autoloader / ingestion](/training/databricks/dbx-autoloader-ingestion) (landing only) and the [Job capstone](/training/databricks/dbx-capstone-medallion-job) (scorecard + graph). Shared story: **Orders → late events → daily revenue mart**.

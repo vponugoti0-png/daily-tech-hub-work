@@ -108,6 +108,24 @@ quiz:
       - "A brand-new /practice route"
     answer: 2
     explanation: "SENTIMENT returns a score. EXTRACT_ANSWER answers a question over a passage."
+  - question: "Cortex-style SQL helpers are safest when they…"
+    options:
+      - "Run UPDATE from a chat with no preview"
+      - "Stay on SELECT / explain paths you can re-run in a worksheet"
+      - "Store your password for next time"
+      - "Skip RBAC because the model is trusted"
+    answer: 1
+    explanation: "Practice agents should not write prod. SELECT and explain, then you apply."
+  - question: "An agent offers to “just run the warehouse SQL.” You…"
+    options:
+      - "Let it — agents never invent DDL"
+      - "Copy the SELECT, run it yourself, reject writes you did not ask for"
+      - "Hand it ACCOUNTADMIN"
+      - "Disable query history"
+    answer: 1
+    explanation: "You are the execution engine. Agents draft."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Agents are useful when they **name a tool and arguments**. Warehouse functions are useful when the text **already lives next to your tables**. This lesson is practice — copy a function, run a structured prompt, then verify.

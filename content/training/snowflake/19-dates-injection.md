@@ -47,6 +47,24 @@ quiz:
       - "DYNAMIC_TABLE refresh"
     answer: 1
     explanation: "History rows are versions of the same order_id, not extra facts. Do not UNION them into gold without picking one version."
+  - question: "AT (TIMESTAMP => …) in an account is Time Travel. In this lab you…"
+    options:
+      - "Run AT against Snowflake"
+      - "Use sf_orders_history versions as a stand-in, then copy AT syntax to an account"
+      - "ATTACH the account"
+      - "Disable the guard"
+    answer: 1
+    explanation: "Syntax differs. Habit matches."
+  - question: "Gluing a form date into WHERE order_date = '…' is bad because…"
+    options:
+      - "Dates cannot be strings ever"
+      - "Injection + type bugs — bind a DATE parameter"
+      - "BETWEEN is exclusive"
+      - "Time Travel forbids dates"
+    answer: 1
+    explanation: "Bind-safe filters."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Date windows keep incrementals honest. Time Travel is **the same grain, earlier**. The **local practice lab** is not Snowflake — the habit still transfers: filter dates, bind parameters, pick one as-of version.

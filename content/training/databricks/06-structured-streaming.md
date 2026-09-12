@@ -12,6 +12,10 @@ objectives:
   - "Apply watermarks for late data"
   - "Sink to Delta idempotently"
 updatedAt: "2026-09-11"
+cheatSheet:
+  - label: "Checkpoint habit"
+    code: "-- Streaming silver: readStream + checkpoint location you own\n-- Lab stand-in: bronze_events → silver_events (corrupt dropped)\nSELECT event_type, COUNT(*) FROM silver_events GROUP BY event_type;"
+    note: "No live stream here. Checkpoints are the watermark of streaming."
 quiz:
   - question: "Losing a streaming checkpoint directory typically means…"
     options:
@@ -20,6 +24,32 @@ quiz:
       - "Automatic schema merge"
       - "Free storage"
     answer: 1
+  - question: "A streaming query without a checkpoint is risky because…"
+    options:
+      - "Spark cannot SELECT"
+      - "A restart may reprocess or skip offsets — you lose exactly-once habits"
+      - "Checkpoints store PATs"
+      - "Streaming forbids WHERE"
+    answer: 1
+    explanation: "Checkpoint location is part of the contract."
+  - question: "Corrupt event_type rows in this seed stay in bronze_events so that…"
+    options:
+      - "Silver is a dump of bronze"
+      - "You can anti-join leftovers — quality is a write rule, not a hope"
+      - "Streaming is disabled"
+      - "Gold stores events only"
+    answer: 1
+    explanation: "Run the events-quality sample on lab-hosting lessons."
+  - question: "Watermarks in streaming vs batch incrementals…"
+    options:
+      - "Are unrelated ideas"
+      - "Both bound lateness — streaming in event time, batch in a high-water column"
+      - "Replace Unity Catalog"
+      - "Are only for Snowflake"
+    answer: 1
+    explanation: "Same DE idea, different runtime."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Structured Streaming essentials

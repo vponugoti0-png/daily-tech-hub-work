@@ -18,6 +18,9 @@ cheatSheet:
     code: "payload:user.id::string"
   - label: "Spark get"
     code: "payload.user.id"
+  - label: "Landing JSON habit"
+    code: "-- Warehouse: parse once into typed columns in silver\n-- Do not: SELECT payload:amount::NUMBER in every gold dashboard\n-- Lab stand-in: keep typed aurora_orders.amount"
+    note: "Semi-structured in bronze; typed contract in silver."
 quiz:
   - question: "Flattening arrays before aggregating often…"
     options:
@@ -26,6 +29,24 @@ quiz:
       - "Deletes duplicates"
       - "Creates primary keys"
     answer: 0
+  - question: "Why flatten JSON in silver instead of in every gold query?"
+    options:
+      - "JSON is illegal in gold"
+      - "Typed columns are one contract; repeated :path casts drift and hide NULLs"
+      - "Bronze cannot store JSON"
+      - "Dashboards cannot join"
+    answer: 1
+    explanation: "Parse once. Gold reads a table, not a treasure map."
+  - question: "A missing JSON key vs a JSON null should…"
+    options:
+      - "Both become 0"
+      - "Be distinguished if the product cares — unknown vs omitted"
+      - "Crash the warehouse always"
+      - "Be DISTINCT-ed away"
+    answer: 1
+    explanation: "Same lesson as Python None vs missing key."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Semi-structured data in SQL

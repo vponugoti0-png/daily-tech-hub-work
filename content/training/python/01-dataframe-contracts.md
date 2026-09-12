@@ -38,6 +38,24 @@ quiz:
       - "Track/log the unmatched count and decide explicitly"
       - "Always inner-join instead"
     answer: 2
+  - question: "A DataFrame contract should name…"
+    options:
+      - "Only the plot color"
+      - "Required columns, types, and the grain (e.g. one row per order_id)"
+      - "The author’s favorite IDE"
+      - "A random UUID per run"
+    answer: 1
+    explanation: "Grain + columns + types. Everything else is decoration."
+  - question: "Why fail when an unexpected column arrives in bronze?"
+    options:
+      - "Extra columns are always PII"
+      - "Silent schema drift can change joins and metrics without a review"
+      - "Spark cannot add columns"
+      - "Contracts forbid VARCHAR"
+    answer: 1
+    explanation: "Allow-list or explicitly pass-through. Do not let a new raw field reshape gold."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # DataFrame contracts for ETL utilities

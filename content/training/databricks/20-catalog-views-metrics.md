@@ -47,6 +47,24 @@ quiz:
       - "It is OPTIMIZE"
     answer: 1
     explanation: "Metric Views declare dimensions and measures. This seed is a tiny local table with that shape — not CREATE METRIC VIEW in a workspace."
+  - question: "silver.ok_orders is a view so that…"
+    options:
+      - "Gold can skip persisting a contract"
+      - "Notebooks share a stored SELECT — gold should still persist a mart grain"
+      - "It is a live UC Metric View"
+      - "It stores checkpoints"
+    answer: 1
+    explanation: "Views are not a load. Marts persist."
+  - question: "lab_catalog_objects lists teaching names because…"
+    options:
+      - "This browser attached to your cloud metastore"
+      - "Same-origin inventory — no remote catalog, no ATTACH from learner SQL"
+      - "It is ACCOUNTADMIN"
+      - "It is a secret manager"
+    answer: 1
+    explanation: "Honest labels."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 The **local practice lab** queries same-origin DuckDB stand-ins for Unity Catalog objects: tables, views, schemas, a catalog inventory, and a metric-view–style gold table. Not a live workspace. No Python lab.

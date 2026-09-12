@@ -47,6 +47,24 @@ quiz:
       - "Granting SELECT"
     answer: 1
     explanation: "Partitions (and liquid clustering) support filters you already wrote. They do not invent a predicate."
+  - question: "Read information_schema (or DESCRIBE) before CREATE TABLE USING DELTA because…"
+    options:
+      - "The lab will run the CREATE"
+      - "You need the current columns/types — this lab does not execute Delta DDL"
+      - "Schema is stored in %sh"
+      - "Contracts are optional on gold"
+    answer: 1
+    explanation: "Inspect, then copy DDL to a workspace."
+  - question: "A schema-enforced Delta table should…"
+    options:
+      - "Accept any surprise column silently"
+      - "Fail or send extras to a rescue path when the contract breaks"
+      - "Store PATs in comments"
+      - "Disable MERGE"
+    answer: 1
+    explanation: "Enforcement is the point of a contract."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 DDL is how you **name the contract**. This is not a catalog of every `CREATE CATALOG` privilege, and it is not a stored-procedure course.

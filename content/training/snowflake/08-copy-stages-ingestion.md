@@ -36,6 +36,24 @@ quiz:
       - "To disable Time Travel"
     answer: 0
     explanation: "Raw is your replay buffer. Marts are rebuilt from raw/silver, not from the SaaS API again."
+  - question: "COPY INTO from a stage is…"
+    options:
+      - "A gold MERGE"
+      - "A bronze landing — then Streams/Tasks or a DT clean it"
+      - "A clone"
+      - "A Cortex function"
+    answer: 1
+    explanation: "Land first. Transform second."
+  - question: "A named file format + stage beats ad-hoc paths because…"
+    options:
+      - "Paths are illegal"
+      - "The contract (delim, tz, error mode) is reusable and reviewable"
+      - "Stages store ACCOUNTADMIN"
+      - "COPY cannot use formats"
+    answer: 1
+    explanation: "Ingestion is a contract. Name it."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Ingestion on Snowflake starts at a **stage**, not a mart. Shared story: files of **orders** land, then late events get merged, then a daily revenue mart refreshes.

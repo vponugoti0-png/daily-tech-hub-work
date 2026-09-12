@@ -22,6 +22,9 @@ cheatSheet:
   - label: "Bind, do not glue"
     code: "SQL = \"\"\"\nSELECT order_id, updated_at\nFROM raw.orders\nWHERE updated_at >= %(start)s AND updated_at < %(end)s\n\"\"\"\n\n# cursor.execute(SQL, {\"start\": start, \"end\": end})\n# Bad: f\"WHERE updated_at >= '{start}'\""
     note: "Same rule as the SQL dates lesson. The engine receives values, not SQL text."
+  - label: "Half-open UTC window"
+    code: "start, end = watermark, watermark + timedelta(hours=24)\n# next run starts at end\nif start.tzinfo is None:\n    raise ValueError(\"aware only\")"
+    note: "Naive datetimes lie across DST. Overlaps double-load."
 quiz:
   - question: "A watermark stored as the string 2026-09-12 00:00:00 with no timezone is risky because…"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "SQL cannot compare dates"
     answer: 1
     explanation: "Injection is a string-construction bug. Bind parameters. This is awareness, not a payload catalog."
+  - question: "The next incremental should start at…"
+    options:
+      - "The previous start minus one day, always"
+      - "The previous end — [start, end) so rows are not double-counted"
+      - "Midnight local time with no timezone"
+      - "A random UUID"
+    answer: 1
+    explanation: "Half-open windows chain. Overlap is a duplicate-load bug."
+  - question: "Why reject a naive datetime as a watermark?"
+    options:
+      - "datetime is deprecated"
+      - "Without tzinfo you cannot know if the warehouse stored UTC or local"
+      - "UTC is illegal"
+      - "timedelta cannot add days"
+    answer: 1
+    explanation: "Naive clocks are a DST foot-gun. The lab sample raises on tzinfo is None."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Watermarks are how incrementals **resume**. They are datetimes, not filenames you hope are sorted.

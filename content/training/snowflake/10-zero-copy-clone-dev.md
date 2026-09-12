@@ -36,6 +36,24 @@ quiz:
       - "A public gist of credentials"
     answer: 1
     explanation: "Clone, break it, clone again. Prod is for the reviewed statement."
+  - question: "After you clone prod to DEV, the first grant should…"
+    options:
+      - "Be ACCOUNTADMIN to the intern"
+      - "Match DEV least privilege — a clone copies data, not your common sense"
+      - "Disable Time Travel"
+      - "Share the clone publicly"
+    answer: 1
+    explanation: "Clones are copies of access risk too."
+  - question: "Writes in a clone…"
+    options:
+      - "Always rewrite prod"
+      - "Materialize new micro-partitions in the clone — prod stays until you write there"
+      - "Are free forever"
+      - "Delete Fail-safe"
+    answer: 1
+    explanation: "Zero-copy until you mutate."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Lab for DEV workflows. You already met clones in [Time Travel & clones](/training/snowflake/sf-time-travel-clones). This page is the rehearsal loop for the orders mart.

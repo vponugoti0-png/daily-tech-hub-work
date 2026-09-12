@@ -36,6 +36,24 @@ quiz:
       - "A Unity Catalog replacement"
     answer: 1
     explanation: "Cross-track content lives under Training. Header nav stays the same."
+  - question: "A shared orders → daily revenue mart must name…"
+    options:
+      - "Only the dashboard color"
+      - "Order grain in staging, date+region grain in gold, and the DQ gates between them"
+      - "A random warehouse size"
+      - "The author’s nickname"
+    answer: 1
+    explanation: "Checklist = grain + gates + publish. Same story on SQL, DBX, and SF builders."
+  - question: "Why share one checklist across tools?"
+    options:
+      - "So you can skip practice on two tracks"
+      - "The contract is the same; only the engine verbs change (MERGE / Dynamic Table / Job)"
+      - "Unity Catalog equals Snowflake ACCOUNTADMIN"
+      - "Labs are live warehouses"
+    answer: 1
+    explanation: "Portable DE habits. Chrome differs; grain does not."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 One story, three implementations. This page is the **shared scorecard** — not a new primary nav item. It is linked from the Training index.

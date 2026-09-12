@@ -22,6 +22,9 @@ cheatSheet:
   - label: "NULL-aware promo gap"
     code: "SELECT\n  COUNT(*) AS orders,\n  COUNT(promo_code) AS with_promo,\n  COUNT(*) - COUNT(promo_code) AS missing_promo\nFROM aurora_orders;"
     note: "COUNT(col) skips NULLs. promo_code = NULL is never TRUE. Run this shape in the local practice lab."
+  - label: "North + EMEA paid"
+    code: "SELECT o.order_id, c.region, o.amount\nFROM aurora_orders o\nJOIN aurora_customers c ON c.customer_id = o.customer_id\nWHERE o.status = 'paid' AND c.region IN ('north', 'emea')\nORDER BY o.amount DESC;"
+    note: "Wave A1 extra customers. Run it in the local lab — not a live warehouse."
 quiz:
   - question: "You need every paid aurora_orders row, including rows whose promo_code is unknown. Which predicate is safe?"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "Drops NULLs automatically"
     answer: 1
     explanation: "LIMIT/TOP is for exploration. Pipelines filter on load time or a high-watermark, then prove completeness."
+  - question: "WHERE amount != 0 drops which rows you might have wanted?"
+    options:
+      - "Only zeros"
+      - "Zeros and also NULLs — NULL compared with != is unknown, not true"
+      - "Only VIP promos"
+      - "Nothing — != is NULL-safe"
+    answer: 1
+    explanation: "NULL is unknown. Use IS NOT NULL if you mean “has an amount,” then compare."
+  - question: "A SELECT for a daily mart should prefer…"
+    options:
+      - "LIMIT 1000 and hope"
+      - "A date window or watermark predicate, then prove completeness"
+      - "SELECT DISTINCT amount"
+      - "ORDER BY RANDOM()"
+    answer: 1
+    explanation: "LIMIT is a sample cap. Pipelines filter on load time or a high-watermark."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 True-zero SELECT for warehouse work. Guest-friendly — run the samples in the **local practice lab** on this page (DuckDB in the browser, not a live warehouse).

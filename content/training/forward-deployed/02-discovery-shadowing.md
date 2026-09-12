@@ -19,6 +19,9 @@ cheatSheet:
   - label: "Discovery questions"
     code: "What is one row in gold today?\nWho gets paged when it is stale?\nWho can CREATE vs USAGE in prod?\nWhat must never leave the VPC?\nWhat did the last failed deploy look like?"
     note: "Ask in their words. Write answers in yours."
+  - label: "Shadow notes"
+    code: "Standup: who speaks when gold is late?\nCatalog: who owns raw vs marts?\nChange control: CAB / ticket / none?\nDo not: promise a full medallion rewrite this sprint"
+    note: "Write what you saw. Scope comes next."
 quiz:
   - question: "Best first discovery move on a lakehouse engagement?"
     options:
@@ -42,6 +45,24 @@ quiz:
       - "An undocumented Slack DM"
       - "A promise to migrate every table this sprint"
     answer: 1
+  - question: "You shadow a 9am warehouse standup to…"
+    options:
+      - "Replace their EM"
+      - "Hear who actually owns stale gold — titles lie"
+      - "Collect PATs"
+      - "Grant yourself ACCOUNTADMIN"
+    answer: 1
+    explanation: "On-call reality beats the org chart."
+  - question: "A useful discovery output is…"
+    options:
+      - "A 40-page strategy with no names"
+      - "A one-page map: systems, owners, constraints, smallest deploy"
+      - "A surprise prod cutover"
+      - "A public dump of their grants"
+    answer: 1
+    explanation: "Names and constraints. Not a novel."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Discovery and shadowing workflows

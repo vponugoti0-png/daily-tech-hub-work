@@ -36,6 +36,24 @@ quiz:
       - "Unity Catalog is skipped"
     answer: 0
     explanation: "Bronze is the replay log. Silver applies late events. Gold aggregates."
+  - question: "Capstone bronze → silver → gold should fail if…"
+    options:
+      - "A dashboard is ugly"
+      - "A DQ gate on silver breaks (NULL amounts, leftover corrupt keys you promised to drop)"
+      - "The cluster is a Job cluster"
+      - "You used Spark SQL"
+    answer: 1
+    explanation: "Gates before gold. Pretty Jobs that load garbage are still incidents."
+  - question: "Who owns the Job after the capstone?"
+    options:
+      - "Nobody — notebooks are enough"
+      - "A named on-call — alerts go somewhere a human reads"
+      - "The model vendor"
+      - "ACCOUNTADMIN forever"
+    answer: 1
+    explanation: "Delivery without an owner is a demo, not a Job."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Capstone for Databricks. Shared story: **Orders → late events → daily revenue mart**. Copy-ready Autoloader → silver → gold lives in [Build medallion ETL](/training/databricks/dbx-medallion-etl-builder). Use the [shared checklist](/training/sql/sql-shared-capstone-checklist) as the scorecard.

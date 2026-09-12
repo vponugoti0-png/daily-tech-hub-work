@@ -47,6 +47,24 @@ quiz:
       - "IN does not work without aliases"
     answer: 1
     explanation: "Aliases are documentation. Credits do not care. A column named amount after a join is ambiguous."
+  - question: "LIKE 'F%' on promo_code matches…"
+    options:
+      - "A regex lookbehind"
+      - "FALL26 / FLASH-style prefixes — patterns, not a stored procedure"
+      - "Only VIP"
+      - "NULL promos"
+    answer: 1
+    explanation: "LIKE is a pattern. IN is a set. BETWEEN is inclusive."
+  - question: "CASE size buckets belong in…"
+    options:
+      - "A Task that GRANTs"
+      - "One SELECT so reviewers see the grain — not a hidden UDF you cannot find"
+      - "ACCOUNTADMIN"
+      - "The warehouse size"
+    answer: 1
+    explanation: "Expression, not a procedure."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 LIKE / IN / CASE are **expressions** for reviewers — not a JavaScript UDF you cannot test.

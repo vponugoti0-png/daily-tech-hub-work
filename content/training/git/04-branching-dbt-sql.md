@@ -36,6 +36,24 @@ quiz:
       - "They replace Warehouse RBAC"
     answer: 1
     explanation: "Short-lived branches off main. Merge when the mart slice is reviewable."
+  - question: "A long-lived personal branch on a dbt repo is risky because…"
+    options:
+      - "dbt cannot run on branches"
+      - "Refs and macros drift from main — rebase/merge often, keep PRs small"
+      - "SQL cannot be in git"
+      - "Play Lab rewrites GitHub"
+    answer: 1
+    explanation: "Small PRs. Fresh main."
+  - question: "Why keep marts and a one-off scratch query on different branches/PRs?"
+    options:
+      - "Git allows only one .sql file"
+      - "Reviewers can see the contract change without a pile of notebook leftovers"
+      - "Scratch SQL is illegal"
+      - "dbt forbids refs"
+    answer: 1
+    explanation: "Branch purpose = review purpose."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Analytics repos (dbt, SQLX, warehouse SQL) fail reviews when the branch is a junk drawer. The **Git Play Lab** on this page starts on the story-branch level — one late-events grain, then remotes if you keep playing.

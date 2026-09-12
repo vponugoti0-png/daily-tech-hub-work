@@ -25,6 +25,9 @@ cheatSheet:
   - label: "Paid rows only"
     code: "rows = [\n    {\"order_id\": 1, \"status\": \"paid\", \"amount\": 10},\n    {\"order_id\": 2, \"status\": \"pending\", \"amount\": None},\n]\npaid = [r for r in rows if r[\"status\"] == \"paid\" and r[\"amount\"] is not None]\nprint(paid)"
     note: "Filter on status and keep unknown amounts out of gold. Run it in the local lab."
+  - label: "Promo ref vs None"
+    code: "if \"promo_code\" not in row:\n    raise KeyError(\"promo_code missing\")\ncode = row[\"promo_code\"]  # may be None\nknown = code is not None"
+    note: "Missing key ≠ None. Run the promo lookup sample in the local lab."
 quiz:
   - question: "A bronze dict has amount: None. What should transform do by default?"
     options:
@@ -50,6 +53,24 @@ quiz:
       - "Only the string 'NULL'"
     answer: 1
     explanation: "Truthiness is not a NULL test. Use `is None` when you mean unknown."
+  - question: "A landing JSON has the key promo_code with value null. After json.loads, Python sees…"
+    options:
+      - "The string 'null'"
+      - "None — treat it as unknown, not a missing key"
+      - "A missing key so .get is required"
+      - "0"
+    answer: 1
+    explanation: "JSON null becomes None. The key is present. That is different from a file that omitted the field."
+  - question: "Why is `amount or 0` a gold bug?"
+    options:
+      - "or is slow"
+      - "It turns None and 0 into 0, so you cannot tell unknown from a real zero"
+      - "Dicts cannot store 0"
+      - "JSON forbids 0"
+    answer: 1
+    explanation: "Truthiness collapses None and 0. Use `is None` when you mean unknown."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 True-zero Python for pipeline rows. **Edit and Run** in the local practice lab on this page — not a live cloud kernel. DuckDB labs stay on the SQL / Databricks / Snowflake tracks.

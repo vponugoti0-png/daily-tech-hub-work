@@ -22,6 +22,9 @@ cheatSheet:
   - label: "MERGE into silver (workspace)"
     code: "-- Dialect: Spark SQL / Delta (workspace only)\nMERGE INTO silver.orders t\nUSING bronze.orders_delta u\nON t.order_id = u.order_id\nWHEN MATCHED THEN UPDATE SET *\nWHEN NOT MATCHED THEN INSERT *;"
     note: "Silver is the airlock. Do not MERGE directly into a BI gold table from a laptop notebook."
+  - label: "Leftover bronze keys"
+    code: "SELECT b.order_id, b.status, b.amount\nFROM bronze_orders b\nWHERE NOT EXISTS (SELECT 1 FROM silver_orders s WHERE s.order_id = b.order_id);"
+    note: "Anti-join preview. The lab will not MERGE."
 quiz:
   - question: "Why preview bronze keys before MERGE into silver?"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "Is the same as OPTIMIZE"
     answer: 1
     explanation: "Unqualified DELETE is a wipe. Prefer replacing a silver table, or DELETE with a keyed window you previewed. OPTIMIZE is maintenance, not a write strategy."
+  - question: "A MERGE preview in this lab is a join because…"
+    options:
+      - "Delta cannot MERGE"
+      - "The engine is read-only DuckDB — you practice the match set, then copy MERGE"
+      - "JOIN is the official Delta syntax"
+      - "VACUUM is a SELECT"
+    answer: 1
+    explanation: "Honest stand-in. Spark SQL / Delta syntax differs."
+  - question: "WHEN NOT MATCHED should insert…"
+    options:
+      - "Corrupt bronze with no rule"
+      - "Only rows that pass the silver contract"
+      - "Every notebook cell"
+      - "A PAT"
+    answer: 1
+    explanation: "Not-matched is not a license to land garbage."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Delta writes are how gold goes wrong. This lesson is **preview-first**: inspect the landing, then MERGE a disposable silver table. The **local practice lab** only runs `SELECT` / `WITH` — use it to preview the set, then copy Delta DML into a workspace.

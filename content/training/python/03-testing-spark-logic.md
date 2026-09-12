@@ -12,6 +12,10 @@ objectives:
   - "Use pytest fixtures for small DataFrames"
   - "Assert on row sets, not printouts"
 updatedAt: "2026-09-11"
+cheatSheet:
+  - label: "Pure rule + tiny fixture"
+    code: "def is_late(event_ts, watermark) -> bool:\n    return event_ts < watermark\n\ndef test_late_row():\n    assert is_late(t0, t1) is True"
+    note: "No cluster for the rule. Pin Spark later with 2-row fixtures."
 quiz:
   - question: "Best first test for a watermark policy?"
     options:
@@ -20,6 +24,24 @@ quiz:
       - "Only integration tests"
       - "Manual notebook runs"
     answer: 1
+  - question: "Why extract a watermark policy out of a Spark job?"
+    options:
+      - "Spark cannot compare timestamps"
+      - "pytest can cover the rule in milliseconds without a cluster"
+      - "Pure functions are illegal in Databricks"
+      - "Jobs cannot call functions"
+    answer: 1
+    explanation: "I/O stays in the job. Rules belong in tests you run on every PR."
+  - question: "A useful Spark unit fixture is…"
+    options:
+      - "The entire prod lake"
+      - "Two rows that differ only on the column under test"
+      - "A screenshot of a notebook"
+      - "print(df.show()) with no assert"
+    answer: 1
+    explanation: "Assert on a row set. show() is not a test."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Testing Spark-bound logic in pure Python

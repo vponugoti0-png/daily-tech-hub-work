@@ -22,6 +22,9 @@ cheatSheet:
   - label: "Read bytes at the edge"
     code: "def extract_json_file(path: Path, loads) -> list[dict]:\n    text = path.read_text(encoding=\"utf-8\")\n    payload = loads(text)\n    if not isinstance(payload, list):\n        raise TypeError(\"orders file must be a JSON array\")\n    return payload"
     note: "Pass json.loads in so tests can inject. Do not json.load a 20GB file — chunk in the next lesson."
+  - label: "Reject a bad stem"
+    code: "prefix, _, day = path.stem.partition(\"_\")\nif prefix != \"orders\" or len(day) != 10:\n    raise ValueError(path.name)"
+    note: "glob('*.json') also picks up notes.json. The lab seeds that trap."
 quiz:
   - question: "Why prefer Path(landing) / day / filename over landing + '/' + day?"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "print the path and continue"
     answer: 1
     explanation: "Landing is a contract. Unexpected names go to quarantine or an alert, not into gold."
+  - question: "Why not glob('*.json') and trust every file in a landing folder?"
+    options:
+      - "JSON files cannot be read twice"
+      - "Notes and sidecar files share the suffix — reject stems that are not orders_YYYY-MM-DD"
+      - "pathlib cannot glob"
+      - "Warehouses forbid JSON"
+    answer: 1
+    explanation: "The local lab seeds notes.json next to orders_*.json on purpose."
+  - question: "A second day folder (2026-09-11) appears under /data/landing/orders. Your extract should…"
+    options:
+      - "Hardcode only 2026-09-12"
+      - "Take the day as an argument and read that folder — watermarks pick the day"
+      - "Read /etc/passwd"
+      - "Concatenate every folder blindly into gold"
+    answer: 1
+    explanation: "Day is a parameter. Hardcoded dates are a notebook habit, not a job."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Extract starts on **disk** (or object storage that looks like disk). `pathlib` is how you name the landing without inventing a mini-parser.

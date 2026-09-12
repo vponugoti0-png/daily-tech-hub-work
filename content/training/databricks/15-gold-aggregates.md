@@ -22,6 +22,9 @@ cheatSheet:
   - label: "HAVING: busy regions"
     code: "SELECT region, COUNT(*) AS n, ROUND(SUM(amount), 2) AS amount\nFROM silver_orders\nWHERE status = 'ok'\nGROUP BY region\nHAVING SUM(amount) >= 40\nORDER BY amount DESC;"
     note: "HAVING sees aggregates. You cannot put SUM(amount) >= 40 in WHERE."
+  - label: "Gold daily returns"
+    code: "SELECT order_date, region, returned_orders, returned_amount\nFROM gold_returns_daily\nORDER BY order_date, region;"
+    note: "Do not mix this grain with gold_daily_orders revenue."
 quiz:
   - question: "COUNT(*) vs COUNT(amount) on bronze_orders?"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "Liquid clustering cancels the join"
     answer: 1
     explanation: "Many-side joins multiply fact rows. Aggregate items first, or sum qty * unit_price at item grain."
+  - question: "HAVING belongs on gold aggregates because…"
+    options:
+      - "WHERE cannot see region"
+      - "You filter groups (e.g. revenue floor) after SUM — WHERE filters rows first"
+      - "HAVING writes Delta"
+      - "Spark forbids WHERE"
+    answer: 1
+    explanation: "Same SQL-track rule. Persist the grain; do not re-aggregate bronze in every notebook."
+  - question: "metrics.returns_daily is…"
+    options:
+      - "A live UC Metric View in your cloud"
+      - "A local dim_/measure_ stand-in for returns — same-origin only"
+      - "A secret table"
+      - "An Autoloader checkpoint"
+    answer: 1
+    explanation: "Teaching fixture. No remote catalog."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Gold is a **named grain**, not “whatever the notebook printed.” The **local practice lab** already has `gold_daily_orders` — compare it to a `GROUP BY` you write on `silver_orders`.

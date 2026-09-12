@@ -19,6 +19,9 @@ cheatSheet:
   - label: "Walk back with relative refs"
     code: "git log --oneline\ngit checkout HEAD~2"
     note: "HEAD~ is first-parent. Blame/bisect still need a real repo — this lab is the graph."
+  - label: "Bisect a mart"
+    code: "git bisect start\ngit bisect bad HEAD\ngit bisect good v1.4.0\n# test: dbt compile + one SELECT on orders_daily\ngit bisect good|bad"
+    note: "A failing check you can rerun beats vibes. Play Lab has no VM."
 quiz:
   - question: "What does git bisect run pytest … do?"
     options:
@@ -35,6 +38,24 @@ quiz:
       - "Only on merge commits"
       - "Only in bare repositories"
     answer: 1
+  - question: "git blame is most useful when…"
+    options:
+      - "You want to punish an author"
+      - "You need the commit that last touched a grain so you can read the why"
+      - "You skip tests"
+      - "You rewrite main"
+    answer: 1
+    explanation: "Blame is archaeology, not HR."
+  - question: "Bisect needs a…"
+    options:
+      - "Secret PAT in the script"
+      - "Deterministic test (compile, one DQ SELECT) you can run at each step"
+      - "Force-push to main"
+      - "Live Databricks cluster in this browser"
+    answer: 1
+    explanation: "No test, no bisect."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Bisect & blame for broken pipelines

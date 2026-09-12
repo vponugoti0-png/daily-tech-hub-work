@@ -36,6 +36,24 @@ quiz:
       - "A Databricks job cluster"
     answer: 0
     explanation: "Land and clean first. The DT is the declarative gold step."
+  - question: "Capstone cost checklist should include…"
+    options:
+      - "Only the logo"
+      - "Warehouse size, auto-suspend, DT lag, and who is on-call if gold is stale"
+      - "A PAT in a worksheet"
+      - "ACCOUNTADMIN as the owner role"
+    answer: 1
+    explanation: "Freshness and cost are the same checklist."
+  - question: "Daily revenue grain in the capstone is…"
+    options:
+      - "Item sku"
+      - "The mart you named (date + region) — not a dashboard GROUP BY on bronze"
+      - "The stream offset"
+      - "The warehouse name"
+    answer: 1
+    explanation: "Persist the grain."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Capstone for the Snowflake track. Shared story: **Orders → late events → daily revenue mart**. The end-to-end COPY → Stream/Task → DT path is [Build warehouse ETL](/training/snowflake/sf-warehouse-etl-builder). Pair with the [shared checklist](/training/sql/sql-shared-capstone-checklist).

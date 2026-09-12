@@ -19,6 +19,9 @@ cheatSheet:
   - label: "Forwardable note"
     code: "What shipped: orders_daily in prod.gold (1 row / day)\nHow we know: freshness < 2h; Job green\nWhat it costs: warehouse X, auto-suspend 60s\nWho owns it: #data-oncall (not the vendor)\nWhat we will not do next week: rewrite every domain"
     note: "No acronyms you have not already said aloud."
+  - label: "Demo grain"
+    code: "Show: DEV catalog, one gold table, one number they already argue about\nSay: owner, refresh, what we will not do this sprint\nDo not: live-edit prod or invent a metric"
+    note: "Demos are scoped truth, not theater."
 quiz:
   - question: "A VP Finance demo should lead with…"
     options:
@@ -41,6 +44,24 @@ quiz:
       - "Grant ACCOUNTADMIN live"
       - "Cancel and never write the note"
     answer: 1
+  - question: "A stakeholder demo should use…"
+    options:
+      - "A metric you invented that morning"
+      - "A grain they already fight about, on data they recognize"
+      - "ACCOUNTADMIN as the hero role"
+      - "A surprise prod write"
+    answer: 1
+    explanation: "Credibility is their number, not yours."
+  - question: "Writing after a demo matters because…"
+    options:
+      - "Slides expire; a written grain + owner + next check survives the meeting"
+      - "FDE work is only verbal"
+      - "Tickets are banned"
+      - "You should not leave artifacts"
+    answer: 0
+    explanation: "Write it down. That is the handoff seed."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Stakeholder demos and writing

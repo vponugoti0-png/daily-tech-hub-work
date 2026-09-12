@@ -20,6 +20,31 @@ quiz:
       - "bucket.folder.file only"
       - "user.password.host"
     answer: 0
+    explanation: "catalog.schema.table. A notebook path is not a table."
+  - question: "Three-level names are…"
+    options:
+      - "cluster.notebook.cell"
+      - "catalog.schema.table — a notebook path is not a table"
+      - "user.token.workspace"
+      - "job.run.task only"
+    answer: 1
+    explanation: "The lab’s current_catalog() sample is the habit without a remote metastore."
+  - question: "This local lab’s unity attach is…"
+    options:
+      - "Your company’s metastore"
+      - "Same-origin in-memory teaching labels — learner SQL still cannot ATTACH"
+      - "A live AWS catalog"
+      - "A secret store"
+    answer: 1
+    explanation: "No remote catalogs. No CSP widen."
+  - question: "A Metric View stand-in uses dim_* and measure_* so that…"
+    options:
+      - "Spark runs faster"
+      - "Reviewers see dimensions vs measures — not a live UC Metric View object"
+      - "You can skip gold tables"
+      - "%sh can SELECT them"
+    answer: 1
+    explanation: "Teaching names. Persist gold on purpose; the stand-in is a table."
 cheatSheet:
   - label: "Local catalog inventory"
     code: "SELECT catalog, schema, object_name, object_type\nFROM lab_catalog_objects\nORDER BY catalog, schema, object_name;"
@@ -30,6 +55,8 @@ cheatSheet:
   - label: "silver.orders (schema.table)"
     code: "SELECT order_id, region, status, amount\nFROM silver.orders\nWHERE status = 'ok'\nORDER BY order_id;"
     note: "Unqualified silver_orders still works. schema.table is the UC habit without a remote catalog."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Unity Catalog & governance

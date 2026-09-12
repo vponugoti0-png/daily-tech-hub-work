@@ -47,6 +47,24 @@ quiz:
       - "A virtual warehouse"
     answer: 1
     explanation: "DTs are declared SELECTs. The grain and DQ rules do not go away because the refresh is managed."
+  - question: "HAVING SUM(amount) >= 20 on SAMPLE paid revenue…"
+    options:
+      - "Filters rows before GROUP BY"
+      - "Filters groups after SUM — put status = 'paid' in WHERE"
+      - "Creates a Dynamic Table"
+      - "Suspends the warehouse"
+    answer: 1
+    explanation: "WHERE then GROUP then HAVING."
+  - question: "Joining sf_line_items then SUM(o.amount) is wrong because…"
+    options:
+      - "amount is not a column"
+      - "Line items fan out the order — sum qty * unit_price at item grain"
+      - "JOIN is banned"
+      - "SAMPLE cannot join"
+    answer: 1
+    explanation: "Wave A1 line items exist so you can practice this."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Marts are **named grains**. The **local practice lab** already has SAMPLE orders × customers — write the `GROUP BY` here, then wrap it as a Dynamic Table in an account.

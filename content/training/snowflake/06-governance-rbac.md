@@ -12,6 +12,10 @@ objectives:
   - "Apply masking for PII"
   - "Use future grants for new objects"
 updatedAt: "2026-09-11"
+cheatSheet:
+  - label: "Least privilege sketch"
+    code: "-- Educational copy (not executed here)\nGRANT USAGE ON DATABASE analytics TO ROLE aurora_analyst;\nGRANT SELECT ON VIEW analytics.paid_orders TO ROLE aurora_analyst;\n-- Not: GRANT ACCOUNTADMIN TO everyone"
+    note: "Roles own privileges. Users get roles. ACCOUNTADMIN is not a daily driver."
 quiz:
   - question: "Analysts typically should…"
     options:
@@ -20,6 +24,32 @@ quiz:
       - "Share passwords"
       - "Disable MFA"
     answer: 1
+  - question: "Analysts should usually get…"
+    options:
+      - "ACCOUNTADMIN"
+      - "USAGE + SELECT on the views/marts they need — not CREATE on raw"
+      - "The ability to disable Time Travel"
+      - "A shared password in Slack"
+    answer: 1
+    explanation: "Least privilege. Views are a grant surface."
+  - question: "Why not use ACCOUNTADMIN for worksheets?"
+    options:
+      - "It cannot run SELECT"
+      - "Blast radius — one bad DML or grant becomes an incident"
+      - "It disables warehouses"
+      - "It is slower"
+    answer: 1
+    explanation: "Break-glass only."
+  - question: "A role hierarchy helps because…"
+    options:
+      - "You can hide grants from query history"
+      - "You grant once to a functional role and assign users to it"
+      - "It replaces MFA"
+      - "It stores PATs"
+    answer: 1
+    explanation: "Functional roles > per-user snowflakes (pun intended)."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # RBAC, roles & data governance

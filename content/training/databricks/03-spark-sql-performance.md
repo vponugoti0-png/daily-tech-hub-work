@@ -30,6 +30,32 @@ quiz:
       - "Free Photon"
       - "Automatic SCD2"
     answer: 1
+  - question: "Filter order_date in WHERE (not after a huge SELECT *) because…"
+    options:
+      - "Spark ignores WHERE"
+      - "Partition / file pruning reads less data — same habit as a warehouse profile"
+      - "Dates cannot be in WHERE"
+      - "LIMIT is enough in Jobs"
+    answer: 1
+    explanation: "The lab’s date-window sample is the habit. Jobs do not LIMIT gold."
+  - question: "Broadcast a tiny dim, not the fact, because…"
+    options:
+      - "Facts are always smaller"
+      - "A huge broadcast blows executor memory"
+      - "Broadcast is deprecated"
+      - "Dims cannot join"
+    answer: 1
+    explanation: "Size the hint. Default is not “broadcast everything.”"
+  - question: "Why project columns before a wide shuffle?"
+    options:
+      - "Spark cannot shuffle"
+      - "Less data on the wire — do not carry unused raw fields into gold"
+      - "SELECT * is required"
+      - "Shuffles ignore columns"
+    answer: 1
+    explanation: "Contract columns only."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Spark SQL performance on DBX
