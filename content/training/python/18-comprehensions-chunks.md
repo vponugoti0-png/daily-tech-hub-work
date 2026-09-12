@@ -22,6 +22,9 @@ cheatSheet:
   - label: "Do not fan out in a comprehension"
     code: "# Bad: [ (o, i) for o in orders for i in items if i[\"order_id\"] == o[\"order_id\"] ]\n# That is a join explode. Aggregate items first, or iterate one grain.\n\ndef order_ids(orders):\n    return {o[\"order_id\"] for o in orders}"
     note: "A set comprehension is a key set — good for leftovers. A double-for comprehension is often an accidental join."
+  - label: "Chunk then yield"
+    code: "def extract_chunks(rows, size=500):\n    i = 0\n    while i < len(rows):\n        yield rows[i : i + size]\n        i += size"
+    note: "list(extract_chunks(...)) pulls everything back into RAM."
 quiz:
   - question: "Why yield chunks instead of returning one giant list?"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "Binds SQL parameters"
     answer: 1
     explanation: "Iterate and load each chunk (or write staging per chunk). Do not reassemble the lake."
+  - question: "A nested comprehension over orders × items is risky because…"
+    options:
+      - "Comprehensions cannot nest"
+      - "It fans out to item grain — SUM(order.amount) would lie"
+      - "Python forbids two for-clauses"
+      - "It is always faster than a loop"
+    answer: 1
+    explanation: "One row in, one row out unless you named the item grain on purpose."
+  - question: "Why yield batches instead of returning one giant list?"
+    options:
+      - "yield is required by pytest"
+      - "RAM stays flat on a real extract; the loader can commit per chunk"
+      - "DuckDB cannot read lists"
+      - "JSON forbids arrays"
+    answer: 1
+    explanation: "Chunked extract is how jobs survive a 10M-row landing."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Comprehensions are **small** transforms. Generators are **large** extracts. Mixing them — `[row for chunk in extract() for row in chunk]` — is how RAM comes back.

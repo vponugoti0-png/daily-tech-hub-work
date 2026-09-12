@@ -22,6 +22,9 @@ cheatSheet:
   - label: "AND / OR without surprise"
     code: "SELECT order_id, region, status, amount\nFROM silver_orders\nWHERE region IN ('west', 'east')\n  AND NOT (amount < 10)\n  AND (status = 'ok' OR status = 'returned')\nORDER BY order_id;"
     note: "Parenthesize OR. catalog.schema.table is the Unity Catalog name; this lab uses unqualified local tables."
+  - label: "North silver peek"
+    code: "SELECT order_id, order_date, region, amount\nFROM silver_orders\nWHERE region = 'north' AND status = 'ok'\nORDER BY order_date, order_id;"
+    note: "Wave A1 north landings. amount = NULL matches zero rows — use IS NULL."
 quiz:
   - question: "A bronze landing has amount IS NULL and status = 'corrupt'. What should silver do?"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "A Unity Catalog volume"
     answer: 1
     explanation: "NULL equality is unknown. IS NULL is the predicate. Three-level names do not change that."
+  - question: "In Spark SQL, amount = NULL returns…"
+    options:
+      - "Rows where amount is unknown"
+      - "Zero rows — use IS NULL"
+      - "A runtime error always"
+      - "The string 'NULL'"
+    answer: 1
+    explanation: "Same ANSI habit as the SQL track."
+  - question: "LIMIT 5 on a silver notebook sample is…"
+    options:
+      - "A production incremental"
+      - "A lab/sample cap — Jobs filter a date partition or Autoloader checkpoint"
+      - "How you drop corrupt rows"
+      - "A Delta constraint"
+    answer: 1
+    explanation: "The lesson’s LIMIT sample says this out loud."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 True-zero Spark SQL for lakehouse work. Guest-friendly — run the samples in the **local practice lab** on this page (DuckDB in the browser, not a live Databricks workspace).

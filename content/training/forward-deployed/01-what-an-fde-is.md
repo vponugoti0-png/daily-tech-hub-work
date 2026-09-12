@@ -19,6 +19,9 @@ cheatSheet:
   - label: "DE-flavored FDE week"
     code: "Mon: shadow their 9am warehouse standup\nTue: map bronze/silver/gold owners + who holds ACCOUNTADMIN\nWed: smallest valuable Job / Dynamic Table in DEV catalog\nThu: security questionnaire + least-privilege grants\nFri: demo the mart + write the handoff runbook"
     note: "Paste into a kickoff note. Adjust names, not the sequence."
+  - label: "Not ACCOUNTADMIN forever"
+    code: "Week 1: map who holds ACCOUNTADMIN / metastore admin\nWeek 2: least-privilege role for the Job / DT\nHandoff: they page their on-call, not you"
+    note: "If nobody pages them when gold is stale, you have not handed off."
 quiz:
   - question: "An FDE’s primary job after a DE platform sale is…"
     options:
@@ -43,6 +46,24 @@ quiz:
       - "Closing a seed-round deck"
       - "Replacing their entire medallion model on week one"
     answer: 1
+  - question: "Owning ACCOUNTADMIN for the life of the account means…"
+    options:
+      - "You are a successful FDE"
+      - "You failed the handoff — least privilege + their on-call is the job"
+      - "You are a SWE on the runtime"
+      - "You are pre-sales SA"
+    answer: 1
+    explanation: "Permanent admin is a trap, not a trophy."
+  - question: "Which week-one artifact is most FDE-shaped?"
+    options:
+      - "A rewrite of Spark core"
+      - "A map of bronze/silver/gold owners and who can GRANT"
+      - "A seed-round deck"
+      - "A blog post only"
+    answer: 1
+    explanation: "Discovery of their world, not yours."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # What a Forward Deployed Engineer is

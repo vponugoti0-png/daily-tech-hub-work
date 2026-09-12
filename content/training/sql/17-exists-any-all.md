@@ -22,6 +22,9 @@ cheatSheet:
   - label: "Scalar stand-in for > ANY"
     code: "SELECT o.order_id, o.amount, c.region\nFROM aurora_orders o\nJOIN aurora_customers c ON c.customer_id = o.customer_id\nWHERE o.amount > (\n  SELECT AVG(amount) FROM aurora_orders WHERE status = 'paid'\n)\nORDER BY o.amount DESC;"
     note: "amount > ANY (SELECT amount FROM …) is easy to misread. A named scalar (avg paid ticket) reviews faster."
+  - label: "Refunded orders (EXISTS)"
+    code: "SELECT o.order_id, o.status, o.amount\nFROM aurora_orders o\nWHERE EXISTS (\n  SELECT 1 FROM aurora_refunds r WHERE r.order_id = o.order_id\n);"
+    note: "EXISTS is a semi-join. It does not fan out when a refund table grows."
 quiz:
   - question: "Why use EXISTS instead of joining aurora_orders when you only need customers who paid?"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "x is NULL"
     answer: 1
     explanation: "> ALL is “greater than the largest.” > ANY is “greater than at least one.” Write MAX/MIN if that is what you mean."
+  - question: "EXISTS vs JOIN to aurora_refunds when you only need “has a refund”?"
+    options:
+      - "JOIN is always safer"
+      - "EXISTS keeps order grain; a JOIN can duplicate orders if two refunds land"
+      - "EXISTS deletes the refunds"
+      - "They always return the same row count"
+    answer: 1
+    explanation: "Semi-join for existence. Join when you need refund columns — and name that grain."
+  - question: "amount > (SELECT AVG(amount) FROM …) is a…"
+    options:
+      - "Correlated delete"
+      - "Scalar subquery comparison — read it before reaching for ANY/ALL"
+      - "Window function"
+      - "DDL constraint"
+    answer: 1
+    explanation: "ANY/ALL are easy to misread. Start with a scalar, then upgrade if you must."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Set filters without changing grain. Joins that **add columns** live in the [DE joins recap](/training/sql/sql-joins-set-logic-recap). This page is **does a child row exist?**

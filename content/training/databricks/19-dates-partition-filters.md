@@ -47,6 +47,24 @@ quiz:
       - "It grants SELECT"
     answer: 1
     explanation: "Pruning only happens if the filter is in the query. A CASE on a string date often disables it."
+  - question: "Wrapping order_date in DATE_FORMAT before comparing is risky because…"
+    options:
+      - "Dates cannot format"
+      - "You may disable pruning — filter on the typed partition-like column"
+      - "Spark forbids functions"
+      - "FORMAT is a write"
+    answer: 1
+    explanation: "Keep the column naked in WHERE."
+  - question: "BETWEEN on DATE in the lab is inclusive so that…"
+    options:
+      - "You accidentally skip the end day"
+      - "You know the bound — then write the same habit in Spark SQL"
+      - "Streaming forbids BETWEEN"
+      - "It injects strings"
+    answer: 1
+    explanation: "Inclusive bounds. Bind values; do not glue UI strings."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Date windows are how incrementals stay honest. Partition / cluster columns are how they stay **cheap**. The **local practice lab** is not Spark — the habit still transfers: filter `order_date` early.

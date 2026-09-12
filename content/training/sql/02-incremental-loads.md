@@ -13,6 +13,10 @@ objectives:
   - "Handle late-arriving facts"
   - "Write idempotent MERGE statements"
 updatedAt: "2026-09-11"
+cheatSheet:
+  - label: "Watermark MERGE shape"
+    code: "-- Preview first (lab habit)\nSELECT order_id, order_date, amount\nFROM aurora_orders\nWHERE order_date >= DATE '2026-09-06';\n-- Warehouse: MERGE on order_id for that window, then advance watermark to MAX(order_date)."
+    note: "Idempotent window. Do not advance to a timestamp you cannot re-read."
 quiz:
   - question: "A watermark should generally advance to…"
     options:
@@ -21,6 +25,32 @@ quiz:
       - "Random UUID"
       - "NULL always"
     answer: 1
+  - question: "Late-arriving 2026-09-01 row after you watermarked 2026-09-06 means…"
+    options:
+      - "Ignore it forever"
+      - "You need a late-data policy: lookback window or a separate late path"
+      - "The watermark was a UUID"
+      - "DELETE gold and start over every time"
+    answer: 1
+    explanation: "Late facts are normal. Name the lookback; do not pretend time is complete."
+  - question: "Advancing the watermark to MAX(ts) of an incomplete extract is risky because…"
+    options:
+      - "MAX is slow"
+      - "The next run will skip rows that land in the gap"
+      - "Warehouses forbid MAX"
+      - "ts cannot be a DATE"
+    answer: 1
+    explanation: "Conservative advance. Re-readable. Incomplete batches should not skip ahead."
+  - question: "Idempotent incremental MERGE uses…"
+    options:
+      - "INSERT only, no key"
+      - "A business key (order_id) so a replay updates instead of duplicating"
+      - "RANDOM() as the key"
+      - "LIMIT 1"
+    answer: 1
+    explanation: "Keys make retries safe."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Incremental loads & watermarks

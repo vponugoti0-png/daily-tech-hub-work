@@ -39,6 +39,24 @@ quiz:
       - "Force-push main"
     answer: 1
     explanation: "The shared capstone fails if silver keys collide."
+  - question: "A data PR template should ask for…"
+    options:
+      - "Only a screenshot of the IDE"
+      - "Grain, how you proved it (row counts / metric diff), and rollback"
+      - "The warehouse password"
+      - "A promise that CI is optional"
+    answer: 1
+    explanation: "Diffs of numbers, not only diffs of text."
+  - question: "Why attach a before/after count on orders_daily?"
+    options:
+      - "Counts replace tests"
+      - "Reviewers can see fan-out or a dropped day without pulling the warehouse blindly"
+      - "Git stores the warehouse"
+      - "Play Lab pushes the counts to origin"
+    answer: 1
+    explanation: "Data diffs are the point of a data PR."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Data diffs are not app diffs. A 20-line SQL change can double revenue. Make that visible. **Git Play Lab** on this page starts at remotes: fetch the teammate silver MERGE, rebase your gold branch, then write the template.

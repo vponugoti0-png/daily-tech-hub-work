@@ -22,6 +22,9 @@ cheatSheet:
   - label: "MERGE from a stream-shaped set (account)"
     code: "-- Dialect: Snowflake (account only)\nMERGE INTO analytics.analytics.orders t\nUSING analytics.staging.orders_delta s\nON t.order_id = s.order_id\nWHEN MATCHED THEN UPDATE SET status = s.status, amount = s.amount\nWHEN NOT MATCHED THEN INSERT *;"
     note: "No WHERE-less UPDATE/DELETE. Re-run the SELECT preview after the write. Streams + Tasks wrap this shape."
+  - label: "Preview pending writes"
+    code: "SELECT order_id, status, amount, order_date\nFROM sf_orders\nWHERE status = 'pending' AND order_date <= DATE '2026-09-02';"
+    note: "Read-only lab. Preview the MERGE set, then copy DML to an account."
 quiz:
   - question: "Why land an incremental into staging instead of UPDATEing the mart in place?"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "Is the same as UNDROP"
     answer: 1
     explanation: "Unqualified DELETE is a wipe. Prefer CREATE OR REPLACE of staging, or DELETE with a keyed window. UNDROP is a recovery hatch, not a strategy."
+  - question: "MERGE without a preview SELECT is how you…"
+    options:
+      - "Save credits always"
+      - "Update the wrong grain — preview pending / matched keys first"
+      - "Enable Time Travel"
+      - "Skip RBAC"
+    answer: 1
+    explanation: "The dml-preview sample is the habit."
+  - question: "Why won’t this lab run MERGE?"
+    options:
+      - "Snowflake cannot MERGE"
+      - "Guard allows SELECT/WITH only — writes belong in an account you can Time Travel"
+      - "MERGE is deprecated"
+      - "Streams replace MERGE"
+    answer: 1
+    explanation: "Honest engine."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Writes are how marts go wrong. This lesson is **staging-first**: land, preview, then MERGE a disposable table. The **local practice lab** only runs `SELECT` / `WITH`.

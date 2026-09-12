@@ -12,6 +12,9 @@ updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Verify loop"
     code: "1. Restate claim\\n2. Find source or run tiny test\\n3. Compare\\n4. Keep / fix / discard"
+  - label: "Verify card"
+    code: "1. Re-state the grain in one sentence\n2. Run the SELECT / test yourself\n3. Check dialect keywords against your warehouse\n4. Reject any secret or URL you did not provide"
+    note: "You are the reviewer. The model is a draft."
 quiz:
   - question: "AI gives a Snowflake hotkey. What should you do?"
     options:
@@ -27,6 +30,24 @@ quiz:
       - "Only if the table is empty"
       - "Only on weekends"
     answer: 1
+  - question: "The model says “this MERGE is safe.” What do you do?"
+    options:
+      - "Ship it — the model reviewed itself"
+      - "Dry-run or preview the match set, then read every write clause"
+      - "Only run Prettier"
+      - "Paste prod credentials so it can connect"
+    answer: 1
+    explanation: "Self-praise is not a review. Preview the rows a write would touch."
+  - question: "A generated explanation invents a Snowflake function you have never seen. Next step?"
+    options:
+      - "Assume it shipped last night"
+      - "Look it up in your dialect docs, or ask for ANSI-only"
+      - "Use it in prod to learn"
+      - "Ignore dialect forever"
+    answer: 1
+    explanation: "Hallucinated functions are common. Verify against docs or constrain the dialect."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Verify before you trust

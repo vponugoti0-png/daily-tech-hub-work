@@ -22,6 +22,9 @@ cheatSheet:
   - label: "UPDATE / DELETE with a keyed WHERE"
     code: "-- Dialect: ANSI-shaped (warehouse only)\nUPDATE staging.aurora_orders_delta\nSET status = 'paid'\nWHERE status = 'pending' AND order_id IN (1003);\n\nDELETE FROM staging.aurora_orders_delta\nWHERE status = 'cancelled' AND order_date < DATE '2026-01-01';"
     note: "No WHERE-less UPDATE/DELETE. Re-run the SELECT preview after the write."
+  - label: "Preview a refund write"
+    code: "SELECT r.refund_id, r.order_id, o.status, r.amount\nFROM aurora_refunds r\nJOIN aurora_orders o ON o.order_id = r.order_id;"
+    note: "The local lab is read-only. Preview the set a warehouse UPDATE would hit."
 quiz:
   - question: "Why land an incremental into staging instead of UPDATEing the mart in place?"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "Is the same as INSERT … SELECT"
     answer: 1
     explanation: "Unqualified DELETE is a wipe. Prefer CREATE OR REPLACE of a staging table, or DELETE with a keyed window you previewed."
+  - question: "Before UPDATE aurora_orders SET status = 'paid' WHERE status = 'pending', you should…"
+    options:
+      - "Run it in prod first"
+      - "SELECT the same WHERE to see the rows — the lab’s DML preview habit"
+      - "Disable backups"
+      - "Skip WHERE so it is faster"
+    answer: 1
+    explanation: "Preview the match set. Writes without a WHERE are a classic incident."
+  - question: "Why is the local lab read-only for DML lessons?"
+    options:
+      - "DuckDB cannot UPDATE"
+      - "So you practice the preview SELECT; real writes belong in a warehouse you can roll back"
+      - "UPDATE is deprecated"
+      - "SQL forbids writes"
+    answer: 1
+    explanation: "Same-origin SELECT/WITH only. Copy the write to your account after you trust the set."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Writes are how marts go wrong. This lesson is **staging-first**: land, preview, then mutate a disposable table. The **local practice lab** on this page only runs `SELECT` / `WITH` — use it to preview the set, then copy DML into Snowflake, Spark SQL, or Postgres.

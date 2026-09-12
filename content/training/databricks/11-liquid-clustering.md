@@ -36,6 +36,24 @@ quiz:
       - "Disable Autoloader"
     answer: 1
     explanation: "Compact first. Vacuum with a retention you can defend."
+  - question: "Liquid clustering / maintenance is for…"
+    options:
+      - "Storing secrets"
+      - "Keeping large tables readable — clustering keys you actually filter on"
+      - "Replacing WHERE"
+      - "Disabling Jobs"
+    answer: 1
+    explanation: "Physical layout follows access. Filter columns first in SQL."
+  - question: "OPTIMIZE / maintenance windows belong…"
+    options:
+      - "In the BI warehouse during peak dashboards"
+      - "On the ETL compute, off the serving warehouse"
+      - "Inside %sh with a token"
+      - "Never — Delta never needs maintenance"
+    answer: 1
+    explanation: "Same cost habit as Snowflake: do not fight users for compute."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Lab: keep Delta tables healthy after the capstone Job is green.

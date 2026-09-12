@@ -36,6 +36,24 @@ quiz:
       - "Git branching"
     answer: 1
     explanation: "A wheel with pytest is how the CLI stays honest across Jobs."
+  - question: "A CLI entrypoint should fail loud when…"
+    options:
+      - "The user passes --help"
+      - "A required env var or window argument is missing"
+      - "Logging is INFO"
+      - "The package version contains a dot"
+    answer: 1
+    explanation: "Bad invocation is an error, not a silent empty load."
+  - question: "Capstone tests should cover…"
+    options:
+      - "Only the README screenshots"
+      - "Happy path plus one None-amount row and one retry-safe second run"
+      - "Prod credentials"
+      - "The vendor’s Spark source"
+    answer: 1
+    explanation: "The contract is None-handling and idempotence — not a pretty GIF."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Optional Python capstone for the same story: **Orders → late events → daily revenue mart**. Assemble extract → transform → load first in [Build an ETL job](/training/python/python-etl-pipeline-builder). The warehouse SQL still owns the mart; this package owns **rules + the job door**.

@@ -31,6 +31,24 @@ quiz:
       - "Deletes data"
       - "Creates indexes automatically"
     answer: 1
+  - question: "Filter on order_date early because…"
+    options:
+      - "Dates are prettier"
+      - "Warehouses can prune partitions / micro-partitions and read less data"
+      - "WHERE is deprecated"
+      - "ORDER BY is enough"
+    answer: 1
+    explanation: "Predicate pushdown / pruning. SELECT * plus a late filter is a full scan habit."
+  - question: "SELECT * in a production mart extract is risky because…"
+    options:
+      - "Stars are illegal in SQL"
+      - "A new raw column silently changes I/O and maybe grain"
+      - "* is slower to type"
+      - "DuckDB cannot expand *"
+    answer: 1
+    explanation: "List the contract columns. Labs can use *."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # SQL performance basics for warehouses

@@ -57,7 +57,23 @@ function seedLandingFs(runtime: PyodideRuntime) {
       if (!FS.analyzePath(cur).exists) FS.mkdir(cur);
     }
   };
+  mkdirp("/data/landing/orders/2026-09-11");
   mkdirp("/data/landing/orders/2026-09-12");
+  mkdirp("/data/landing/orders/2026-09-13");
+  mkdirp("/data/landing/returns/2026-09-12");
+  mkdirp("/data/ref");
+  FS.writeFile(
+    "/data/landing/orders/2026-09-11/orders_2026-09-11.json",
+    JSON.stringify(
+      [
+        { order_id: 1008, status: "paid", amount: 31.0, promo_code: "FLASH" },
+        { order_id: 1009, status: "pending", amount: 48.0, promo_code: null },
+        { order_id: 1010, status: "paid", amount: null, promo_code: "FALL26" },
+      ],
+      null,
+      2,
+    ),
+  );
   FS.writeFile(
     "/data/landing/orders/2026-09-12/orders_2026-09-12.json",
     JSON.stringify([{ order_id: 1001, status: "paid", amount: 42.5 }], null, 2),
@@ -65,6 +81,43 @@ function seedLandingFs(runtime: PyodideRuntime) {
   FS.writeFile(
     "/data/landing/orders/2026-09-12/notes.json",
     JSON.stringify({ note: "not an orders file" }),
+  );
+  FS.writeFile(
+    "/data/landing/orders/2026-09-13/orders_2026-09-13.json",
+    JSON.stringify(
+      [
+        { order_id: 1011, status: "paid", amount: 88.0, promo_code: "VIP" },
+        { order_id: 1012, status: "returned", amount: 31.0, promo_code: "FLASH" },
+        { order_id: 1014, status: "paid", amount: 27.4, promo_code: "EMEA26" },
+        { order_id: 1015, status: "paid", amount: 12.0, promo_code: null },
+      ],
+      null,
+      2,
+    ),
+  );
+  FS.writeFile(
+    "/data/landing/returns/2026-09-12/returns_2026-09-12.json",
+    JSON.stringify(
+      [
+        { refund_id: 9001, order_id: 1006, amount: 22.0, reason: "changed_mind" },
+        { refund_id: 9002, order_id: 1012, amount: 31.0, reason: "damaged" },
+      ],
+      null,
+      2,
+    ),
+  );
+  FS.writeFile(
+    "/data/ref/promos.json",
+    JSON.stringify(
+      [
+        { code: "FALL26", pct: 10 },
+        { code: "FLASH", pct: 15 },
+        { code: "VIP", pct: 20 },
+        { code: "EMEA26", pct: 12 },
+      ],
+      null,
+      2,
+    ),
   );
 }
 

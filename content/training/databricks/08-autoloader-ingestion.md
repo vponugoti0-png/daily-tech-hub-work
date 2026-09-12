@@ -36,6 +36,24 @@ quiz:
       - "Job clusters cannot start"
     answer: 1
     explanation: "The checkpoint is the ingestion watermark. Treat it like state, not scratch."
+  - question: "Autoloader’s job is…"
+    options:
+      - "To replace Unity Catalog"
+      - "To incrementally land files into bronze with a schema-evolution policy you named"
+      - "To MERGE gold from a dashboard"
+      - "To store secrets in _schema"
+    answer: 1
+    explanation: "Bronze landing. Silver still needs a quality contract."
+  - question: "Why not infer schema forever in prod Autoloader?"
+    options:
+      - "Inference is illegal"
+      - "A surprise field can change bronze and fan out silver — evolve on purpose"
+      - "JSON has no schema"
+      - "Jobs cannot read files"
+    answer: 1
+    explanation: "Name the evolution policy. Rescue paths exist for a reason."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Databricks ingestion pattern: **files → bronze (Autoloader) → silver (dedupe / late) → gold (mart)**. Same shared story as the SQL and Snowflake waves.

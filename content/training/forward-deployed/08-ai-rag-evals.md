@@ -45,6 +45,24 @@ quiz:
       - "Paste PATs into the prompt for context"
       - "Disable logging so security cannot see it"
     answer: 1
+  - question: "Ship an AI feature without evals is risky because…"
+    options:
+      - "Models cannot run in a VPC"
+      - "You cannot tell if retrieval/answers got worse after a prompt change"
+      - "Evals require ACCOUNTADMIN"
+      - "RAG is illegal"
+    answer: 1
+    explanation: "Evals are DQ gates for AI."
+  - question: "Customer documents in a RAG index should…"
+    options:
+      - "Bypass RBAC because the model is trusted"
+      - "Honor the same grants / redaction you would use for a mart"
+      - "Be pasted into a public chat to “test chunks”"
+      - "Include PATs for freshness"
+    answer: 1
+    explanation: "AI does not waive governance."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # AI, RAG, and agents with evals

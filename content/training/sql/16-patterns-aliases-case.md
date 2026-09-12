@@ -22,6 +22,9 @@ cheatSheet:
   - label: "CASE size buckets"
     code: "SELECT order_id, amount,\n  CASE\n    WHEN amount >= 80 THEN 'large'\n    WHEN amount >= 20 THEN 'mid'\n    ELSE 'small'\n  END AS size_bucket\nFROM aurora_orders\nWHERE status <> 'cancelled'\nORDER BY amount DESC;"
     note: "CASE is a column expression. It is not a stored procedure and it does not change the row count by itself."
+  - label: "IN / LIKE on new regions"
+    code: "SELECT order_id, promo_code, amount\nFROM aurora_orders\nWHERE promo_code LIKE 'E%'\n   OR promo_code IN ('VIP', 'FLASH', 'EMEA26');"
+    note: "EMEA26 is a Wave A1 promo. LIKE 'E%' is a pattern, not a regex lesson."
 quiz:
   - question: "LIKE 'F%' on promo_code matches…"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "IN does not work without aliases"
     answer: 1
     explanation: "Aliases are documentation. A column named amount after a join is ambiguous; order_amount states the grain."
+  - question: "CASE in a SELECT is…"
+    options:
+      - "A stored procedure"
+      - "An expression that returns a column — keep buckets in one SELECT so reviewers see the grain"
+      - "A write that updates gold"
+      - "Illegal in DuckDB"
+    answer: 1
+    explanation: "CASE is a column. It does not persist a constraint."
+  - question: "Prefer IN ('paid','pending') over OR-chains because…"
+    options:
+      - "OR is deprecated"
+      - "Reviewers can see the set; a long OR chain hides a missing parenthesis with AND"
+      - "IN ignores NULLs differently in a good way always"
+      - "IN is required by ANSI for status"
+    answer: 1
+    explanation: "Readability and fewer AND/OR surprises. Still watch NOT IN + NULL."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Filters and labels. None of this is a stored-proc tutorial — it is how reviewers read a SELECT.

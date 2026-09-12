@@ -22,6 +22,9 @@ cheatSheet:
   - label: "Catalog objects (local lab)"
     code: "SELECT catalog, schema, table_name, layer\nFROM workspace_objects\nORDER BY layer, table_name;"
     note: "Three-level names live in Unity Catalog. Run this in the local practice lab — not a live workspace."
+  - label: "Catalog objects vs notebook path"
+    code: "SELECT catalog, schema, table_name, layer\nFROM workspace_objects\nORDER BY layer, table_name;"
+    note: "A notebook path is not a table. Three-level names live in the catalog."
 quiz:
   - question: "Scheduled production pipelines should primarily run on…"
     options:
@@ -39,6 +42,24 @@ quiz:
       - "Skip Unity Catalog and write to /tmp"
     answer: 1
     explanation: "Pin versions, terminate idle, isolate job compute. Always-on shared clusters are a cost and blast-radius smell."
+  - question: "A cluster is…"
+    options:
+      - "A Unity Catalog schema"
+      - "Compute that runs notebooks/jobs — stop it when idle so you do not burn DBUs"
+      - "A gold table"
+      - "A personal access token"
+    answer: 1
+    explanation: "Compute ≠ data. Tables live in the catalog; clusters execute."
+  - question: "Why prefer a Job cluster over an all-purpose cluster for prod?"
+    options:
+      - "Jobs cannot run SQL"
+      - "Job clusters start for the run and die — less leftover compute, clearer owners"
+      - "All-purpose clusters cannot use Spark"
+      - "Jobs disable logging"
+    answer: 1
+    explanation: "Exploration stays on all-purpose. Prod is a Job."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Day-0 Databricks: where things live, and which compute you turn on. No lakehouse theory yet — that is the next lesson.

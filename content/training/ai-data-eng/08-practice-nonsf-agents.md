@@ -47,6 +47,24 @@ quiz:
       - "News detail pages"
     answer: 1
     explanation: "This lesson is the non-SF sibling. Cortex cards stay on the prior checkpoint."
+  - question: "A Databricks Assistant-shaped tool should be asked to…"
+    options:
+      - "Grant itself metastore admin"
+      - "Explain a notebook error and propose a Spark SQL check you will run"
+      - "Disable Unity Catalog"
+      - "Push to main"
+    answer: 1
+    explanation: "Same copilot rule: explain and propose. You run and review."
+  - question: "Why practice with a generic agent and a DBX-shaped one?"
+    options:
+      - "The buttons look different; the ownership rule does not"
+      - "Generic agents can hold your PAT safely"
+      - "Only Cortex is real AI"
+      - "So you can skip quizzes"
+    answer: 0
+    explanation: "Tool chrome changes. You still own correctness and secrets."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 This is the **non-Snowflake** sibling of [Practice with agents & Cortex functions](/training/ai-data-eng/ai-de-practice-agents). Same guest/local progress. No new `/practice` route, no live runner.

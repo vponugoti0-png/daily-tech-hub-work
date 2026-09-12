@@ -42,6 +42,24 @@ quiz:
       - "A Slack screenshot"
       - "The FDE’s laptop notes forever"
     answer: 1
+  - question: "Their SSO / network / change control exists so that…"
+    options:
+      - "You can ignore it and use your demo tenant"
+      - "The integration has to live there — a clean vendor demo is not done"
+      - "You keep ACCOUNTADMIN"
+      - "You skip security review"
+    answer: 1
+    explanation: "FDE work is in their env."
+  - question: "A service principal for a Job should be…"
+    options:
+      - "A shared human password in Slack"
+      - "A dedicated identity with least-privilege grants you documented"
+      - "ACCOUNTADMIN"
+      - "The intern’s PAT"
+    answer: 1
+    explanation: "Identities are part of the handoff."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Integrate in someone else’s environment

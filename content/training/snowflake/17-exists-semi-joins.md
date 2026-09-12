@@ -47,6 +47,24 @@ quiz:
       - "x is NULL"
     answer: 1
     explanation: "> ALL is “greater than the largest.” > ANY is “greater than at least one.” Write MAX/MIN if that is what you mean."
+  - question: "The seed’s leftover customer is…"
+    options:
+      - "A paid VIP"
+      - "The churned west customer with no orders — NOT EXISTS"
+      - "etl_wh"
+      - "A clone"
+    answer: 1
+    explanation: "Anti-join. Do not JOIN then DISTINCT to fake existence."
+  - question: "EXISTS does not fan out because…"
+    options:
+      - "It is a semi-join — true/false per outer row"
+      - "Snowflake forbids multiple orders"
+      - "It is a warehouse"
+      - "It deletes the inner table"
+    answer: 0
+    explanation: "Existence, not projection."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Leftover keys are a **metric** — a dim customer with no fact, or a Stream row that failed a gate.

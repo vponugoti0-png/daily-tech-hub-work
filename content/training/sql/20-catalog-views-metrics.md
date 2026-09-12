@@ -22,6 +22,9 @@ cheatSheet:
   - label: "Metric-style region revenue"
     code: "SELECT dim_region, measure_paid_orders, measure_revenue\nFROM metrics.aurora_region_revenue\nORDER BY measure_revenue DESC;"
     note: "dim_* / measure_* naming is the Metric View habit. This is a local table, not a BI semantic layer."
+  - label: "Open shipments view"
+    code: "SELECT order_id, carrier, status\nFROM aurora.open_shipments\nORDER BY shipped_date;"
+    note: "A view is a stored SELECT. Marts persist a grain; this view does not."
 quiz:
   - question: "What is catalog.schema.table in this local lab?"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "It is a stored procedure"
     answer: 1
     explanation: "Metric views expose dims + measures. This lab stores that shape as a tiny local table — not a live UC / Snowflake semantic object."
+  - question: "metrics.aurora_region_revenue is in this lab a…"
+    options:
+      - "Live BI SaaS semantic layer"
+      - "Local metric-view–style table (dim_* + measure_*) — not a remote catalog"
+      - "Snowflake Cortex function"
+      - "Unity Catalog metastore in the cloud"
+    answer: 1
+    explanation: "Same-origin fixture. Teaching labels, not a remote attach."
+  - question: "Learner SQL still cannot ATTACH because…"
+    options:
+      - "DuckDB forbids ATTACH for everyone including the seed"
+      - "The lab guard keeps SELECT/WITH only — no remote catalogs"
+      - "ATTACH is required for every SELECT"
+      - "Views need ATTACH"
+    answer: 1
+    explanation: "Seed may attach in-memory catalogs. Your worksheet cannot."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 The **local practice lab** on this page queries same-origin DuckDB objects: tables, views, schemas, a catalog inventory, and metric-view–style tables. Not a live warehouse. Not a Python runtime.

@@ -13,6 +13,9 @@ cheatSheet:
   - label: "Prompt skeleton"
     code: "Goal:\nContext:\nConstraints:\nOutput format:"
     note: "Fill every line"
+  - label: "Weak → strong rewrite"
+    code: "Weak: Help with my pipeline\nStrong:\nGoal: Explain why silver dropped order_id 3\nContext: Junior DE, Aurora bronze→silver Spark SQL\nConstraints: 5 bullets, no secrets, DuckDB-friendly SQL\nOutput format: bullets then one SELECT"
+    note: "Fill every line. Vague asks waste a turn."
 quiz:
   - question: "Which prompt is most likely to get a useful first answer?"
     options:
@@ -30,6 +33,24 @@ quiz:
       - "Nothing — constraints slow AI down"
     answer: 1
     explanation: "Constraints tell the model the fences — dialect, length, no secrets, tools you already have — so it does not invent a stack you cannot run."
+  - question: "A useful first answer comes back as a wall of prose. Which four-line slot did you probably skip?"
+    options:
+      - "Goal — you never said what success looks like"
+      - "Output format — bullets, a table, or SQL so you can paste it"
+      - "The model name only"
+      - "A joke to warm up the model"
+    answer: 1
+    explanation: "Format is how you make the answer usable. A wall of prose is usually a missing output-format line."
+  - question: "Which rewrite is stronger for “help with my pipeline”?"
+    options:
+      - "Help with my pipeline please"
+      - "I’m a junior DE on Aurora. Explain why silver dropped a bronze row, in 5 bullets plus one Spark SQL check I can run."
+      - "Write code"
+      - "Fix everything in Databricks"
+    answer: 1
+    explanation: "Audience, stack, the exact failure, length, and a runnable check beat a vague help ask."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Ask AI better questions

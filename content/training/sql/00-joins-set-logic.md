@@ -22,6 +22,9 @@ cheatSheet:
   - label: "INNER — paid order + known customer"
     code: "SELECT o.order_id, c.region, o.amount\nFROM orders o\nINNER JOIN dim_customer c\n  ON c.customer_id = o.customer_id AND c.is_current\nWHERE o.status = 'paid';"
     note: "Commerce-shaped starter. Do not join order_items before summing o.amount."
+  - label: "Refunds × orders"
+    code: "SELECT r.refund_id, r.order_id, o.status, r.amount\nFROM aurora_refunds r\nJOIN aurora_orders o ON o.order_id = r.order_id;"
+    note: "Refund grain. The measure is r.amount — not SUM(o.amount)."
 quiz:
   - question: "When should you use a LEFT join instead of INNER?"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "UNION ALL deletes late data"
     answer: 1
     explanation: "UNION ALL is the incremental default. Dedup explicitly if you need uniqueness."
+  - question: "INNER JOIN aurora_order_items then SUM(o.amount) is wrong because…"
+    options:
+      - "INNER JOIN drops paid orders"
+      - "You changed grain to items and repeated the order amount"
+      - "SUM requires HAVING"
+      - "aurora_orders has no amount"
+    answer: 1
+    explanation: "Name the grain. Item measures use qty * unit_price."
+  - question: "EXCEPT / anti-join thinking: customers with no paid order is…"
+    options:
+      - "A full outer join on amount"
+      - "NOT EXISTS (SELECT 1 FROM aurora_orders o WHERE … status = 'paid')"
+      - "COUNT(*) = 0 in the SELECT list without GROUP BY"
+      - "LIMIT 0"
+    answer: 1
+    explanation: "Anti-join / NOT EXISTS keeps customer grain."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 True-zero warmup: joins and set logic before windows and incrementals. Guest-friendly — copy the snippets into any warehouse worksheet.

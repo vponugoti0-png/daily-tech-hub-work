@@ -53,7 +53,7 @@ export default async function LessonPage({
   const showGitLab = isGitPlayLesson(lesson.track, lesson.slug);
   const showPractice = showLab || showGitLab;
   const showStarterJargon = idx === 0 || (lesson.level === "beginner" && lesson.order <= 1);
-  const tryItLimit = isAiTrack || isFdeTrack || lesson.track === "python" ? 4 : 3;
+  const tryItLimit = 5;
   const tryItEntries = (lesson.cheatSheet ?? []).filter((e) => e.code).slice(0, tryItLimit);
   const tryItDialect =
     lesson.track === "sql"

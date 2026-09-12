@@ -30,6 +30,32 @@ quiz:
       - "Password rotation"
       - "UI density"
     answer: 0
+  - question: "A Dynamic Table persists…"
+    options:
+      - "A worksheet history"
+      - "A named grain that refreshes from upstream — not a view that re-reads bronze every dashboard click"
+      - "The warehouse size"
+      - "A PAT"
+    answer: 1
+    explanation: "Views do not persist. DTs do (with lag you name)."
+  - question: "TARGET_LAG is a…"
+    options:
+      - "Secret"
+      - "Freshness contract — tighter lag costs more refreshes"
+      - "Clone name"
+      - "Stream offset you never consume"
+    answer: 1
+    explanation: "Cost vs freshness. Do not set 1 minute because it sounds nice."
+  - question: "The lab’s sf_daily_mart sample is a SELECT because…"
+    options:
+      - "Dynamic Tables are illegal"
+      - "This engine will not CREATE DYNAMIC TABLE — practice the grain, copy the DDL"
+      - "SELECT cannot GROUP BY"
+      - "Warehouses cannot run SQL"
+    answer: 1
+    explanation: "Honest stand-in."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Dynamic Tables declarative pipelines

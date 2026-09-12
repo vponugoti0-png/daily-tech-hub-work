@@ -12,6 +12,9 @@ updatedAt: "2026-09-11"
 cheatSheet:
   - label: "AI PR checklist"
     code: "- Dialect correct?\\n- Idempotent writes?\\n- Secrets absent?\\n- Tests/dry-run?\\n- Lineage impact noted?"
+  - label: "AI-diff checklist"
+    code: "- Grain still named?\n- Any secret or %sh credential?\n- Tests updated for the new branch?\n- Destructive DDL previewed?"
+    note: "Review the diff like a teammate wrote it — because you will on-call it."
 quiz:
   - question: "Before merging AI-touched SQL that writes data…"
     options:
@@ -28,6 +31,24 @@ quiz:
       - "Random internet users"
       - "Nobody"
     answer: 0
+  - question: "An AI patch adds a default of 0 for amount. That is risky because…"
+    options:
+      - "Zero is always correct"
+      - "It invents revenue when the landing was NULL"
+      - "Ints cannot be 0"
+      - "DuckDB forbids 0"
+    answer: 1
+    explanation: "NULL means unknown. Zero-filling lies in gold."
+  - question: "Who is on the hook if an AI-authored MERGE overwrites the wrong key?"
+    options:
+      - "The model vendor’s pager"
+      - "You and your review process"
+      - "Nobody — it was automated"
+      - "The laptop manufacturer"
+    answer: 1
+    explanation: "Ownership does not transfer to the model. Review writes like any other PR."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Review AI-assisted changes

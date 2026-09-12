@@ -22,6 +22,9 @@ cheatSheet:
   - label: "Item-grain spend (safe SUM)"
     code: "SELECT p.category, ROUND(SUM(i.qty * i.unit_price), 2) AS item_spend\nFROM aurora_order_items i\nJOIN aurora_products p ON p.sku = i.sku\nGROUP BY p.category\nORDER BY item_spend DESC;"
     note: "Sum a column that lives at item grain. Do not join items then SUM(aurora_orders.amount)."
+  - label: "SKU mix (item grain)"
+    code: "SELECT p.product_name, SUM(i.qty * i.unit_price) AS ext_amount\nFROM aurora_order_items i\nJOIN aurora_products p ON p.sku = i.sku\nGROUP BY p.product_name;"
+    note: "Never SUM(order.amount) after joining items."
 quiz:
   - question: "COUNT(*) vs COUNT(promo_code) on aurora_orders?"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "MIN/MAX cancel the join"
     answer: 1
     explanation: "Many-side joins multiply fact rows. Aggregate items first, or sum qty * unit_price."
+  - question: "HAVING SUM(amount) >= 20 filters…"
+    options:
+      - "Rows before the group"
+      - "Groups after aggregation"
+      - "NULLs out of COUNT(*)"
+      - "The catalog name"
+    answer: 1
+    explanation: "WHERE is rows. HAVING is groups. Do not put status = 'paid' only in HAVING if it is a row filter."
+  - question: "You joined aurora_order_items then SUM(o.amount). The revenue is wrong because…"
+    options:
+      - "SUM cannot take a column"
+      - "Order amount repeats once per item — you fan out the grain"
+      - "DuckDB forbids joins"
+      - "amount is always NULL"
+    answer: 1
+    explanation: "Item grain needs qty * unit_price. Order grain stays on aurora_orders."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Aggregates answer **one grain**. Say it out loud: one row per region, per day, per SKU — then `GROUP BY` those keys.

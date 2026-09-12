@@ -36,6 +36,24 @@ quiz:
       - "Is required for every MERGE"
     answer: 1
     explanation: "Stay lazy. Write tables in-warehouse."
+  - question: "Pick Cortex-style functions when…"
+    options:
+      - "You need a reviewed, typed ETL contract in Python"
+      - "You want in-SQL assist / doc / classify on data you already govern"
+      - "You want to store PATs in a prompt"
+      - "You need to disable RBAC"
+    answer: 1
+    explanation: "Different jobs. Cortex is not a Snowpark replacement for pipelines."
+  - question: "Pick Snowpark when…"
+    options:
+      - "You have a tested Python transform and want it next to the warehouse"
+      - "You want an unsupervised agent to GRANT"
+      - "SQL cannot filter"
+      - "You need a public model to hold keys"
+    answer: 0
+    explanation: "Python-near-data. Still review."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Decision guide — not a new tool catalog. Practice snippets already live in [Practice with agents & Cortex functions](/training/ai-data-eng/ai-de-practice-agents). Snowpark syntax lives in [Snowpark Python](/training/snowflake/sf-snowpark-python).

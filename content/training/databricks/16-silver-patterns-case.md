@@ -47,6 +47,24 @@ quiz:
       - "IN does not work without aliases"
     answer: 1
     explanation: "Aliases are documentation. Photon does not care. A column named amount after a join is ambiguous."
+  - question: "CASE status buckets in silver are…"
+    options:
+      - "A Delta constraint that blocks writes"
+      - "A column expression for cleaning — reviewers can see the rule"
+      - "A Job cluster setting"
+      - "A Unity Catalog privilege"
+    answer: 1
+    explanation: "CASE is an expression, not a stored procedure."
+  - question: "LIKE 'w%' on region…"
+    options:
+      - "Is a regex engine"
+      - "Matches a suffix after w — useful, but a typed region column + IN is clearer for marts"
+      - "Updates gold"
+      - "Ignores case in every dialect always"
+    answer: 1
+    explanation: "Patterns for exploration. Contracts prefer IN / = on typed dims."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Silver is where bronze strings become **contracts**. LIKE / IN / CASE are expressions in one SELECT — not a Python UDF you cannot test.

@@ -22,6 +22,9 @@ cheatSheet:
   - label: "What not to log"
     code: "# Bad: log.info(\"row=%s\", row)           # dumps email / tokens\n# Bad: log.info(\"dsn=%s\", DATABASE_URL)  # secrets\n# Bad: print(clean)                      # 50k rows in a notebook\n\nlog.warning(\"quarantined %s rows\", n_bad)"
     note: "Metrics and counts. If you need a sample, log one order_id, not the payload."
+  - label: "Metric, not payload"
+    code: "log.info(\"transform_ok rows_in=%s rows_out=%s\", n_in, n_out)\n# Never: log.info(\"row=%s dsn=%s\", row, dsn)"
+    note: "INFO is a counter. Payloads and DSNs belong in a secret manager, not stdout."
 quiz:
   - question: "Why prefer logging.getLogger('aurora.orders_etl') over print?"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "getLogger requires it"
     answer: 1
     explanation: "Configure once in the CLI / notebook entrypoint. Transforms just log."
+  - question: "print(row) in a scheduled job is a problem because…"
+    options:
+      - "print is slower than logging"
+      - "It dumps PII into logs and has no level, logger name, or metric shape"
+      - "print cannot show ints"
+      - "Orchestrators forbid stdout"
+    answer: 1
+    explanation: "Use logging.getLogger('aurora.orders_etl') and log counts, not rows."
+  - question: "Which log line is job-shaped?"
+    options:
+      - "print(password)"
+      - "log.info(\"load_ok start=%s end=%s rows_out=%s\", start, end, n)"
+      - "log.info(\"%s\", full_dataframe)"
+      - "log.debug(os.environ)"
+    answer: 1
+    explanation: "Window + counts. Not secrets, not the payload."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Logs are the **observability** of a batch job. If the only signal is a green checkbox, you will not know `rows_out` collapsed to zero.

@@ -19,6 +19,9 @@ cheatSheet:
   - label: "Questionnaire truths"
     code: "Data we touch: orders_daily grain + DQ flags (no raw card numbers)\nWhere it lives: their catalog / their VPC\nWho can write: their transformer SP\nLLM: approved tool only; redacted logs; no training on their data\nAdmin: we request schema grants, not ACCOUNTADMIN"
     note: "Honesty beats a 'yes' you cannot operate."
+  - label: "Questionnaire sketch"
+    code: "Data classes: who is in gold?\nIdentities: Job SP, not a user PAT\nNetwork: private link / IP allow?\nSecrets: scope / manager — never %sh / worksheet\nLogs: who can read query history?"
+    note: "Answer with artifacts, not vibes."
 quiz:
   - question: "Least privilege for an FDE-delivered Job usually means…"
     options:
@@ -42,6 +45,24 @@ quiz:
       - "Promise ACCOUNTADMIN will make it fine"
       - "Skip the question"
     answer: 1
+  - question: "A security reviewer asks where secrets live. Worst answer?"
+    options:
+      - "Secret manager / Databricks secret scope, injected at runtime"
+      - "In the notebook that we commit, and in the chat we used to debug"
+      - "CI inject for the Job"
+      - "Rotated and least-privilege"
+    answer: 1
+    explanation: "Committed tokens fail the review — and the incident."
+  - question: "Least privilege on a gold mart means…"
+    options:
+      - "Every analyst is metastore admin"
+      - "SELECT on the mart/view, not CREATE on raw, not ACCOUNTADMIN"
+      - "No query history"
+      - "Disabled MFA"
+    answer: 1
+    explanation: "Grant the grain they need."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Security review survival

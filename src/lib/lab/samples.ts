@@ -684,45 +684,198 @@ FROM metrics.aurora_region_revenue
 ORDER BY measure_revenue DESC;`,
     note: "Metric-view–style table: dimensions + measures. Not a BI semantic layer SaaS — just a local fixture.",
   },
+  {
+    id: "aurora-north-paid",
+    label: "North + EMEA paid orders",
+    sql: `SELECT o.order_id, c.region, o.amount, o.promo_code
+FROM aurora_orders o
+JOIN aurora_customers c ON c.customer_id = o.customer_id
+WHERE o.status = 'paid' AND c.region IN ('north', 'emea')
+ORDER BY o.amount DESC;`,
+    note: "Wave A1 extra customers live in north / emea. IN is a set — not an OR chain of equality.",
+  },
+  {
+    id: "aurora-refunds-join",
+    label: "Refunds × orders",
+    sql: `SELECT r.refund_id, r.order_id, o.status, r.amount, r.reason
+FROM aurora_refunds r
+JOIN aurora_orders o ON o.order_id = r.order_id
+ORDER BY r.refund_id;`,
+    note: "Refund grain. Do not SUM(o.amount) here — the measure is r.amount.",
+  },
+  {
+    id: "aurora-open-shipments",
+    label: "Open shipments view",
+    sql: `SELECT order_id, shipped_date, carrier, status
+FROM aurora.open_shipments
+ORDER BY shipped_date, order_id;`,
+    note: "A view over in_transit / returned shipments. Not a load contract — marts persist this grain.",
+  },
+  {
+    id: "aurora-sku-mix",
+    label: "SKU mix (item grain)",
+    sql: `SELECT p.category, p.product_name, SUM(i.qty) AS units, ROUND(SUM(i.qty * i.unit_price), 2) AS ext_amount
+FROM aurora_order_items i
+JOIN aurora_products p ON p.sku = i.sku
+GROUP BY p.category, p.product_name
+ORDER BY ext_amount DESC;`,
+    note: "Dock and Notebook SKUs landed in Wave A1. Stay at item grain — never SUM(order.amount) after this join.",
+  },
+  {
+    id: "aurora-window-latest",
+    label: "Latest order per customer",
+    sql: `SELECT customer_id, order_id, order_date, status, amount
+FROM (
+  SELECT
+    customer_id,
+    order_id,
+    order_date,
+    status,
+    amount,
+    ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date DESC, order_id DESC) AS rn
+  FROM aurora_orders
+) t
+WHERE rn = 1
+ORDER BY customer_id;`,
+    note: "Window, not a self-join. rn = 1 is the current row for SCD-style change detection.",
+  },
+  {
+    id: "aurora-late-window",
+    label: "Late-arriving paid window",
+    sql: `SELECT order_id, order_date, status, amount
+FROM aurora_orders
+WHERE status = 'paid'
+  AND order_date >= DATE '2026-09-06'
+ORDER BY order_date, order_id;`,
+    note: "A watermark-shaped filter. Production incrementals use this habit — not LIMIT.",
+  },
+  {
+    id: "dbx-events-quality",
+    label: "Bronze event leftovers",
+    sql: `SELECT b.event_id, b.order_id, b.event_type
+FROM bronze_events b
+WHERE NOT EXISTS (
+  SELECT 1 FROM silver_events s
+  WHERE s.event_id = b.event_id
+)
+ORDER BY b.event_id;`,
+    note: "Anti-join on the event stream. Corrupt landings stay bronze-only — same contract as orders.",
+  },
+  {
+    id: "dbx-returns-gold",
+    label: "Gold daily returns",
+    sql: `SELECT order_date, region, returned_orders, returned_amount
+FROM gold_returns_daily
+ORDER BY order_date, region;`,
+    note: "Returned silver rows roll up here. Do not mix this grain with gold_daily_orders revenue.",
+  },
+  {
+    id: "dbx-north-ok",
+    label: "North silver (new landings)",
+    sql: `SELECT order_id, order_date, region, status, amount
+FROM silver_orders
+WHERE region = 'north' AND status = 'ok'
+ORDER BY order_date, order_id;`,
+    note: "Wave A1 added north / latam bronze. Filter the partition-like column early.",
+  },
+  {
+    id: "dbx-validated-events",
+    label: "silver.validated_events view",
+    sql: `SELECT event_id, order_id, event_ts
+FROM silver.validated_events
+ORDER BY event_ts;`,
+    note: "A view over validated silver events. Gold should read a contract, not re-filter bronze in every notebook.",
+  },
+  {
+    id: "dbx-metric-returns",
+    label: "Metric-style returns",
+    sql: `SELECT dim_order_date, dim_region, measure_return_count, measure_returned_amount
+FROM metrics.returns_daily
+ORDER BY dim_order_date, dim_region;`,
+    note: "Stand-in for a Unity Catalog Metric View on returns. dim_* vs measure_* are named — not a live UC object.",
+  },
+  {
+    id: "sf-line-items",
+    label: "SAMPLE line items × orders",
+    sql: `SELECT o.order_id, o.status, i.sku, i.qty, i.unit_price
+FROM sf_orders o
+JOIN sf_line_items i ON i.order_id = o.order_id
+ORDER BY o.order_id, i.sku;`,
+    note: "Item grain. Sum qty * unit_price here — never SUM(o.amount) after this join.",
+  },
+  {
+    id: "sf-north-paid",
+    label: "North / LATAM SAMPLE paid",
+    sql: `SELECT o.order_id, c.region, o.amount, o.promo_code
+FROM sf_orders o
+JOIN sf_customers c ON c.customer_id = o.customer_id
+WHERE o.status = 'paid' AND c.region IN ('north', 'latam')
+ORDER BY o.amount DESC;`,
+    note: "Wave A1 extra SAMPLE customers. Warehouse name is still compute — this is schema.table on the local catalog.",
+  },
+  {
+    id: "sf-history-delta",
+    label: "Time-travel amount delta",
+    sql: `SELECT
+  v1.order_id,
+  v1.amount AS amount_v1,
+  v2.amount AS amount_v2,
+  ROUND(v2.amount - v1.amount, 2) AS delta
+FROM sf_orders_history v1
+JOIN sf_orders_history v2
+  ON v1.order_id = v2.order_id
+WHERE v1.as_of_version = 1 AND v2.as_of_version = 2
+ORDER BY v1.order_id;`,
+    note: "DuckDB stand-in for comparing AT (TIMESTAMP) versions. Snowflake Time Travel syntax differs.",
+  },
+  {
+    id: "sf-qualified-items",
+    label: "analytics.line_items",
+    sql: `SELECT order_id, sku, qty, unit_price
+FROM analytics.line_items
+WHERE sku LIKE 'SKU-%'
+ORDER BY order_id, sku;`,
+    note: "database.schema.table in an account. This lab uses schema.table — the warehouse name is still compute.",
+  },
 ];
 
 const BY_LESSON: Record<DatabricksLabSlug | SnowflakeLabSlug | SqlLabSlug, string[]> = {
-  "dbx-workspace-cluster-basics": ["catalog-objects", "medallion-counts", "dbx-schema", "lab-catalogs"],
-  "dbx-lakehouse-fundamentals": ["medallion-counts", "silver-quality", "gold-revenue", "dbx-gold-having"],
-  "dbx-delta-lake-basics": ["upsert-shape", "silver-quality", "medallion-counts", "dbx-bronze-nulls"],
-  "dbx-spark-sql-performance": ["partition-filter", "gold-revenue", "silver-quality", "dbx-date-window"],
-  "dbx-sql-warehouses": ["gold-revenue", "partition-filter", "medallion-counts", "dbx-gold-having"],
-  "dbx-spark-select-nulls": ["dbx-silver-limit", "dbx-bronze-nulls", "silver-quality"],
-  "dbx-delta-write-preview": ["upsert-shape", "dbx-bronze-nulls", "dbx-exists-ok"],
-  "dbx-gold-aggregates": ["gold-revenue", "dbx-gold-having", "silver-quality", "dbx-metric-view"],
-  "dbx-silver-patterns-case": ["dbx-like-region", "dbx-case-status", "dbx-silver-limit"],
-  "dbx-semi-joins-leftovers": ["dbx-exists-ok", "upsert-shape", "medallion-counts"],
-  "dbx-delta-table-contracts": ["dbx-schema", "catalog-objects", "medallion-counts", "lab-schemas"],
-  "dbx-dates-partition-filters": ["partition-filter", "dbx-date-window", "gold-revenue"],
-  "dbx-unity-catalog": ["lab-catalogs", "lab-current-catalog", "dbx-qualified-silver", "dbx-metric-view"],
-  "dbx-catalog-views-metrics": ["lab-catalogs", "lab-schemas", "lab-views", "dbx-ok-view", "dbx-metric-view"],
-  "sf-day0-objects": ["sf-account-map", "sf-warehouses", "sf-schema", "lab-catalogs"],
-  "sf-architecture": ["sf-warehouses", "sf-account-map", "sf-orders-customers"],
-  "sf-time-travel-clones": ["sf-time-travel", "sf-orders-customers", "sf-date-window"],
-  "sf-dynamic-tables": ["sf-daily-mart", "sf-orders-customers", "sf-agg-having", "sf-metric-view"],
-  "sf-performance-cost": ["sf-prune-filter", "sf-warehouses", "sf-daily-mart"],
-  "sf-select-filter-nulls": ["sf-paid-limit", "sf-null-promo", "sf-orders-customers"],
-  "sf-dml-write-path": ["sf-dml-preview", "sf-null-promo", "sf-paid-limit"],
-  "sf-aggregates-group-having": ["sf-daily-mart", "sf-agg-having", "sf-null-promo"],
-  "sf-patterns-aliases-case": ["sf-like-promo", "sf-case-bucket", "sf-paid-limit"],
-  "sf-exists-semi-joins": ["sf-exists-buyers", "sf-orders-customers", "sf-paid-limit"],
-  "sf-ddl-constraints": ["sf-schema", "sf-account-map", "sf-paid-limit", "lab-schemas"],
-  "sf-dates-injection": ["sf-date-window", "sf-time-travel", "sf-like-promo"],
-  "sf-catalog-views-metrics": ["lab-catalogs", "lab-schemas", "lab-views", "sf-paid-view", "sf-metric-view"],
-  "sql-select-filter-nulls": ["aurora-paid-select", "aurora-distinct-nulls", "aurora-null-promo"],
-  "sql-dml-write-path": ["aurora-dml-preview", "aurora-null-promo", "aurora-paid-select"],
-  "sql-aggregates-group-having": ["aurora-agg-revenue", "aurora-distinct-nulls", "aurora-paid-select"],
-  "sql-patterns-aliases-case": ["aurora-like-in", "aurora-case-bucket", "aurora-paid-select"],
-  "sql-exists-any-all": ["aurora-exists-paid", "aurora-any-threshold", "aurora-join-lane"],
-  "sql-ddl-constraints": ["aurora-schema", "aurora-paid-select", "lab-schemas", "aurora-qualified-orders"],
-  "sql-dates-injection": ["aurora-date-window", "aurora-like-in", "aurora-paid-select"],
-  "sql-joins-set-logic-recap": ["aurora-join-lane", "aurora-exists-paid", "aurora-paid-select"],
-  "sql-catalog-views-metrics": ["lab-catalogs", "lab-schemas", "lab-views", "aurora-paid-view", "aurora-metric-view"],
+  "dbx-workspace-cluster-basics": ["catalog-objects", "medallion-counts", "dbx-schema", "lab-catalogs", "dbx-events-quality"],
+  "dbx-lakehouse-fundamentals": ["medallion-counts", "silver-quality", "gold-revenue", "dbx-gold-having", "dbx-returns-gold"],
+  "dbx-delta-lake-basics": ["upsert-shape", "silver-quality", "medallion-counts", "dbx-bronze-nulls", "dbx-events-quality"],
+  "dbx-spark-sql-performance": ["partition-filter", "gold-revenue", "silver-quality", "dbx-date-window", "dbx-north-ok"],
+  "dbx-sql-warehouses": ["gold-revenue", "partition-filter", "medallion-counts", "dbx-gold-having", "dbx-returns-gold"],
+  "dbx-spark-select-nulls": ["dbx-silver-limit", "dbx-bronze-nulls", "silver-quality", "dbx-north-ok"],
+  "dbx-delta-write-preview": ["upsert-shape", "dbx-bronze-nulls", "dbx-exists-ok", "dbx-events-quality"],
+  "dbx-gold-aggregates": ["gold-revenue", "dbx-gold-having", "silver-quality", "dbx-metric-view", "dbx-returns-gold"],
+  "dbx-silver-patterns-case": ["dbx-like-region", "dbx-case-status", "dbx-silver-limit", "dbx-north-ok"],
+  "dbx-semi-joins-leftovers": ["dbx-exists-ok", "upsert-shape", "medallion-counts", "dbx-events-quality"],
+  "dbx-delta-table-contracts": ["dbx-schema", "catalog-objects", "medallion-counts", "lab-schemas", "dbx-validated-events"],
+  "dbx-dates-partition-filters": ["partition-filter", "dbx-date-window", "gold-revenue", "dbx-north-ok"],
+  "dbx-unity-catalog": ["lab-catalogs", "lab-current-catalog", "dbx-qualified-silver", "dbx-metric-view", "dbx-metric-returns"],
+  "dbx-catalog-views-metrics": ["lab-catalogs", "lab-schemas", "lab-views", "dbx-ok-view", "dbx-metric-view", "dbx-validated-events", "dbx-metric-returns"],
+  "sf-day0-objects": ["sf-account-map", "sf-warehouses", "sf-schema", "lab-catalogs", "sf-qualified-items"],
+  "sf-architecture": ["sf-warehouses", "sf-account-map", "sf-orders-customers", "sf-line-items"],
+  "sf-time-travel-clones": ["sf-time-travel", "sf-orders-customers", "sf-date-window", "sf-history-delta"],
+  "sf-dynamic-tables": ["sf-daily-mart", "sf-orders-customers", "sf-agg-having", "sf-metric-view", "sf-line-items"],
+  "sf-performance-cost": ["sf-prune-filter", "sf-warehouses", "sf-daily-mart", "sf-north-paid"],
+  "sf-select-filter-nulls": ["sf-paid-limit", "sf-null-promo", "sf-orders-customers", "sf-north-paid"],
+  "sf-dml-write-path": ["sf-dml-preview", "sf-null-promo", "sf-paid-limit", "sf-line-items"],
+  "sf-aggregates-group-having": ["sf-daily-mart", "sf-agg-having", "sf-null-promo", "sf-north-paid"],
+  "sf-patterns-aliases-case": ["sf-like-promo", "sf-case-bucket", "sf-paid-limit", "sf-north-paid"],
+  "sf-exists-semi-joins": ["sf-exists-buyers", "sf-orders-customers", "sf-paid-limit", "sf-line-items"],
+  "sf-ddl-constraints": ["sf-schema", "sf-account-map", "sf-paid-limit", "lab-schemas", "sf-qualified-items"],
+  "sf-dates-injection": ["sf-date-window", "sf-time-travel", "sf-like-promo", "sf-history-delta"],
+  "sf-catalog-views-metrics": ["lab-catalogs", "lab-schemas", "lab-views", "sf-paid-view", "sf-metric-view", "sf-qualified-items"],
+  "sql-select-filter-nulls": ["aurora-paid-select", "aurora-distinct-nulls", "aurora-null-promo", "aurora-north-paid"],
+  "sql-dml-write-path": ["aurora-dml-preview", "aurora-null-promo", "aurora-paid-select", "aurora-refunds-join"],
+  "sql-aggregates-group-having": ["aurora-agg-revenue", "aurora-distinct-nulls", "aurora-paid-select", "aurora-sku-mix"],
+  "sql-patterns-aliases-case": ["aurora-like-in", "aurora-case-bucket", "aurora-paid-select", "aurora-north-paid"],
+  "sql-exists-any-all": ["aurora-exists-paid", "aurora-any-threshold", "aurora-join-lane", "aurora-refunds-join"],
+  "sql-ddl-constraints": ["aurora-schema", "aurora-paid-select", "lab-schemas", "aurora-qualified-orders", "aurora-open-shipments"],
+  "sql-dates-injection": ["aurora-date-window", "aurora-like-in", "aurora-paid-select", "aurora-late-window"],
+  "sql-joins-set-logic-recap": ["aurora-join-lane", "aurora-exists-paid", "aurora-paid-select", "aurora-refunds-join", "aurora-sku-mix", "aurora-window-latest"],
+  "sql-catalog-views-metrics": ["lab-catalogs", "lab-schemas", "lab-views", "aurora-paid-view", "aurora-metric-view", "aurora-open-shipments"],
 };
 
 const PYTHON_SAMPLES: LabSample[] = [
@@ -875,16 +1028,124 @@ def run(start: str, end: str, extract, transform, load) -> dict:
 print(run("2026-09-01", "2026-09-02", lambda *_: [{"order_id": 1}], lambda rows: rows, lambda *_: None))`,
     note: "INFO is a metric. Do not log the full row payload or a DSN.",
   },
+  {
+    id: "py-parse-landing",
+    label: "Parse a landing JSON file",
+    code: `import json
+from pathlib import Path
+
+path = Path("/data/landing/orders/2026-09-11/orders_2026-09-11.json")
+rows = json.loads(path.read_text())
+paid = [r for r in rows if r.get("status") == "paid" and r.get("amount") is not None]
+print(len(rows), "landed;", len(paid), "paid")
+print(paid[0] if paid else "none")`,
+    note: "json + pathlib only. amount is None stays out of gold — do not coerce to 0.",
+  },
+  {
+    id: "py-retry-shape",
+    label: "Retry-shaped extract",
+    code: `def extract_with_retry(fn, attempts=3):
+    last = None
+    for n in range(1, attempts + 1):
+        try:
+            return fn()
+        except TimeoutError as exc:
+            last = exc
+            print(f"retry {n}/{attempts}")
+    raise last
+
+calls = {"n": 0}
+
+def flaky():
+    calls["n"] += 1
+    if calls["n"] < 2:
+        raise TimeoutError("landing timeout")
+    return [{"order_id": 1001, "status": "paid"}]
+
+print(extract_with_retry(flaky))`,
+    note: "Retry timeouts. Do not retry a KeyError on a missing contract key — that is not transient.",
+  },
+  {
+    id: "py-window-overlap",
+    label: "Reject overlapping windows",
+    code: `from datetime import datetime, timezone
+
+def assert_half_open(start: datetime, end: datetime, prev_end: datetime | None) -> None:
+    if start.tzinfo is None or end.tzinfo is None:
+        raise ValueError("windows must be timezone-aware")
+    if end <= start:
+        raise ValueError("end must be after start")
+    if prev_end is not None and start < prev_end:
+        raise ValueError("window overlaps previous watermark")
+
+start = datetime(2026, 9, 12, tzinfo=timezone.utc)
+end = datetime(2026, 9, 13, tzinfo=timezone.utc)
+assert_half_open(start, end, datetime(2026, 9, 12, tzinfo=timezone.utc))
+print("ok", start, end)`,
+    note: "[start, end) so the next run starts at end. Overlap double-loads gold.",
+  },
+  {
+    id: "py-returns-landing",
+    label: "Returns landing glob",
+    code: `from pathlib import Path
+
+RETURNS = Path("/data/landing/returns")
+
+def list_return_files(day: str) -> list[Path]:
+    return sorted((RETURNS / day).glob("returns_*.json"))
+
+for path in list_return_files("2026-09-12"):
+    print(path.name)`,
+    note: "Separate landing from orders. glob('*.json') on a mixed folder is how notes.json sneaks in.",
+  },
+  {
+    id: "py-promo-lookup",
+    label: "Promo ref lookup",
+    code: `import json
+from pathlib import Path
+
+promos = {row["code"]: row for row in json.loads(Path("/data/ref/promos.json").read_text())}
+
+def attach_promo(row: dict) -> dict:
+    code = row.get("promo_code")
+    if code is None:
+        return {**row, "promo_known": False}
+    if code not in promos:
+        raise ValueError(f"unknown promo: {code}")
+    return {**row, "promo_known": True, "promo_pct": promos[code]["pct"]}
+
+print(attach_promo({"order_id": 1, "promo_code": "FALL26"}))
+print(attach_promo({"order_id": 2, "promo_code": None}))`,
+    note: "None promo is unknown, not an error. A code missing from the ref file is a contract break.",
+  },
+  {
+    id: "py-chunk-landing",
+    label: "Chunk parsed landing rows",
+    code: `import json
+from pathlib import Path
+
+def chunks(rows, size=2):
+    offset = 0
+    while offset < len(rows):
+        batch = rows[offset : offset + size]
+        yield batch
+        offset += len(batch)
+
+rows = json.loads(Path("/data/landing/orders/2026-09-13/orders_2026-09-13.json").read_text())
+for batch in chunks(rows):
+    print([r["order_id"] for r in batch])`,
+    note: "yield keeps RAM flat on a real extract. list(chunks(...)) undoes the point.",
+  },
 ];
 
 const PYTHON_BY_LESSON: Record<PythonLabSlug, string[]> = {
-  "python-none-dicts-rows": ["py-unknown-promos", "py-assert-row", "py-paid-only"],
-  "python-functions-pure-transforms": ["py-paid-only", "py-no-mutate", "py-assert-row"],
-  "python-pathlib-extracts": ["py-landing-glob", "py-assert-row"],
-  "python-exceptions-retries": ["py-loud-transform", "py-assert-row", "py-unknown-promos"],
-  "python-datetimes-watermarks": ["py-watermark", "py-project-filter"],
-  "python-comprehensions-chunks": ["py-project-filter", "py-chunk-ids", "py-paid-only"],
-  "python-logging-not-print": ["py-job-log", "py-paid-only"],
+  "python-none-dicts-rows": ["py-unknown-promos", "py-assert-row", "py-paid-only", "py-promo-lookup"],
+  "python-functions-pure-transforms": ["py-paid-only", "py-no-mutate", "py-assert-row", "py-promo-lookup"],
+  "python-pathlib-extracts": ["py-landing-glob", "py-assert-row", "py-parse-landing", "py-returns-landing"],
+  "python-exceptions-retries": ["py-loud-transform", "py-assert-row", "py-unknown-promos", "py-retry-shape"],
+  "python-datetimes-watermarks": ["py-watermark", "py-project-filter", "py-window-overlap"],
+  "python-comprehensions-chunks": ["py-project-filter", "py-chunk-ids", "py-paid-only", "py-chunk-landing"],
+  "python-logging-not-print": ["py-job-log", "py-paid-only", "py-parse-landing"],
 };
 
 export function samplesForLesson(slug: string): LabSample[] {

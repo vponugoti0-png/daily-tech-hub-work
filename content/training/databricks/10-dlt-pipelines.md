@@ -36,6 +36,24 @@ quiz:
       - "You disabled checkpoints on purpose"
     answer: 1
     explanation: "DLT is not mandatory. The capstone Job remains a valid production shape."
+  - question: "DLT / declarative pipelines are a fit when…"
+    options:
+      - "You want hidden %sh credentials"
+      - "You can name bronze/silver/gold expectations the engine will enforce"
+      - "You need to skip quality"
+      - "You refuse to name grain"
+    answer: 1
+    explanation: "Expectations are DQ gates with an owner. Still not a live lab runtime."
+  - question: "A failed expectation should…"
+    options:
+      - "Be ignored so gold stays fresh"
+      - "Stop or quarantine per the policy you wrote — same as a SQL gate"
+      - "Delete Unity Catalog"
+      - "Rotate the PAT"
+    answer: 1
+    explanation: "Name drop vs fail. Silent continues are how bad silver ships."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Overview — not a product tour of every UI toggle. Declarative pipelines (DLT / Lakeflow Declarative Pipelines) describe **tables and quality**, then the engine refreshes them.

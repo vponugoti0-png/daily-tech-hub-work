@@ -42,6 +42,24 @@ quiz:
       - "Looking at credits"
     answer: 1
     explanation: "Retries must be idempotent — same lesson as DE writers."
+  - question: "A handoff runbook must say…"
+    options:
+      - "“Call the FDE forever”"
+      - "How to tell gold is stale, who is paged, and the first SELECT / Job retry"
+      - "The vendor’s stock price"
+      - "Nothing — dashboards are enough"
+    answer: 1
+    explanation: "On-call without a first check is theater."
+  - question: "Guest progress stepIndex after a lab run is…"
+    options:
+      - "A production SLA"
+      - "Local practice only — customer observability is their warehouse + Job alerts"
+      - "A PagerDuty integration"
+      - "A live stream"
+    answer: 1
+    explanation: "Do not confuse the training lab with their telemetry."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Observability and on-call handoff

@@ -22,6 +22,9 @@ cheatSheet:
   - label: "Bind the filter (application shape)"
     code: "-- Application / dbt: bind :start_date and :end_date\nSELECT order_id, order_date, amount\nFROM aurora_orders\nWHERE order_date >= :start_date\n  AND order_date <  :end_date\n  AND status = :status;"
     note: "The engine receives values, not SQL text. Never concatenate a request querystring into this WHERE."
+  - label: "Late paid window"
+    code: "SELECT order_id, order_date, amount\nFROM aurora_orders\nWHERE status = 'paid'\n  AND order_date >= DATE '2026-09-06'\nORDER BY order_date;"
+    note: "Bind dates. Do not glue a form string into this predicate."
 quiz:
   - question: "order_date BETWEEN DATE '2026-09-02' AND DATE '2026-09-04' includes…"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "Whether LIMIT is 5"
     answer: 0
     explanation: "Snowflake-shaped DATEADD and Spark/DuckDB INTERVAL are different dialects. Pick one per worksheet and test it."
+  - question: "BETWEEN DATE '2026-09-02' AND DATE '2026-09-04' is…"
+    options:
+      - "Exclusive on both ends"
+      - "Inclusive on a DATE column"
+      - "A string comparison"
+      - "Illegal in DuckDB"
+    answer: 1
+    explanation: "BETWEEN on DATE is inclusive. Know the bound before you write a watermark."
+  - question: "Why bind a date parameter instead of concatenating the UI string?"
+    options:
+      - "Concatenation is faster"
+      - "Glued strings are injection and dialect bugs — bind a DATE"
+      - "Parameters are deprecated"
+      - "Warehouses ignore WHERE"
+    answer: 1
+    explanation: "Injection-safe filters are a habit, even in internal tools."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Dates are filters. Injection is a **construction** bug. This page stays at awareness: bind values, type them, and never turn a request string into SQL text.

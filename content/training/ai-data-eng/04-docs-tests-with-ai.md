@@ -9,6 +9,10 @@ durationMinutes: 8
 topics: [python, git]
 objectives: [Generate docs from real code you paste (sanitized), Ask for edge-case tests, Keep docs short and accurate]
 updatedAt: "2026-09-11"
+cheatSheet:
+  - label: "Test-first ask"
+    code: "Write pytest for paid_only(rows).\nCases: paid kept, pending dropped, amount None excluded.\nThen draft a 4-line docstring that names the grain."
+    note: "Tests first. Docs that name the grain beat poetry."
 quiz:
   - question: "Best input for doc generation?"
     options:
@@ -24,6 +28,24 @@ quiz:
       - "Never assert anything"
       - "Only test happy paths forever"
     answer: 1
+  - question: "Best first artifact to ask AI for on a new transform?"
+    options:
+      - "A logo"
+      - "A failing unit test that names the grain, then the function"
+      - "A production Job YAML"
+      - "A Slack announcement"
+    answer: 1
+    explanation: "A test pins the contract. Code that follows is reviewable."
+  - question: "AI wrote a docstring that never mentions grain. You should…"
+    options:
+      - "Ship — docs are optional"
+      - "Add the grain (1 row per order_id) before anyone copies the function"
+      - "Delete all comments"
+      - "Translate it to Latin"
+    answer: 1
+    explanation: "Grain is the contract. A docstring without it invites the next join bug."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Docs and tests with AI

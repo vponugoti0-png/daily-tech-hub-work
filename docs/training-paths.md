@@ -4,6 +4,8 @@
 **Date:** 2026-09-12  
 **Status:** In-app overlay + track `orderNote`s (no new top-level nav). FDE (#18), ETL builders (#19), SQL exercise path (#22), and sibling spines (#23) are on `main`. Phase 3 richer lab datasets (catalogs / schemas / views / metric-style tables) follow #23.
 
+**Wave A1 (practice volume):** Quizzes and TryIt/cheat-sheet cards were thickened on every training track (prompt-engineering, AI for DE, Python, SQL, Databricks, Snowflake, Git, Forward Deployed). Local SQL/DBX/SF labs gained extra Aurora rows (north/EMEA/LATAM, refunds, shipments, events, line items, returns gold) plus more SELECT/WITH samples. Python exercise-path labs gained extra landing days, a returns folder, and a promo ref file. No new top-level nav, no Wave B runtimes, no Railway deploy. Authoring extras live in `scripts/wave-a1-practice-extras*.mjs`.
+
 This page describes the **overnight path** shipped with the ETL-builder wave. Catalog `order` numbers stay as-is; recommended reading is overlay copy.
 
 ## Path (do this in order)
@@ -85,3 +87,4 @@ In-browser commit graph + CLI on every `/training/git` lesson. Entry: track **Pr
 - Register new wave files in `scripts/wave-lessons.mjs` so `generate:courses` does not wipe them.
 - Keep slugs/orders unique (`order: 12` for this wave).
 - Guest progress + Aurora tokens unchanged. No Railway deploy required for content.
+- Wave A1 practice extras: `scripts/wave-a1-practice-extras*.mjs` + `scripts/wave-a1-apply-practice.mjs` (already applied on lessons). Do not re-run apply unless you remove the `WAVE_A1_APPLIED` frontmatter marker. New questions always include a why-explanation for Kid Tester.

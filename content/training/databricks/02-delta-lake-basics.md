@@ -30,6 +30,32 @@ quiz:
       - "Skip ACID"
       - "Avoid partitioning forever"
     answer: 1
+  - question: "Delta’s MERGE habit in this lab is shown as…"
+    options:
+      - "A live write to your workspace"
+      - "A FULL OUTER JOIN stand-in — Spark / Delta syntax differs"
+      - "VACUUM"
+      - "A %sh copy"
+    answer: 1
+    explanation: "Read-only lab. Learn the match/not-match shape, then copy MERGE to a workspace."
+  - question: "Time travel / versions exist so you can…"
+    options:
+      - "Skip DQ gates"
+      - "Read a previous table version after a bad write"
+      - "Store PATs in _delta_log"
+      - "Disable Unity Catalog"
+    answer: 1
+    explanation: "Versions are a recovery tool, not a substitute for review."
+  - question: "A corrupt bronze row with NULL amount should…"
+    options:
+      - "Become 0 in silver automatically"
+      - "Stay out of silver until a named rule says otherwise"
+      - "Delete the Delta log"
+      - "Be DISTINCT-ed in gold"
+    answer: 1
+    explanation: "The seed drops status = 'corrupt'. That is the quality contract."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Delta Lake basics

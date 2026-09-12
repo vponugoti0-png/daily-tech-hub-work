@@ -47,6 +47,24 @@ quiz:
       - "To skip contracts"
     answer: 0
     explanation: "Date windows are the job interface. Overlap the watermark for late orders."
+  - question: "In extract → transform → load, where do retries belong?"
+    options:
+      - "Around transform KeyError"
+      - "Around extract/load I/O that can time out — not around a missing order_id"
+      - "Around print()"
+      - "Nowhere — never retry"
+    answer: 1
+    explanation: "I/O is transient. A broken row contract is not."
+  - question: "The builder’s publish step should be…"
+    options:
+      - "Append-only with no key"
+      - "Idempotent: same window replayed does not duplicate gold"
+      - "A screenshot of a notebook"
+      - "A DROP of the raw landing"
+    answer: 1
+    explanation: "Staging then MERGE/replace. Retries will happen."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 This is the **Python ETL builder** — one job that stitches pieces you already met: [DataFrame contracts](/training/python/python-dataframe-contracts), [idempotent writers](/training/python/python-idempotent-writers), and [orchestration hooks](/training/python/python-orchestration-hooks). Shared story: **Orders → late events → daily revenue mart**.

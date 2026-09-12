@@ -19,6 +19,9 @@ cheatSheet:
   - label: "Undo the last commit (relative ref)"
     code: "git reset --hard HEAD~1"
     note: "Drops a bad .env commit in this lab. Do not reset shared main at work."
+  - label: "One grain per commit"
+    code: "feat(orders): reject notes.json in landing glob\n\nWhy: glob('*.json') picked up sidecars and fan-out gold."
+    note: "Subject + why. Not “fix stuff”. Play the hygiene level in Git Play Lab."
 quiz:
   - question: "Which commit message best fits a dbt incremental change?"
     options:
@@ -35,6 +38,24 @@ quiz:
       - "git rm --cached the file, add to .gitignore, and rotate the credentials"
       - "Amend after force-pushing to main"
     answer: 2
+  - question: "A useful analytics commit message names…"
+    options:
+      - "Only “wip”"
+      - "The grain or contract you changed and why"
+      - "The warehouse password"
+      - "A random SHA"
+    answer: 1
+    explanation: "Future you will bisect this."
+  - question: "Mixing a schema change and a dashboard color in one commit is bad because…"
+    options:
+      - "Git forbids two files"
+      - "Bisect and revert cannot isolate the breaking change"
+      - "dbt cannot compile"
+      - "PRs cannot have diffs"
+    answer: 1
+    explanation: "Hygiene is for the next incident, not aesthetics."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Commit hygiene for data PRs

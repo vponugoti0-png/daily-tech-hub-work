@@ -47,6 +47,24 @@ quiz:
       - "Granting SELECT"
     answer: 1
     explanation: "Clustering supports filters you already wrote. It does not invent a predicate."
+  - question: "Clustering keys are…"
+    options:
+      - "PRIMARY KEY clones"
+      - "A storage layout hint for prune-friendly columns — not a uniqueness guarantee"
+      - "RBAC roles"
+      - "Stream offsets"
+    answer: 1
+    explanation: "Constraints vs clustering. Do not confuse them."
+  - question: "This lab will not CREATE TABLE because…"
+    options:
+      - "DDL is fictional"
+      - "You inspect sf_* columns, then copy CREATE/ALTER to an account"
+      - "information_schema is empty"
+      - "Warehouses cannot DDL"
+    answer: 1
+    explanation: "Inspect first."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 DDL is how you **name the contract**. This is not a catalog of every `CREATE DATABASE` privilege.

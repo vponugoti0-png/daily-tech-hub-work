@@ -21,6 +21,9 @@ cheatSheet:
   - label: "Account map (local lab)"
     code: "SELECT database, schema, object_name, object_type\nFROM sf_account_objects\nORDER BY database, schema, object_name;"
     note: "Nesting is database.schema.table. Run this SELECT in the local practice lab — not a live account."
+  - label: "Warehouse vs database"
+    code: "SELECT name, size, auto_suspend_sec, status FROM sf_warehouses;\nSELECT database, schema, object_name FROM sf_account_objects;"
+    note: "Warehouses are compute. Databases/schemas hold objects. Auto-suspend stops credit burn."
 quiz:
   - question: "A Snowflake virtual warehouse primarily provides…"
     options:
@@ -38,6 +41,24 @@ quiz:
       - "A worksheet tab name"
     answer: 0
     explanation: "database.schema.table. The warehouse is a separate compute object."
+  - question: "The warehouse name is not…"
+    options:
+      - "Compute you size and suspend"
+      - "A database — tables live in database.schema.table"
+      - "Something you auto-suspend"
+      - "A credit-consuming resource"
+    answer: 1
+    explanation: "Day-0: compute vs storage nesting."
+  - question: "learn_wh auto_suspend 60 seconds exists in the seed so you remember…"
+    options:
+      - "To keep BI warehouses running all weekend"
+      - "Idle warehouses still spend — suspend when idle"
+      - "That XSMALL cannot SELECT"
+      - "That suspend deletes data"
+    answer: 1
+    explanation: "Credits are time × size. Data stays in tables."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Day-0 Snowflake: three words people mix up — **database**, **schema**, **warehouse**. Guest-friendly; copy into a worksheet when you have an account.

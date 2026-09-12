@@ -43,6 +43,24 @@ quiz:
       - "A Railway deploy from the lesson page"
     answer: 1
     explanation: "v1 is lessons, quizzes, and copy cards. Practice labs stay on DBX/SF SQL."
+  - question: "Capstone engagement is done when…"
+    options:
+      - "You still hold ACCOUNTADMIN and they have no runbook"
+      - "A named Job/DT is in their env, gated, alerted, and their on-call can run the first check"
+      - "The sales deck is prettier"
+      - "You cloned prod to your laptop"
+    answer: 1
+    explanation: "Used, owned, reversible."
+  - question: "The checklist exists so that…"
+    options:
+      - "You can skip discovery"
+      - "Security, grain, deploy, and handoff are not optional slides"
+      - "Labs become live warehouses"
+      - "Wave B ships from this PR"
+    answer: 1
+    explanation: "Same spine as the ETL builders — plus customer constraints."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Capstone — DE platform engagement checklist

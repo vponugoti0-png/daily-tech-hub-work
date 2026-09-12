@@ -47,6 +47,24 @@ quiz:
       - "Gold cannot refresh otherwise"
     answer: 0
     explanation: "File-level success ≠ row-level quality. Gate on history + nulls before CDC consume."
+  - question: "COPY → Stream/Task MERGE → Dynamic Table gold is ordered that way because…"
+    options:
+      - "Gold must land first"
+      - "You do not persist a mart from unconsumed/unvalidated change rows"
+      - "COPY writes gold"
+      - "Tasks cannot MERGE"
+    answer: 1
+    explanation: "Land, capture, gate, serve."
+  - question: "The builder is copy-to-account because…"
+    options:
+      - "This page is a live Snowflake org"
+      - "The local lab is DuckDB SELECT/WITH — COPY/TASK/DT are educational copy"
+      - "ATTACH to your account is enabled"
+      - "Cortex runs here"
+    answer: 1
+    explanation: "No Wave B warehouse runtime."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 This is the **Snowflake ETL builder**: **stage → COPY → Stream/Task silver → Dynamic Table gold**. It ties together [COPY & stages](/training/snowflake/sf-copy-stages-ingestion), [Streams & Tasks](/training/snowflake/sf-streams-tasks), and [Dynamic Tables](/training/snowflake/sf-dynamic-tables). Shared story: **Orders → late events → daily revenue mart**.

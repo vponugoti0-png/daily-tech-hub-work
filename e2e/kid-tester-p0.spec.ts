@@ -25,6 +25,8 @@ test.describe("Kid Tester P0s — learner UX", () => {
 
     await quiz.getByRole("radio", { name: /^Explain Spark$/ }).check();
     await quiz.getByRole("radio", { name: /Limits like dialect/ }).check();
+    await quiz.getByRole("radio", { name: /Output format — bullets/ }).check();
+    await quiz.getByRole("radio", { name: /junior DE on Aurora/ }).check();
     await quiz.getByRole("button", { name: "Submit answers" }).click();
 
     const why = quiz.getByTestId("quiz-why-wrong");

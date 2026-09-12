@@ -22,6 +22,9 @@ cheatSheet:
   - label: "ALTER / INDEX / DROP discipline"
     code: "-- Dialect: ANSI-shaped (warehouse)\nALTER TABLE staging.aurora_orders_delta ADD COLUMN ingested_at TIMESTAMP;\nCREATE INDEX aurora_orders_delta_date ON staging.aurora_orders_delta (order_date);\n-- DROP TABLE staging.aurora_orders_delta;   -- staging only, never a mart by habit"
     note: "ALTER on staging is cheap. DROP a mart only with a rebuild plan. INDEX/CLUSTER is a prune habit — not a substitute for a date filter."
+  - label: "Inspect before ALTER"
+    code: "SELECT table_name, column_name, data_type\nFROM information_schema.columns\nWHERE table_schema = 'aurora'\nORDER BY table_name, ordinal_position;"
+    note: "This lab does not run DDL. Copy CREATE/ALTER to a warehouse after you read the contract."
 quiz:
   - question: "What does PRIMARY KEY mean on staging.aurora_orders_delta.order_id?"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "Granting SELECT"
     answer: 1
     explanation: "Indexes (and warehouse clustering) support filters you already wrote. They do not invent a predicate."
+  - question: "Why inspect information_schema before ALTER TABLE?"
+    options:
+      - "It runs the ALTER for you"
+      - "You need the current contract — types, nullability — before you change it"
+      - "information_schema is a secret store"
+      - "ALTER is illegal"
+    answer: 1
+    explanation: "DDL is a contract change. Read first, then copy the statement to a warehouse."
+  - question: "A UNIQUE constraint on order_id is there to…"
+    options:
+      - "Speed up RANDOM()"
+      - "Protect the grain you named — duplicates fail loud"
+      - "Store secrets"
+      - "Replace GROUP BY"
+    answer: 1
+    explanation: "Constraints are tests the warehouse runs. Do not rely on DISTINCT to hide dupes."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 DDL is how you **name the contract**. This is not a catalog of every `CREATE DATABASE` dialect, and it is not a stored-procedure course. You will: create a staging table, constrain the grain, alter it when a column arrives late, index the filter you already use, and drop only what you can rebuild.

@@ -48,6 +48,24 @@ quiz:
       - "To disable Time Travel"
     answer: 0
     explanation: "Staging is the airlock. DQ and latest-per-key happen there, then current/mart update."
+  - question: "DQ gates sit…"
+    options:
+      - "After the CEO dashboard"
+      - "After staging, before MERGE to current / gold"
+      - "Only in a slide deck"
+      - "Inside DISTINCT"
+    answer: 1
+    explanation: "Bad staging must not become gold."
+  - question: "orders_daily grain is…"
+    options:
+      - "One row per item sku"
+      - "The mart grain you named (typically date + region) — not order_id"
+      - "One row per customer email"
+      - "The stream offset"
+    answer: 1
+    explanation: "Builders decide the gold grain in writing. Then persist it."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 This is the **SQL ETL builder**. It assembles [incremental loads](/training/sql/sql-incremental-loads) and [DQ checks](/training/sql/sql-data-quality) into one **staging → gate → current → mart** path. Shared story: **Orders → late events → daily revenue mart**.

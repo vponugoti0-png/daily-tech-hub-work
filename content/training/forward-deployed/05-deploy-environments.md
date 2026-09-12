@@ -45,6 +45,24 @@ quiz:
       - "The kickoff slide footer"
     answer: 2
     explanation: "Names in git, values in a manager — same habit as Python for DEs."
+  - question: "DEV vs PROD catalogs exist so that…"
+    options:
+      - "You can test grants and Jobs without writing prod gold"
+      - "PROD can use a personal cluster"
+      - "DEV disables RBAC"
+      - "You skip observability"
+    answer: 0
+    explanation: "Promotion path. No surprise prod."
+  - question: "A deploy without a rollback story is…"
+    options:
+      - "Agile"
+      - "Incomplete — Time Travel / previous Job version / clone, named in the runbook"
+      - "Required by FDE culture"
+      - "Safer than a runbook"
+    answer: 1
+    explanation: "Handoff includes how they undo you."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Deploy and environments

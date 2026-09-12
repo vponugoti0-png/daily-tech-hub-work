@@ -30,6 +30,24 @@ quiz:
       - "Deletes Delta logs"
       - "Disables Photon"
     answer: 1
+  - question: "A SQL warehouse is for…"
+    options:
+      - "Running heavy Autoloader ETL all day"
+      - "Serving gold / BI-shaped SQL — keep transformation Jobs off it"
+      - "Storing Unity Catalog"
+      - "%sh scripts"
+    answer: 1
+    explanation: "Compute role. ETL on Jobs; serve on the warehouse."
+  - question: "Auto-stop on a warehouse matters because…"
+    options:
+      - "It deletes gold"
+      - "Idle warehouses still cost — same habit as Snowflake auto-suspend"
+      - "Spark cannot start again"
+      - "It disables SELECT"
+    answer: 1
+    explanation: "Stop idle compute."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Databricks SQL warehouses & serving

@@ -27,6 +27,24 @@ quiz:
       - "Delete the whole table"
       - "Ignore and continue"
     answer: 1
+  - question: "An idempotent load means…"
+    options:
+      - "Running it twice duplicates gold"
+      - "Re-running the same window leaves gold in the same state"
+      - "You never use MERGE"
+      - "You delete the table every hour"
+    answer: 1
+    explanation: "Retries must be safe. MERGE on a key or partition replace — not append-only blindly."
+  - question: "Why include a batch_id or window start in a staging table?"
+    options:
+      - "For pretty dashboards only"
+      - "So a retry can delete/replace that window instead of inserting a second copy"
+      - "Spark requires it"
+      - "To store passwords"
+    answer: 1
+    explanation: "Window identity is how you make a replay land on the same rows."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Idempotent writers & retry-safe loads

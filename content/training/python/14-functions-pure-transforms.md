@@ -22,6 +22,9 @@ cheatSheet:
   - label: "Do not mutate the caller's list"
     code: "def with_event_date(rows: list[dict], key=\"order_date\") -> list[dict]:\n    return [{**r, \"event_date\": r[key]} for r in rows]\n\n# Bad: for r in rows: r[\"event_date\"] = r[key]  # surprises the caller"
     note: "In-place updates make retries and tests lie. Return a new list of dicts."
+  - label: "Edges vs core"
+    code: "def transform(rows: list[dict]) -> list[dict]:\n    return [{**r, \"event_date\": r[\"order_date\"]} for r in rows]\n# I/O (pathlib, json, SQL) lives in extract/load — not here."
+    note: "Same input → same output. No file, no global."
 quiz:
   - question: "Where should SQL / file I/O live?"
     options:
@@ -47,6 +50,24 @@ quiz:
       - "Connectors cannot live in extract"
     answer: 1
     explanation: "Dependency injection is a test seam. Production still passes the real reader."
+  - question: "A transform that writes a JSON file inside the map function is risky because…"
+    options:
+      - "JSON is illegal in Python"
+      - "Retries and tests cannot replay a pure function — side effects lie"
+      - "pathlib is banned"
+      - "Dicts cannot be serialized"
+    answer: 1
+    explanation: "Keep I/O at extract/load. A retry would double-write."
+  - question: "How do you add a column without mutating the caller’s list?"
+    options:
+      - "row['event_date'] = row['order_date'] in place"
+      - "Return [{**r, 'event_date': r['order_date']} for r in rows]"
+      - "Delete the input list"
+      - "Use a global dict"
+    answer: 1
+    explanation: "New dicts. In-place updates make the next test see yesterday’s mutation."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 Functions are how ETL stays reviewable. **Edit and Run** in the local practice lab — not a live cloud kernel.

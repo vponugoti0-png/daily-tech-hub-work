@@ -22,6 +22,9 @@ cheatSheet:
   - label: "Required keys helper"
     code: "def missing_keys(row: dict, required: tuple[str, ...]) -> list[str]:\n    return [k for k in required if k not in row]"
     note: "Static types catch drift in CI. Runtime still checks the landing."
+  - label: "Typed row"
+    code: "from typing import TypedDict, NotRequired\nclass OrderRow(TypedDict):\n    order_id: int\n    status: str\n    amount: float | None\n    promo_code: NotRequired[str | None]"
+    note: "amount may be None. order_id may not. Types document the contract."
 quiz:
   - question: "TypedDict is best used for…"
     options:
@@ -30,6 +33,24 @@ quiz:
       - "Replacing all DataFrames"
       - "GPU kernels"
     answer: 1
+  - question: "TypedDict helps pipeline reviews because…"
+    options:
+      - "It makes Python as fast as C"
+      - "Callers see required keys vs optional / None without reading the whole function"
+      - "It replaces unit tests"
+      - "It stores data in the warehouse"
+    answer: 1
+    explanation: "Types are a contract comment the checker can see. Still test the None path."
+  - question: "amount: float with no | None is a lie when…"
+    options:
+      - "You never land data"
+      - "Bronze can send JSON null for amount"
+      - "float is deprecated"
+      - "DuckDB uses INTEGER only"
+    answer: 1
+    explanation: "If the warehouse would use NULL, the type should allow None."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Typing for reliable pipelines

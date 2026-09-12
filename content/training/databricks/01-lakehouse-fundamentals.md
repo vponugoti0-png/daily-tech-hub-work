@@ -30,6 +30,32 @@ quiz:
       - "Only SCD2 dims"
       - "Secrets"
     answer: 1
+  - question: "Gold should be served from…"
+    options:
+      - "Ad-hoc notebooks that re-filter bronze"
+      - "A persisted mart Job / table the warehouse or DBSQL can read"
+      - "A screenshot"
+      - "The cluster log"
+    answer: 1
+    explanation: "Warehouses serve gold. Keep ETL off the BI warehouse."
+  - question: "Corrupt bronze in this lab never reaches silver. That teaches…"
+    options:
+      - "Silver is a copy of bronze always"
+      - "Quality contracts live on the write to silver — leftovers stay bronze"
+      - "Gold stores secrets"
+      - "Medallion is only a color scheme"
+    answer: 1
+    explanation: "Run the leftovers sample. Bronze can be ugly; silver is the contract."
+  - question: "Why not run production ETL as a click-through notebook?"
+    options:
+      - "Notebooks cannot use Spark SQL"
+      - "Jobs are versioned, scheduled, and have an owner — notebooks drift"
+      - "Jobs cannot MERGE"
+      - "Unity Catalog blocks Jobs"
+    answer: 1
+    explanation: "Exploration vs production. Same SQL, different runtime."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Lakehouse fundamentals on Databricks

@@ -30,6 +30,24 @@ quiz:
       - "Faster than SQL"
       - "Better type safety"
     answer: 1
+  - question: "First performance habit for a Python extract?"
+    options:
+      - "Load the whole landing into a list of dicts, twice"
+      - "Project columns you need, chunk, and avoid per-row warehouse round-trips"
+      - "Turn off logging forever"
+      - "Use eval() on each row"
+    answer: 1
+    explanation: "Less data, fewer round-trips. Micro-optimizing a loop is later."
+  - question: "Why is row-by-row INSERT from Python usually a smell?"
+    options:
+      - "SQL cannot insert"
+      - "Each row is a network round-trip — copy/bulk/chunk instead"
+      - "Python cannot loop"
+      - "Warehouses forbid INSERT"
+    answer: 1
+    explanation: "Bulk load or a warehouse MERGE. Chatty writers die at 100k rows."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Performance habits for DE Python

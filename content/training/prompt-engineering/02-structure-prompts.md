@@ -12,6 +12,9 @@ updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Role + task"
     code: "You are a patient data-engineering tutor.\\nTask: ...\\nShow work in steps.\\nEnd with a 3-item checklist I can verify."
+  - label: "Tiny good-output example"
+    code: "Good answer looks like:\n1. Cause (one sentence)\n2. Check (one SELECT)\n3. What not to do (one line)"
+    note: "A short example teaches shape better than another adjective."
 quiz:
   - question: "Why add a short example of good output?"
     options:
@@ -27,6 +30,24 @@ quiz:
       - "Only use emojis"
       - "Delete all constraints"
     answer: 1
+  - question: "What is a role line for?"
+    options:
+      - "To flatter the model"
+      - "To set the voice and bar — tutor, reviewer, SQL coach — so the answer matches how you will use it"
+      - "To replace a task verb"
+      - "To hide missing constraints"
+    answer: 1
+    explanation: "Role sets voice. You still need a task, constraints, and a format."
+  - question: "A self-check checklist from the model is useful because…"
+    options:
+      - "You can trust it blindly"
+      - "It gives you a list you still run yourself"
+      - "It replaces unit tests"
+      - "It means the SQL is production-ready"
+    answer: 1
+    explanation: "Ask for a checklist you will execute. Never treat the model’s “looks good” as a test."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 # Structure prompts that scale

@@ -47,6 +47,24 @@ quiz:
       - "It is a stored procedure"
     answer: 1
     explanation: "Semantic / metric views expose dims + measures. This seed is a tiny local table with that shape."
+  - question: "analytics.paid_orders is a view, so…"
+    options:
+      - "It persists like a Dynamic Table"
+      - "It is a stored SELECT — DTs persist a grain; this view does not"
+      - "It is Cortex"
+      - "It is a warehouse"
+    answer: 1
+    explanation: "View vs DT vs table."
+  - question: "metrics.sf_daily_revenue is…"
+    options:
+      - "A live Snowflake semantic view in your org"
+      - "A local metric-style table — not Cortex, not a remote object"
+      - "ACCOUNTADMIN"
+      - "A stage"
+    answer: 1
+    explanation: "Same-origin fixture."
+# WAVE_A1_APPLIED: extra quiz / TryIt copy (practice volume)
+
 ---
 
 The **local practice lab** queries same-origin DuckDB stand-ins for account objects: tables, views, schemas, a catalog inventory, and a metric-view–style mart. Not a live Snowflake account. No Python lab.
