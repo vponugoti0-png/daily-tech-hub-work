@@ -28,7 +28,7 @@ test.describe("W0–W4 training waves", () => {
     ).toBeVisible();
     await expect(
       page
-        .getByText(/contracts → config\/secrets → typing → testing → writers → orchestration → perf → packaging/)
+        .getByText(/contracts → config\/secrets → typing → testing → writers → VFS datasets → orchestration → perf → packaging/)
         .first(),
     ).toBeVisible();
 

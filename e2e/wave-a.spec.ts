@@ -49,7 +49,7 @@ test.describe("Wave A — hub, datasets, labs, deep-dive", () => {
     await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
     const schema = lab.getByRole("complementary", { name: "Sample database schema" });
     await expect(schema).toBeVisible();
-    await expect(schema.getByText(/aurora_orders|aurora_shipments|bronze_orders/)).toBeVisible();
+    await expect(schema.getByRole("button", { name: /aurora_orders/ })).toBeVisible();
 
     await lab.getByRole("button", { name: "Restore sample DB" }).click();
     await expect(lab.getByText(/Sample database restored/i)).toBeVisible({ timeout: 45_000 });
@@ -155,7 +155,7 @@ test.describe("Wave A — hub, datasets, labs, deep-dive", () => {
     await page.goto("/search?q=notebook+cell+types");
     await expect(page.getByRole("link", { name: /Notebook cell types/i })).toBeVisible();
 
-    await page.goto("/search?q=shipments+events+tickets");
+    await page.goto("/search?q=aurora_shipments");
     await expect(page.getByRole("link", { name: /Shipments, events, and tickets/i })).toBeVisible();
 
     await page.goto("/search?q=practice+data+files");
