@@ -16,7 +16,7 @@ export function TryItBox({
   code: string;
   hint?: string;
   dialect?: string;
-  /** In-lesson local lab (Databricks v1). Not a top-level nav item. */
+  /** In-lesson local lab (Databricks / Snowflake / SQL foundations). Not a top-level nav item. */
   labHref?: string;
 }) {
   const [showHint, setShowHint] = useState(false);

@@ -34,6 +34,12 @@ export default async function TrackPage({
   const lessons = getLessonsByTrack(track);
   if (!meta || !lessons.length) notFound();
   const slugs = lessons.map((l) => l.slug);
+  const foundationLessons =
+    track === "sql" ? lessons.filter((l) => l.slug.startsWith("sql-ex-")) : [];
+  const warehouseLessons =
+    track === "sql" ? lessons.filter((l) => !l.slug.startsWith("sql-ex-")) : lessons;
+  const startSlug =
+    track === "sql" && labEntrySlug(track) ? labEntrySlug(track)! : lessons[0].slug;
 
   return (
     <div className="space-y-8">
@@ -68,7 +74,7 @@ export default async function TrackPage({
             <TrackProgressBar track={track} slugs={slugs} />
           </div>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link href={`/training/${track}/${lessons[0].slug}`} className="btn-primary">
+            <Link href={`/training/${track}/${startSlug}`} className="btn-primary">
               Start / continue →
             </Link>
             {labEntrySlug(track) ? (
@@ -84,11 +90,56 @@ export default async function TrackPage({
         <TrackSceneClient track={track} />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {lessons.map((lesson) => (
-          <LessonCard key={lesson.slug} lesson={lesson} />
-        ))}
-      </div>
+      {foundationLessons.length ? (
+        <section className="space-y-4" aria-labelledby="sql-foundations-heading">
+          <div>
+            <h2
+              id="sql-foundations-heading"
+              className="font-display text-xl font-bold text-[var(--ink-fg)]"
+            >
+              Foundations exercise spine
+            </h2>
+            <p className="mt-1 max-w-3xl text-sm text-[var(--muted)]">
+              Original Aurora drills clustered from common SQL exercise categories (Select through
+              DDL, dates, and injection-awareness). Not a copy of any third-party quiz bank. Run
+              SELECT samples in the local practice lab.
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {foundationLessons.map((lesson) => (
+              <LessonCard key={lesson.slug} lesson={lesson} />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {foundationLessons.length ? (
+        <section className="space-y-4" aria-labelledby="sql-warehouse-heading">
+          <div>
+            <h2
+              id="sql-warehouse-heading"
+              className="font-display text-xl font-bold text-[var(--ink-fg)]"
+            >
+              Analytics engineering
+            </h2>
+            <p className="mt-1 max-w-3xl text-sm text-[var(--muted)]">
+              Existing DE path — windows, incrementals, DQ, dimensional models, and the
+              staging→mart ETL builder. Catalog numbers stay put.
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {warehouseLessons.map((lesson) => (
+              <LessonCard key={lesson.slug} lesson={lesson} />
+            ))}
+          </div>
+        </section>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {lessons.map((lesson) => (
+            <LessonCard key={lesson.slug} lesson={lesson} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

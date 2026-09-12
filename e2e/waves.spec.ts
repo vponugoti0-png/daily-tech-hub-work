@@ -49,6 +49,7 @@ test.describe("W0–W4 training waves", () => {
     await expect(page.getByText(/Recommended order/i).first()).toBeVisible();
     await expect(page.getByRole("heading", { name: /DE joins & set-logic recap/i })).toBeVisible();
     await expect(page.getByRole("heading", { name: /Shared capstone checklist/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Foundations exercise spine" })).toBeVisible();
   });
 
   test("W1 SQL day-0 lesson shows TryIt and quiz", async ({ page }) => {

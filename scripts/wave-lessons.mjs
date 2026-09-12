@@ -45,6 +45,21 @@ export const WAVE_LESSONS = [
   { wave: "W5", track: "sql", file: "12-staging-mart-etl.md", slug: "sql-staging-mart-etl", title: "Build staging→mart ETL with DQ gates" },
   { wave: "W5", track: "databricks", file: "12-medallion-etl-builder.md", slug: "dbx-medallion-etl-builder", title: "Build medallion ETL — Autoloader to gold" },
   { wave: "W5", track: "snowflake", file: "12-warehouse-etl-builder.md", slug: "sf-warehouse-etl-builder", title: "Build warehouse ETL — COPY, Streams, Dynamic Tables" },
+  // W6 — SQL foundations exercise spine (W3-category map, original Aurora content)
+  { wave: "W6", track: "sql", file: "20-select-syntax.md", slug: "sql-ex-select-syntax", title: "SELECT, DISTINCT, and statement shape" },
+  { wave: "W6", track: "sql", file: "21-where-logic.md", slug: "sql-ex-where-logic", title: "WHERE, AND, OR, and NOT" },
+  { wave: "W6", track: "sql", file: "22-order-limit.md", slug: "sql-ex-order-limit", title: "ORDER BY and the LIMIT / TOP mindset" },
+  { wave: "W6", track: "sql", file: "23-dml-mutations.md", slug: "sql-ex-dml-mutations", title: "INSERT, UPDATE, and DELETE" },
+  { wave: "W6", track: "sql", file: "24-nulls.md", slug: "sql-ex-nulls", title: "NULL values and NULL functions" },
+  { wave: "W6", track: "sql", file: "25-aggregates.md", slug: "sql-ex-aggregates", title: "Aggregates, GROUP BY, and HAVING" },
+  { wave: "W6", track: "sql", file: "26-filters-patterns.md", slug: "sql-ex-filters-patterns", title: "LIKE, wildcards, IN, and BETWEEN" },
+  { wave: "W6", track: "sql", file: "27-joins-union.md", slug: "sql-ex-joins-union", title: "Aliases, joins, and UNION" },
+  { wave: "W6", track: "sql", file: "28-exists-case.md", slug: "sql-ex-exists-case", title: "EXISTS, ANY/ALL, and CASE" },
+  { wave: "W6", track: "sql", file: "29-warehouse-ctas.md", slug: "sql-ex-warehouse-ctas", title: "CTAS, INSERT SELECT, and procedure mindset" },
+  { wave: "W6", track: "sql", file: "30-ddl-constraints.md", slug: "sql-ex-ddl-constraints", title: "DDL, constraints, and indexes" },
+  { wave: "W6", track: "sql", file: "31-dates-operators.md", slug: "sql-ex-dates-operators", title: "Dates, operators, and comments" },
+  { wave: "W6", track: "sql", file: "32-safety-types.md", slug: "sql-ex-safety-types", title: "Injection awareness, hosting, and types" },
+  { wave: "W6", track: "sql", file: "33-foundations-capstone.md", slug: "sql-ex-foundations-capstone", title: "Foundations capstone — commerce quiz" },
 ];
 
 export const WAVE_FILES_BY_TRACK = WAVE_LESSONS.reduce((acc, l) => {
@@ -88,8 +103,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.error("Missing wave lesson files:\n" + missing.map((m) => `  - ${m}`).join("\n"));
     process.exit(1);
   }
-  console.log(`✓ ${WAVE_LESSONS.length} W1–W5 lessons present`);
-  for (const wave of ["W1", "W2", "W3", "W4", "W5"]) {
+  console.log(`✓ ${WAVE_LESSONS.length} W1–W6 lessons present`);
+  for (const wave of ["W1", "W2", "W3", "W4", "W5", "W6"]) {
     const rows = WAVE_LESSONS.filter((l) => l.wave === wave);
     console.log(`  ${wave}: ${rows.map((r) => r.slug).join(", ")}`);
   }

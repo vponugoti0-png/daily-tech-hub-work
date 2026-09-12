@@ -36,12 +36,12 @@ export const TRACKS: TrackMeta[] = [
     id: "sql",
     title: "SQL for Analytics Engineering",
     blurb:
-      "Joins recap, windows, incrementals, DQ gates, and a Build staging→mart ETL. Recommended order: CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL.",
+      "Foundations exercise spine (Select through DDL/safety) plus DE joins, windows, incrementals, DQ gates, and a Build staging→mart ETL. Practice SQL in the local lab on SELECT-heavy foundation lessons.",
     accent: "from-[#2EE59D] to-[#4CC9F0]",
     difficulty: "Beginner → Advanced",
-    estimatedHours: 8.5,
+    estimatedHours: 13.5,
     orderNote:
-      "Recommended reading order (catalog numbers stay put): CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL. Start with DE joins & set-logic recap if you want a true-zero warmup.",
+      "Foundations exercise spine first (catalog numbers stay put): Select/syntax → WHERE → ORDER/LIMIT → DML → NULLs → Aggregates → LIKE/IN/BETWEEN → Joins/UNION → EXISTS/CASE → CTAS mindset → DDL/constraints → Dates/operators → Safety → Capstone quiz. Then DE path: CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL. Local Practice lab lives on SELECT-heavy foundation lessons.",
   },
   {
     id: "databricks",
@@ -98,9 +98,9 @@ export const META_DE_OVERLAY = {
   eyebrow: "Meta DE path · optional overlay",
   title: "Suggested cert-style order (no new nav)",
   blurb:
-    "Use the tracks you already have. Overnight spine: W0 recommended-order overlay → W1–W4 waves → Practice labs (Databricks + Snowflake) → Build ETL on each tool track. Suggested cert-style order: Prompt Engineering → AI for DE → Python → SQL → Snowflake → Databricks → Git. A Forward-Deployed Engineer track is not on main yet — do not invent a new nav item for it.",
+    "Use the tracks you already have. Overnight spine: W0 recommended-order overlay → W1–W4 waves → Practice labs (Databricks + Snowflake + SQL foundations) → Build ETL on each tool track. Suggested cert-style order: Prompt Engineering → AI for DE → Python → SQL → Snowflake → Databricks → Git. A Forward-Deployed Engineer track is not on main yet — do not invent a new nav item for it.",
   sqlOrder:
-    "CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL",
+    "Foundations: Select/syntax → WHERE → ORDER/LIMIT → DML → NULLs → Aggregates → LIKE/IN/BETWEEN → Joins/UNION → EXISTS/CASE → CTAS → DDL → Dates → Safety → Capstone quiz. Then DE: CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL",
   pythonOrder:
     "contracts → config/secrets → typing → testing → writers → orchestration → perf → packaging → Build ETL",
   databricksOrder:

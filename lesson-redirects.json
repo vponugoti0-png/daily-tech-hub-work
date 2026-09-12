@@ -683,5 +683,145 @@
     "source": "/training/snowflake/warehouse-etl-builder",
     "destination": "/training/snowflake/sf-warehouse-etl-builder",
     "permanent": true
+  },
+  {
+    "source": "/training/sql/20-select-syntax",
+    "destination": "/training/sql/sql-ex-select-syntax",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/select-syntax",
+    "destination": "/training/sql/sql-ex-select-syntax",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/21-where-logic",
+    "destination": "/training/sql/sql-ex-where-logic",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/where-logic",
+    "destination": "/training/sql/sql-ex-where-logic",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/22-order-limit",
+    "destination": "/training/sql/sql-ex-order-limit",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/order-limit",
+    "destination": "/training/sql/sql-ex-order-limit",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/23-dml-mutations",
+    "destination": "/training/sql/sql-ex-dml-mutations",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/dml-mutations",
+    "destination": "/training/sql/sql-ex-dml-mutations",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/24-nulls",
+    "destination": "/training/sql/sql-ex-nulls",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/nulls",
+    "destination": "/training/sql/sql-ex-nulls",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/25-aggregates",
+    "destination": "/training/sql/sql-ex-aggregates",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/aggregates",
+    "destination": "/training/sql/sql-ex-aggregates",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/26-filters-patterns",
+    "destination": "/training/sql/sql-ex-filters-patterns",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/filters-patterns",
+    "destination": "/training/sql/sql-ex-filters-patterns",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/27-joins-union",
+    "destination": "/training/sql/sql-ex-joins-union",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/joins-union",
+    "destination": "/training/sql/sql-ex-joins-union",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/28-exists-case",
+    "destination": "/training/sql/sql-ex-exists-case",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/exists-case",
+    "destination": "/training/sql/sql-ex-exists-case",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/29-warehouse-ctas",
+    "destination": "/training/sql/sql-ex-warehouse-ctas",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/warehouse-ctas",
+    "destination": "/training/sql/sql-ex-warehouse-ctas",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/30-ddl-constraints",
+    "destination": "/training/sql/sql-ex-ddl-constraints",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/ddl-constraints",
+    "destination": "/training/sql/sql-ex-ddl-constraints",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/31-dates-operators",
+    "destination": "/training/sql/sql-ex-dates-operators",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/dates-operators",
+    "destination": "/training/sql/sql-ex-dates-operators",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/32-safety-types",
+    "destination": "/training/sql/sql-ex-safety-types",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/safety-types",
+    "destination": "/training/sql/sql-ex-safety-types",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/33-foundations-capstone",
+    "destination": "/training/sql/sql-ex-foundations-capstone",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/foundations-capstone",
+    "destination": "/training/sql/sql-ex-foundations-capstone",
+    "permanent": true
   }
 ]

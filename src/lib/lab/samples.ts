@@ -1,5 +1,6 @@
 export const DATABRICKS_LAB_ENTRY_SLUG = "dbx-workspace-cluster-basics";
 export const SNOWFLAKE_LAB_ENTRY_SLUG = "sf-day0-objects";
+export const SQL_LAB_ENTRY_SLUG = "sql-ex-select-syntax";
 
 export const DATABRICKS_LAB_SLUGS = [
   "dbx-workspace-cluster-basics",
@@ -17,8 +18,24 @@ export const SNOWFLAKE_LAB_SLUGS = [
   "sf-performance-cost",
 ] as const;
 
+/** SELECT-heavy SQL foundations lessons. DML / DDL / CTAS / safety stay read-only copy. */
+export const SQL_LAB_SLUGS = [
+  "sql-ex-select-syntax",
+  "sql-ex-where-logic",
+  "sql-ex-order-limit",
+  "sql-ex-nulls",
+  "sql-ex-aggregates",
+  "sql-ex-filters-patterns",
+  "sql-ex-joins-union",
+  "sql-ex-exists-case",
+  "sql-ex-dates-operators",
+  "sql-ex-foundations-capstone",
+] as const;
+
 export type DatabricksLabSlug = (typeof DATABRICKS_LAB_SLUGS)[number];
 export type SnowflakeLabSlug = (typeof SNOWFLAKE_LAB_SLUGS)[number];
+export type SqlLabSlug = (typeof SQL_LAB_SLUGS)[number];
+export type LabLessonSlug = DatabricksLabSlug | SnowflakeLabSlug | SqlLabSlug;
 
 /** stepIndex written after a successful local lab run (does not complete the lesson). */
 export const LAB_STEP_INDEX = 1;
@@ -38,13 +55,18 @@ export function isSnowflakeLabLesson(track: string, slug: string): boolean {
   return track === "snowflake" && (SNOWFLAKE_LAB_SLUGS as readonly string[]).includes(slug);
 }
 
+export function isSqlLabLesson(track: string, slug: string): boolean {
+  return track === "sql" && (SQL_LAB_SLUGS as readonly string[]).includes(slug);
+}
+
 export function isLabLesson(track: string, slug: string): boolean {
-  return isDatabricksLabLesson(track, slug) || isSnowflakeLabLesson(track, slug);
+  return isDatabricksLabLesson(track, slug) || isSnowflakeLabLesson(track, slug) || isSqlLabLesson(track, slug);
 }
 
 export function labEntrySlug(track: string): string | undefined {
   if (track === "databricks") return DATABRICKS_LAB_ENTRY_SLUG;
   if (track === "snowflake") return SNOWFLAKE_LAB_ENTRY_SLUG;
+  if (track === "sql") return SQL_LAB_ENTRY_SLUG;
   return undefined;
 }
 
@@ -170,9 +192,138 @@ GROUP BY region
 ORDER BY n DESC;`,
     note: "Filter early — same habit as reading a Snowflake query profile.",
   },
+  {
+    id: "sql-customers",
+    label: "List customers",
+    sql: `SELECT customer_id, company, city, region
+FROM lab_customers
+ORDER BY customer_id;`,
+    note: "Tiny commerce seed — not a live warehouse. SELECT only.",
+  },
+  {
+    id: "sql-distinct-regions",
+    label: "Distinct customer regions",
+    sql: `SELECT DISTINCT region
+FROM lab_customers
+ORDER BY region;`,
+    note: "DISTINCT collapses duplicate region labels before you group.",
+  },
+  {
+    id: "sql-where-paid",
+    label: "Paid orders in the west",
+    sql: `SELECT o.order_id, c.company, o.status, o.freight
+FROM lab_orders o
+JOIN lab_customers c ON c.customer_id = o.customer_id
+WHERE o.status = 'paid'
+  AND c.region = 'west'
+ORDER BY o.order_id;`,
+    note: "AND / OR / NOT belong in WHERE — keep filters off the SELECT list.",
+  },
+  {
+    id: "sql-order-limit",
+    label: "Highest freight (LIMIT mindset)",
+    sql: `SELECT order_id, freight, status
+FROM lab_orders
+WHERE freight IS NOT NULL
+ORDER BY freight DESC
+LIMIT 3;`,
+    note: "Warehouse TOP / LIMIT / FETCH FIRST are the same habit: sort, then cap.",
+  },
+  {
+    id: "sql-null-coalesce",
+    label: "Fill missing emails",
+    sql: `SELECT company, city, COALESCE(email, 'unspecified') AS email_filled
+FROM lab_customers
+ORDER BY company;`,
+    note: "COALESCE / IFNULL stand-ins — compare with IS NULL, never = NULL.",
+  },
+  {
+    id: "sql-aggregates",
+    label: "Revenue by region",
+    sql: `SELECT c.region,
+  COUNT(*) AS orders,
+  ROUND(SUM(i.quantity * i.unit_price), 2) AS revenue,
+  ROUND(AVG(i.quantity * i.unit_price), 2) AS avg_line
+FROM lab_orders o
+JOIN lab_customers c ON c.customer_id = o.customer_id
+JOIN lab_order_items i ON i.order_id = o.order_id
+WHERE o.status <> 'cancelled'
+GROUP BY c.region
+HAVING SUM(i.quantity * i.unit_price) >= 20
+ORDER BY revenue DESC;`,
+    note: "HAVING filters groups after aggregation. WHERE filters rows first.",
+  },
+  {
+    id: "sql-like-in",
+    label: "LIKE / IN / BETWEEN filters",
+    sql: `SELECT company, city, region
+FROM lab_customers
+WHERE (company LIKE '%Goods' OR company LIKE 'Lake%')
+  AND region IN ('east', 'midwest')
+ORDER BY company;`,
+    note: "% and _ are wildcard habits. Prefer IN over a pile of ORs.",
+  },
+  {
+    id: "sql-joins-union",
+    label: "Orders × customers (aliases)",
+    sql: `SELECT o.order_id, c.company AS buyer, o.ship_city, o.status
+FROM lab_orders o
+INNER JOIN lab_customers c ON c.customer_id = o.customer_id
+ORDER BY o.order_id;`,
+    note: "Alias tables (o, c) so join keys stay obvious. Grain is one order.",
+  },
+  {
+    id: "sql-self-join",
+    label: "Employee self-join",
+    sql: `SELECT e.full_name AS teammate, m.full_name AS manager
+FROM lab_employees e
+LEFT JOIN lab_employees m ON m.employee_id = e.reports_to
+ORDER BY e.employee_id;`,
+    note: "Self-join: same table twice. LEFT keeps the person with no manager.",
+  },
+  {
+    id: "sql-exists-case",
+    label: "EXISTS + CASE buckets",
+    sql: `SELECT c.company,
+  CASE
+    WHEN EXISTS (
+      SELECT 1 FROM lab_orders o
+      WHERE o.customer_id = c.customer_id AND o.status = 'paid'
+    ) THEN 'has_paid'
+    ELSE 'no_paid'
+  END AS paid_flag
+FROM lab_customers c
+ORDER BY c.company;`,
+    note: "EXISTS is a semi-join. CASE is a row-level label, not a group filter.",
+  },
+  {
+    id: "sql-dates",
+    label: "Date window + comments",
+    sql: `SELECT order_id, order_date, freight /* billed weight */
+FROM lab_orders
+WHERE order_date BETWEEN DATE '2026-09-02' AND DATE '2026-09-05'
+ORDER BY order_date, order_id;`,
+    note: "BETWEEN is inclusive. Inline comments are fine; leading -- would fail the SELECT guard.",
+  },
+  {
+    id: "sql-capstone",
+    label: "Paid revenue by category",
+    sql: `SELECT p.category,
+  COUNT(*) AS lines,
+  ROUND(SUM(i.quantity * i.unit_price), 2) AS revenue
+FROM lab_orders o
+JOIN lab_order_items i ON i.order_id = o.order_id
+JOIN lab_products p ON p.product_id = i.product_id
+JOIN lab_customers c ON c.customer_id = o.customer_id
+WHERE o.status = 'paid'
+  AND c.region <> 'south'
+GROUP BY p.category
+ORDER BY revenue DESC;`,
+    note: "Capstone-shaped grain: paid lines × product category. Still a local SELECT.",
+  },
 ];
 
-const BY_LESSON: Record<DatabricksLabSlug | SnowflakeLabSlug, string[]> = {
+const BY_LESSON: Record<LabLessonSlug, string[]> = {
   "dbx-workspace-cluster-basics": ["catalog-objects", "medallion-counts"],
   "dbx-lakehouse-fundamentals": ["medallion-counts", "silver-quality", "gold-revenue"],
   "dbx-delta-lake-basics": ["upsert-shape", "silver-quality", "medallion-counts"],
@@ -183,6 +334,16 @@ const BY_LESSON: Record<DatabricksLabSlug | SnowflakeLabSlug, string[]> = {
   "sf-time-travel-clones": ["sf-time-travel", "sf-orders-customers"],
   "sf-dynamic-tables": ["sf-daily-mart", "sf-orders-customers"],
   "sf-performance-cost": ["sf-prune-filter", "sf-warehouses", "sf-daily-mart"],
+  "sql-ex-select-syntax": ["sql-customers", "sql-distinct-regions"],
+  "sql-ex-where-logic": ["sql-where-paid", "sql-customers"],
+  "sql-ex-order-limit": ["sql-order-limit", "sql-customers"],
+  "sql-ex-nulls": ["sql-null-coalesce", "sql-customers"],
+  "sql-ex-aggregates": ["sql-aggregates", "sql-capstone"],
+  "sql-ex-filters-patterns": ["sql-like-in", "sql-dates"],
+  "sql-ex-joins-union": ["sql-joins-union", "sql-self-join"],
+  "sql-ex-exists-case": ["sql-exists-case", "sql-joins-union"],
+  "sql-ex-dates-operators": ["sql-dates", "sql-order-limit"],
+  "sql-ex-foundations-capstone": ["sql-capstone", "sql-aggregates", "sql-exists-case"],
 };
 
 export function samplesForLesson(slug: string): LabSample[] {
@@ -266,4 +427,52 @@ SELECT * FROM (VALUES
   (102, 2, DATE '2026-09-01', 40.00, 1),
   (102, 2, DATE '2026-09-01', 40.00, 2)
 ) AS t(order_id, customer_id, order_date, amount, as_of_version);
+
+CREATE OR REPLACE TABLE lab_customers AS
+SELECT * FROM (VALUES
+  (1, 'Aurora Market', 'Seattle', 'west', 'alex@aurora.example'),
+  (2, 'Harbor Goods', 'Boston', 'east', NULL),
+  (3, 'Prairie Supply', 'Denver', 'west', 'pat@prairie.example'),
+  (4, 'Gulf Cart', 'Houston', 'south', NULL),
+  (5, 'Lakeside Mart', 'Chicago', 'midwest', 'kim@lakeside.example')
+) AS t(customer_id, company, city, region, email);
+
+CREATE OR REPLACE TABLE lab_products AS
+SELECT * FROM (VALUES
+  (10, 'Aurora Blend', 'coffee', 12.50, 0),
+  (11, 'Mint Filter', 'coffee', 9.00, 0),
+  (12, 'Sky Roast', 'coffee', 18.00, 1),
+  (13, 'Coral Mug', 'merch', 14.00, 0),
+  (14, 'Sun Tote', 'merch', 22.00, 0)
+) AS t(product_id, product_name, category, unit_price, discontinued);
+
+CREATE OR REPLACE TABLE lab_employees AS
+SELECT * FROM (VALUES
+  (1, 'Dana Reyes', NULL, DATE '2020-03-01'),
+  (2, 'Omar Chen', 1, DATE '2022-06-15'),
+  (3, 'Riley Patel', 1, DATE '2023-01-10'),
+  (4, 'Sam Ortiz', 2, DATE '2024-04-01')
+) AS t(employee_id, full_name, reports_to, hire_date);
+
+CREATE OR REPLACE TABLE lab_orders AS
+SELECT * FROM (VALUES
+  (101, 1, DATE '2026-09-01', 'Seattle', 8.50, 'paid'),
+  (102, 2, DATE '2026-09-01', 'Boston', 12.00, 'paid'),
+  (103, 1, DATE '2026-09-02', 'Seattle', NULL, 'pending'),
+  (104, 3, DATE '2026-09-03', 'Denver', 6.25, 'paid'),
+  (105, 5, DATE '2026-09-04', 'Chicago', 15.00, 'cancelled'),
+  (106, 4, DATE '2026-09-05', 'Houston', 4.00, 'paid')
+) AS t(order_id, customer_id, order_date, ship_city, freight, status);
+
+CREATE OR REPLACE TABLE lab_order_items AS
+SELECT * FROM (VALUES
+  (101, 10, 2, 12.50),
+  (101, 13, 1, 14.00),
+  (102, 11, 4, 9.00),
+  (103, 12, 1, 18.00),
+  (104, 10, 3, 12.50),
+  (104, 14, 1, 22.00),
+  (105, 13, 2, 14.00),
+  (106, 11, 1, 9.00)
+) AS t(order_id, product_id, quantity, unit_price);
 `;

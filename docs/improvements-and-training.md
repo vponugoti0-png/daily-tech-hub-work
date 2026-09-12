@@ -87,12 +87,12 @@ Keep **one** zero-to-hero spine (W0–W4 live). Layer Practice labs, then **Buil
 ```
 W0 recommended-order overlay (SQL/Python/DBX/SF reading paths)
 W1 day-0 (SQL joins · DBX workspace · SF objects)
-  └─ Practice: Databricks + Snowflake local labs (DuckDB-WASM)
+  └─ Practice: Databricks + Snowflake + SQL foundations local labs (DuckDB-WASM)
 W2 ingestion (late-data · Autoloader · COPY/stages)
 W3 capstones (shared checklist + DT mart + medallion Job)
 W4 depth (SCD, DLT, clones, …)
       ↓
-Practice labs (DBX / SF) — no Python DuckDB/runtime lab (team hold)
+Practice labs (DBX / SF / SQL foundations) — no Python DuckDB/runtime lab (team hold)
       ↓
 Build ETL (one lesson per tool)
   · Python  python-etl-pipeline-builder
@@ -106,7 +106,7 @@ FDE track — not on main as of 2026-09-12; do not invent nav
 **Practice Lab dialects:**
 1. Databricks (shipped)  
 2. Snowflake (shipped)  
-3. Core SQL (P1 — not this wave)  
+3. Core SQL foundations (shipped — SELECT-heavy `sql-ex-*` lessons, Customers/Orders/Products seed)  
 4. Python (deferred — different runtime; **do not** build)
 
 In-app path chrome (no new top-level nav): META overlay on `/training`, `orderNote` on the four tool tracks, **Build ETL · four tool tracks** card.
