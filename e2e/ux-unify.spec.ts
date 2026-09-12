@@ -76,7 +76,11 @@ test.describe("UX unify — lesson layout, TryIt editor, lab chrome", () => {
     const editor = tryit.getByLabel("Try it editor");
     await expect(editor).toBeVisible();
     await expect(editor).toBeEditable();
-    await editor.fill("SELECT order_id, status FROM aurora_orders WHERE status = 'paid' LIMIT 3;");
+    const sample = "SELECT order_id, status FROM aurora_orders WHERE status = 'paid' LIMIT 3;";
+    await editor.click();
+    await editor.press("Control+a");
+    await editor.fill(sample);
+    await expect(editor).toHaveValue(sample);
 
     const run = tryit.getByRole("link", { name: /Run in local lab/i });
     await expect(run).toBeVisible();
