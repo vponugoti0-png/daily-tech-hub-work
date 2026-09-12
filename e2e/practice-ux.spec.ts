@@ -108,20 +108,21 @@ test.describe("Practice UX — layout, editor Run, Python lab", () => {
     const tryit = page.locator(".tryit").first();
     const editor = tryit.getByLabel("Try it editor");
     await expect(editor).toBeVisible();
-    const py = 'rows = [{"promo_code": None}, {"promo_code": "VIP"}]\nprint(sum(1 for r in rows if r["promo_code"] is None))';
-    await editor.evaluate((el, value) => {
+    await editor.click();
+    await editor.evaluate((el) => {
       const node = el as HTMLTextAreaElement;
-      const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value")?.set;
-      setter?.call(node, value);
-      node.dispatchEvent(new Event("input", { bubbles: true }));
-    }, py);
+      node.focus();
+      node.setSelectionRange(node.value.length, node.value.length);
+    });
+    await editor.pressSequentially('\nprint("aurora-lab-ok")', { delay: 15 });
+    await expect(editor).toHaveValue(/aurora-lab-ok/);
     await tryit.getByRole("button", { name: "Run in local lab" }).click();
 
     const lab = page.locator("#lab");
-    await expect(lab.getByLabel("Python to run")).toHaveValue(/promo_code is None/);
+    await expect(lab.getByLabel("Python to run")).toHaveValue(/aurora-lab-ok/);
     const result = lab.getByLabel("Python result");
     await expect(result).toBeVisible({ timeout: 90_000 });
-    await expect(result).toContainText("1");
+    await expect(result).toContainText("aurora-lab-ok");
   });
 
   test("copy-only pages never show a fake Run or Coming soon", async ({ page }) => {
