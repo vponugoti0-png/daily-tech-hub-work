@@ -2,7 +2,7 @@
 
 **Audience:** Learners, Product, content authors  
 **Date:** 2026-09-12  
-**Status:** In-app overlay + track `orderNote`s (no new top-level nav). FDE (#18), ETL builders (#19), and SQL exercise path (#22) are on `main`. Sibling exercise spines (Python + Databricks + Snowflake) follow SQL #22.
+**Status:** In-app overlay + track `orderNote`s (no new top-level nav). FDE (#18), ETL builders (#19), SQL exercise path (#22), and sibling spines (#23) are on `main`. Phase 3 richer lab datasets (catalogs / schemas / views / metric-style tables) follow #23.
 
 This page describes the **overnight path** shipped with the ETL-builder wave. Catalog `order` numbers stay as-is; recommended reading is overlay copy.
 
@@ -17,10 +17,14 @@ W3  Shared + tool capstones (orders → daily revenue mart)
 W4  Depth (SCD, DLT, clones, Cortex vs Snowpark, …)
       ↓
 Practice labs   Databricks + Snowflake + SQL local labs (DuckDB-WASM)
+                Same-origin seeds: tables, views, schemas, catalogs, metric-view–style tables.
                 Honest: not a live workspace / warehouse. Python = copyable examples only (no runtime lab).
       ↓
 Exercise paths  Clustered beginner lessons on SQL (#22) + DBX / SF / Python siblings.
                 DBX/SF TryIt → #lab on the existing DuckDB labs. Python stays copy-only.
+      ↓
+Richer datasets Catalogs / schemas / views / metric-style tables on the same DuckDB labs
+                (sample packs + short SQL / DBX / SF lessons). No remote catalogs, no CSP widen.
       ↓
 Build ETL       One builder lesson per major tool track (W5)
       ↓
@@ -52,7 +56,11 @@ Clustered beginner lessons (catalog `13`–`19`, negative `order` so they list f
 | Snowflake (W7) | Yes — TryIt → `#lab` on new + existing day-0 / architecture labs | SELECT on SAMPLE |
 | Python (W7) | **No** — copyable examples only (team hold) | None / dicts / rows |
 
-DBX/SF add more sample packs on the existing DuckDB seed (bronze/silver/gold + `sf_*`). No new top-level nav, no server grading, no CSP widen.
+DBX/SF add more sample packs on the existing DuckDB seed (bronze/silver/gold + `sf_*`). Phase 3 adds local schemas (`bronze` / `silver` / `gold` / `aurora` / `analytics` / `metrics`), views (`silver.ok_orders`, `aurora.paid_orders`, …), a `lab_catalog_objects` inventory, and metric-view–style tables (`metrics.orders_daily`, …). Optional in-memory catalogs via same-origin `ATTACH ':memory:'` (learner SQL still cannot ATTACH). No new top-level nav, no server grading, no CSP widen, no remote catalogs.
+
+## Richer lab datasets (after #23)
+
+Short lessons (`sql-catalog-views-metrics`, `dbx-catalog-views-metrics`, `sf-catalog-views-metrics`) plus extra sample packs on day-0 / DDL / gold / Unity Catalog labs. Guest progress still writes `stepIndex` only (does not complete the lesson). Seeds stay in-module (`src/lib/lab/seed.ts`) — small enough for `/public` if we ever split fixtures. **Python runtime lab stays out.**
 
 ## Where the path shows up in the app
 

@@ -75,6 +75,10 @@ export const WAVE_LESSONS = [
   { wave: "W7", track: "python", file: "17-datetimes-watermarks.md", slug: "python-datetimes-watermarks", title: "datetimes and incremental watermarks" },
   { wave: "W7", track: "python", file: "18-comprehensions-chunks.md", slug: "python-comprehensions-chunks", title: "Comprehensions and chunked extracts" },
   { wave: "W7", track: "python", file: "19-logging-not-print.md", slug: "python-logging-not-print", title: "logging — not print — for ETL jobs" },
+  // W8 — richer local lab datasets (catalogs / schemas / views / metric-style tables)
+  { wave: "W8", track: "sql", file: "20-catalog-views-metrics.md", slug: "sql-catalog-views-metrics", title: "Catalogs, schemas, views, and metric-style tables" },
+  { wave: "W8", track: "databricks", file: "20-catalog-views-metrics.md", slug: "dbx-catalog-views-metrics", title: "Catalogs, views, and metric views (local)" },
+  { wave: "W8", track: "snowflake", file: "20-catalog-views-metrics.md", slug: "sf-catalog-views-metrics", title: "Databases, views, and semantic metrics (local)" },
 ];
 
 export const WAVE_FILES_BY_TRACK = WAVE_LESSONS.reduce((acc, l) => {
@@ -118,8 +122,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.error("Missing wave lesson files:\n" + missing.map((m) => `  - ${m}`).join("\n"));
     process.exit(1);
   }
-  console.log(`✓ ${WAVE_LESSONS.length} W1–W7 lessons present`);
-  for (const wave of ["W1", "W2", "W3", "W4", "W5", "W6", "W7"]) {
+  console.log(`✓ ${WAVE_LESSONS.length} W1–W8 lessons present`);
+  for (const wave of ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8"]) {
     const rows = WAVE_LESSONS.filter((l) => l.wave === wave);
     console.log(`  ${wave}: ${rows.map((r) => r.slug).join(", ")}`);
   }

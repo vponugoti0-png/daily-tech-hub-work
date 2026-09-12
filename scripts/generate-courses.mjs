@@ -1519,7 +1519,7 @@ Port one pandas transform from the Python track into Snowpark or SQL with tests 
   ],
 };
 
-// wipe regenerable core files; keep W1–W7 wave markdown (see wave-lessons.mjs)
+// wipe regenerable core files; keep W1–W8 wave markdown (see wave-lessons.mjs)
 for (const track of Object.keys(courses)) {
   const dir = path.join(root, track);
   fs.mkdirSync(dir, { recursive: true });

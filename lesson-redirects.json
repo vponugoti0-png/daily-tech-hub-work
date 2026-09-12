@@ -963,5 +963,35 @@
     "source": "/training/python/logging-not-print",
     "destination": "/training/python/python-logging-not-print",
     "permanent": true
+  },
+  {
+    "source": "/training/sql/20-catalog-views-metrics",
+    "destination": "/training/sql/sql-catalog-views-metrics",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/catalog-views-metrics",
+    "destination": "/training/sql/sql-catalog-views-metrics",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/20-catalog-views-metrics",
+    "destination": "/training/databricks/dbx-catalog-views-metrics",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/catalog-views-metrics",
+    "destination": "/training/databricks/dbx-catalog-views-metrics",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/20-catalog-views-metrics",
+    "destination": "/training/snowflake/sf-catalog-views-metrics",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/catalog-views-metrics",
+    "destination": "/training/snowflake/sf-catalog-views-metrics",
+    "permanent": true
   }
 ]
