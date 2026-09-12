@@ -110,7 +110,8 @@ test.describe("Sibling exercise spines (DBX + SF + Python)", () => {
     await expect(page.locator("#lab")).toHaveCount(0);
     await expect(page.getByRole("link", { name: /Open local practice lab/i })).toHaveCount(0);
     await expect(page.locator(".tryit").first()).toBeVisible();
-    await expect(page.getByText(/Coming soon · live Run/i).first()).toBeVisible();
+    await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
+    await expect(page.getByText(/Copy to practice/i).first()).toBeVisible();
     await expect(page.locator("#quiz").getByRole("heading", { name: "Check your understanding" })).toBeVisible();
 
     await page.goto(PY_LOG);

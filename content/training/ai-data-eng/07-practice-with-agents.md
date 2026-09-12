@@ -126,7 +126,7 @@ Free-form “fix my pipeline” chat skips step 2. Function-as-example practice 
 
 ## Function-as-example cards
 
-Each practice card is a **function example**: name, arguments, when to use, and a copyable snippet. The **Try it** boxes (honest: no live Run yet) and cheat sheet above are those cards.
+Each practice card is a **function example**: name, arguments, when to use, and a copyable snippet. The **Try it** boxes (copy into a worksheet or AI chat) and cheat sheet above are those cards.
 
 | Name | Args | When to use |
 |------|------|-------------|

@@ -21,7 +21,7 @@ cheatSheet:
     note: "Same latest-per-order_id rule as the SQL / warehouse silver grain."
   - label: "run() — orchestrator door"
     code: "def run(start: str, end: str, dry_run: bool = False) -> dict:\n    raw = extract_orders(read_sql, start, end)\n    clean = transform_orders(raw)\n    metrics = {\"rows_in\": len(raw), \"rows_out\": len(clean), \"start\": start, \"end\": end}\n    if dry_run:\n        return {**metrics, \"status\": \"dry_run\"}\n    write_staging_then_publish(clean, start, end)\n    return {**metrics, \"status\": \"ok\"}"
-    note: "Copy into your repo. Live Run is not wired for Python (team hold — no DuckDB Python lab)."
+    note: "Copy into your repo or notebook and run it there — Python practice is copy-to-IDE on this track."
 quiz:
   - question: "Where should file/SQL I/O live in this ETL job?"
     options:

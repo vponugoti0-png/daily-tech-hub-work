@@ -51,7 +51,7 @@ quiz:
 
 This is the **Databricks ETL builder**: a copy-ready **Autoloader → bronze → silver → DQ → gold** path. It sits between [Autoloader / ingestion](/training/databricks/dbx-autoloader-ingestion) (landing only) and the [Job capstone](/training/databricks/dbx-capstone-medallion-job) (scorecard + graph). Shared story: **Orders → late events → daily revenue mart**.
 
-Local Practice Lab (DuckDB) is on **day-0 / lakehouse / warehouse** lessons — not a live workspace. These samples are honest copy cards (`Coming soon · live Run` on this page). Jump to [lakehouse fundamentals](/training/databricks/dbx-lakehouse-fundamentals#lab) to run SELECT-shaped gold.
+Local Practice Lab (DuckDB) is on **day-0 / lakehouse / warehouse** lessons — not a live workspace. These builder snippets are **copy-to-practice** cards for your Job notebook. Jump to [lakehouse fundamentals](/training/databricks/dbx-lakehouse-fundamentals#lab) to run SELECT-shaped gold.
 
 ## Job graph
 

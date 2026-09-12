@@ -48,6 +48,7 @@ export default async function LessonPage({
   const isFdeTrack = lesson.track === "forward-deployed";
   const trackTitle = getTrackMeta(lesson.track)?.title ?? lesson.track;
   const showLab = isLabLesson(lesson.track, lesson.slug);
+  const labHref = showLab ? "#lab" : undefined;
   const tryItLimit = isAiTrack || isFdeTrack ? 4 : 3;
   const tryItEntries = (lesson.cheatSheet ?? []).filter((e) => e.code).slice(0, tryItLimit);
   const tryItDialect =
@@ -173,8 +174,10 @@ export default async function LessonPage({
               ? "Copy into a Snowflake worksheet. Treat model output as untrusted."
               : "Paste into Claude, Copilot Chat, or Grok — then iterate."
             : isFdeTrack
-              ? "Copy into a ticket, runbook, or customer notes. No live cloud deploy on this page."
-              : "Copy into your warehouse, notebook, or repo. Live Run is not on this page.";
+              ? "Copy into a ticket, runbook, or customer notes."
+              : labHref
+                ? "Use Run in local lab, then Run sample — DuckDB on this page, not your cloud warehouse."
+                : "Copy into your IDE, warehouse worksheet, notebook, or AI chat.";
           return (
             <TryItBox
               key={`${entry.label}-${i}`}
@@ -182,7 +185,7 @@ export default async function LessonPage({
               code={code}
               dialect={dialect}
               hint={entry.note ?? defaultHint}
-              labHref={showLab ? "#lab" : undefined}
+              labHref={labHref}
             />
           );
         })}

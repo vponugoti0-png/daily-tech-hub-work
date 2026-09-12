@@ -4,7 +4,7 @@ import { useState } from "react";
 import { CopyButton } from "@/components/CopyButton";
 import { Sparkles } from "lucide-react";
 
-/** W3Schools/Codecademy-style try-it shell (sandbox runtime not live yet). */
+/** W3Schools/Codecademy-style try-it shell. Local DuckDB lab when labHref is set; otherwise copy-to-practice. */
 export function TryItBox({
   title = "Try it",
   code,
@@ -38,8 +38,8 @@ export function TryItBox({
               Local lab below
             </span>
           ) : (
-            <span className="rounded-full border border-[var(--sun)]/40 bg-[var(--sun)]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--sun)]">
-              Coming soon · live Run
+            <span className="rounded-full border border-[var(--mint)]/40 bg-[var(--mint)]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--mint)]">
+              Copy to practice
             </span>
           )}
         </div>
@@ -70,8 +70,8 @@ export function TryItBox({
       {showHint ? (
         <div className="border-t border-[var(--ink-border)] bg-[var(--panel-2)] px-3 py-2 text-xs text-[var(--muted)]">
           {labHref
-            ? "Copy if you want, or run a SQL sample in the local practice lab below."
-            : "Live Run isn't ready yet — copy this into Snowflake, Databricks, or your AI chat to practice."}
+            ? "Use Run in local lab to open the DuckDB practice surface on this page. Pick a SQL sample and run it in-browser — or copy the snippet into your editor first."
+            : "Copy this into your IDE, warehouse worksheet, notebook, or AI chat and run it there."}
           {hint ? <span className="mt-1 block font-semibold text-[var(--mint)]">{hint}</span> : null}
         </div>
       ) : (
@@ -84,8 +84,8 @@ export function TryItBox({
             </>
           ) : (
             <>
-              Tip: use <strong className="text-[var(--ink-fg)]">Copy</strong> — the green Play button
-              will arrive later (honest!).
+              Tip: use <strong className="text-[var(--ink-fg)]">Copy</strong>, then paste into your
+              IDE, warehouse worksheet, or AI chat.
             </>
           )}
         </div>

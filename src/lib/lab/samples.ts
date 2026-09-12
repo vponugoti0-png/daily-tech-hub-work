@@ -69,6 +69,7 @@ export function isSqlLabLesson(track: string, slug: string): boolean {
   return track === "sql" && (SQL_LAB_SLUGS as readonly string[]).includes(slug);
 }
 
+/** True when the lesson page should render LocalPracticeLab and TryIt labHref="#lab". */
 export function isLabLesson(track: string, slug: string): boolean {
   return (
     isDatabricksLabLesson(track, slug) ||

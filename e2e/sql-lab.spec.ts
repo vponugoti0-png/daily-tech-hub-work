@@ -17,7 +17,8 @@ test.describe("SQL local practice lab + exercise path", () => {
     await expect(page).toHaveURL(/\/training\/sql\/sql-select-filter-nulls#lab/);
     const lab = page.locator("#lab");
     await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
-    await expect(lab.getByText(/Coming soon: connect workspace/i)).toBeVisible();
+    await expect(lab.getByText(/Coming soon/i)).toHaveCount(0);
+    await expect(lab.getByText(/DuckDB · in-browser/i)).toBeVisible();
     await expect(lab.getByText(/Not a live warehouse/i)).toBeVisible();
   });
 
