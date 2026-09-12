@@ -204,7 +204,7 @@ Keep:
 - `/training/[track]`
 - `/shortcuts`, `/news`, `/releases`, `/dashboard`, `/search`
 
-Add (Phase 1, only after stamp):
+Add (Phase 1, user-stamped — §17):
 
 - `/paths` and `/paths/zero-to-hero` (and later `/paths/experienced`)
 - `/practice` (thin shell that loads a dialect + optional `?track=&slug=` to the same editor)
