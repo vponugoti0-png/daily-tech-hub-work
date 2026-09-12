@@ -59,6 +59,8 @@ test.describe("search form (hydration-resilient GET)", () => {
       page.getByRole("link", { name: /rebase|commit hygiene|bisect|branching|PR templates/i }).first(),
     ).toBeVisible();
     await expect(page.getByRole("link", { name: /Practice with agents & Cortex functions/i })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /Docs and tests with AI/i })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /Review AI-assisted changes/i })).toHaveCount(0);
   });
 
   test("native GET submit works without JavaScript handlers", async ({ browser }) => {

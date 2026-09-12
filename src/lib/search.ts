@@ -1,5 +1,8 @@
 import { getAllNews, getAllLessons, getAllReleases, getAllShortcuts } from "./content";
+import { TRACK_IDS } from "./tracks";
 import type { ContentKind, SearchResult } from "./types";
+
+const TRACK_QUERY = new Set<string>(TRACK_IDS);
 
 function hay(...parts: (string | string[] | undefined)[]): string {
   return parts
@@ -65,6 +68,11 @@ export function searchContent(query: string): SearchResult[] {
   }
 
   for (const l of getAllLessons()) {
+    // “git” / “sql” should list that track (and title hits), not every lesson
+    // that merely tags the topic — those feel like junk next to real Git lessons.
+    if (TRACK_QUERY.has(q) && l.track !== q && !l.title.toLowerCase().includes(q)) {
+      continue;
+    }
     const score = scoreHay(q, l.title, hay(l.topics, l.track), l.description, l.content);
     if (score == null) continue;
     ranked.push({
