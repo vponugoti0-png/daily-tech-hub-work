@@ -14,7 +14,8 @@ import { CopyButton } from "@/components/CopyButton";
 import { TryItBox } from "@/components/training/TryItBox";
 import { StepCards } from "@/components/training/StepCards";
 import { LocalPracticeLab } from "@/components/training/LocalPracticeLab";
-import { isLabLesson } from "@/lib/lab/samples";
+import { GitPlayLab } from "@/components/training/git/GitPlayLab";
+import { isGitPlayLesson, isLabLesson } from "@/lib/lab/samples";
 
 export function generateStaticParams() {
   return getAllLessons().map((l) => ({ track: l.track, slug: l.slug }));
@@ -48,6 +49,8 @@ export default async function LessonPage({
   const isFdeTrack = lesson.track === "forward-deployed";
   const trackTitle = getTrackMeta(lesson.track)?.title ?? lesson.track;
   const showLab = isLabLesson(lesson.track, lesson.slug);
+  const showGitLab = isGitPlayLesson(lesson.track, lesson.slug);
+  const showPractice = showLab || showGitLab;
   const tryItLimit = isAiTrack || isFdeTrack || lesson.track === "python" ? 4 : 3;
   const tryItEntries = (lesson.cheatSheet ?? []).filter((e) => e.code).slice(0, tryItLimit);
   const tryItDialect =
@@ -118,7 +121,7 @@ export default async function LessonPage({
 
         <StepCards
           steps={
-            showLab
+            showLab || showGitLab
               ? [
                   {
                     title: "Cheat sheet",
@@ -126,14 +129,17 @@ export default async function LessonPage({
                   },
                   {
                     title: "Try it",
-                    body:
-                      lesson.track === "python"
+                    body: showGitLab
+                      ? "Edit the sample, then Run it in Git Play Lab."
+                      : lesson.track === "python"
                         ? "Edit the sample, then Run it in the local (Pyodide) lab."
                         : "Edit the sample, then Run it in the local (DuckDB) lab.",
                   },
                   {
                     title: "Local lab",
-                    body: "Practice on this page — not a live cloud workspace or warehouse.",
+                    body: showGitLab
+                      ? "Practice on this page — in-browser graph + CLI, not a VM or GitHub."
+                      : "Practice on this page — not a live cloud workspace or warehouse.",
                   },
                 ]
               : isAiTrack
@@ -191,7 +197,9 @@ export default async function LessonPage({
               : "Paste into Claude, Copilot Chat, or Grok — then iterate."
             : isFdeTrack
               ? "Copy into a ticket, runbook, or customer notes. No live cloud deploy on this page."
-              : "Copy this example into your warehouse, notebook, or repo to practice.";
+              : showGitLab
+                ? "Run it in Git Play Lab below — in-browser graph only, no GitHub push."
+                : "Copy this example into your warehouse, notebook, or repo to practice.";
           return (
             <TryItBox
               key={`${entry.label}-${i}`}
@@ -199,11 +207,13 @@ export default async function LessonPage({
               code={code}
               dialect={dialect}
               hint={entry.note ?? defaultHint}
-              labHref={showLab ? "#lab" : undefined}
+              labHref={showPractice ? "#lab" : undefined}
+              labKind={showGitLab ? "git" : showLab ? "sql" : undefined}
             />
           );
         })}
 
+        {showGitLab ? <GitPlayLab track={lesson.track} slug={lesson.slug} /> : null}
         {showLab ? <LocalPracticeLab track={lesson.track} slug={lesson.slug} /> : null}
 
         <div className="mt-10">

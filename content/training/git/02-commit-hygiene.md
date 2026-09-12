@@ -11,7 +11,14 @@ objectives:
   - Write actionable commit messages
   - Use fixup/autosquash before review
   - Keep secrets out of history
-updatedAt: "2026-09-11"
+updatedAt: "2026-09-12"
+cheatSheet:
+  - label: "Atomic commit"
+    code: "git commit -m \"feat(marts): rebuild late-arriving orders for last 2 days\""
+    note: "Say what changed and why. Run it in Git Play Lab below."
+  - label: "Undo the last commit (relative ref)"
+    code: "git reset --hard HEAD~1"
+    note: "Drops a bad .env commit in this lab. Do not reset shared main at work."
 quiz:
   - question: "Which commit message best fits a dbt incremental change?"
     options:
@@ -31,6 +38,8 @@ quiz:
 ---
 
 # Commit hygiene for data PRs
+
+The **Git Play Lab** on this page starts on an atomic-commit level. Relative refs (`HEAD~1`) show up when you need to drop a leaked warehouse key.
 
 ## Message style
 

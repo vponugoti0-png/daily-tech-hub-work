@@ -12,14 +12,17 @@ export function TryItBox({
   hint,
   dialect,
   labHref,
+  labKind,
 }: {
   title?: string;
   code: string;
   hint?: string;
   dialect?: string;
-  /** In-lesson local lab (Databricks / Snowflake / SQL / Python). Not a top-level nav item. */
+  /** In-lesson local lab (Databricks / Snowflake / SQL / Python / Git). Not a top-level nav item. */
   labHref?: string;
+  labKind?: "sql" | "git";
 }) {
+  const gitLab = labKind === "git";
   const [draft, setDraft] = useState(code);
   const [showHint, setShowHint] = useState(false);
   const editorRef = useRef<HTMLTextAreaElement>(null);
@@ -55,7 +58,7 @@ export function TryItBox({
           ) : null}
           {labHref ? (
             <span className="rounded-full border border-[var(--coral)]/40 bg-[var(--coral)]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--coral)]">
-              Local lab below
+              {gitLab ? "Play Lab below" : "Local lab below"}
             </span>
           ) : (
             <span className="rounded-full border border-[var(--mint)]/40 bg-[var(--mint)]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--mint)]">
@@ -69,7 +72,7 @@ export function TryItBox({
               type="button"
               className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--coral)]/40 bg-[var(--coral)]/15 px-2.5 py-1 text-xs font-bold text-[var(--ink-fg)]"
               onClick={runInLab}
-              aria-label="Run in local lab"
+              aria-label={gitLab ? "Run in Git Play Lab" : "Run in local lab"}
             >
               <Play className="h-3.5 w-3.5" aria-hidden />
               Run
@@ -80,6 +83,7 @@ export function TryItBox({
             <a
               href={labHref}
               className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--ink-border)] bg-[var(--panel)] px-2.5 py-1 text-xs font-bold text-[var(--ink-fg)]"
+              aria-label={gitLab ? "Open Git Play Lab" : undefined}
             >
               How to practice
             </a>
@@ -116,7 +120,7 @@ export function TryItBox({
           {labHref ? (
             <>
               Tip: edit the sample, then <strong className="text-[var(--ink-fg)]">Run</strong> loads
-              it into the local practice lab on this page.
+              it into the {gitLab ? "Git Play Lab graph + CLI" : "local practice lab"} on this page.
             </>
           ) : (
             <>

@@ -11,7 +11,14 @@ objectives:
   - Run git bisect with a test command
   - Use blame to understand a line's origin
   - Combine with dbt/pytest smoke tests
-updatedAt: "2026-09-11"
+updatedAt: "2026-09-12"
+cheatSheet:
+  - label: "Cherry-pick a hotfix"
+    code: "git cherry-pick hotfix/grain"
+    note: "Land the unique_key fix on main without taking the SCD2 branch."
+  - label: "Walk back with relative refs"
+    code: "git log --oneline\ngit checkout HEAD~2"
+    note: "HEAD~ is first-parent. Blame/bisect still need a real repo — this lab is the graph."
 quiz:
   - question: "What does git bisect run pytest … do?"
     options:
@@ -31,6 +38,8 @@ quiz:
 ---
 
 # Bisect & blame for broken pipelines
+
+**Git Play Lab** here is cherry-pick + relative refs: land the grain hotfix on main after bisect found it. `git bisect run` still belongs in a real clone — this surface is the commit graph.
 
 ## Bisect with a script
 
