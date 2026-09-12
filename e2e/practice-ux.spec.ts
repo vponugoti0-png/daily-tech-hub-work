@@ -19,40 +19,42 @@ const CRAWL = [
 ];
 
 test.describe("Practice UX — layout, editor Run, Python lab", () => {
-  test("SQL lesson order is Cheat sheet → Try it → Local lab", async ({ page }) => {
+  test("SQL lesson order is Learn → Example → Practice → Quiz", async ({ page }) => {
     await page.goto(SQL_SELECT);
 
-    await expect(page.locator("#cheat-sheet").getByRole("heading", { name: "Cheat sheet" })).toBeVisible();
-    await expect(page.locator(".tryit").first()).toBeVisible();
-    await expect(page.locator("#cheat-sheet")).toBeVisible();
-    await expect(page.locator(".tryit").first()).toBeVisible();
+    await expect(page.locator("#learn")).toBeVisible();
+    await expect(page.locator("#example")).toBeVisible();
     await expect(page.locator("#lab")).toBeVisible();
+    await expect(page.locator("#quiz")).toBeVisible();
 
     const order = await page.evaluate(() => {
-      const cheat = document.getElementById("cheat-sheet");
-      const tryit = document.querySelector("article .tryit");
-      const lab = document.getElementById("lab");
-      if (!cheat || !tryit || !lab) return [];
-      const all = [cheat, tryit, lab];
-      return [...all]
+      const ids = ["learn", "example", "lab", "quiz"] as const;
+      const nodes = ids
+        .map((id) => document.getElementById(id))
+        .filter((el): el is HTMLElement => Boolean(el));
+      return [...nodes]
         .sort((a, b) => {
           const pos = a.compareDocumentPosition(b);
           if (pos & Node.DOCUMENT_POSITION_FOLLOWING) return -1;
           if (pos & Node.DOCUMENT_POSITION_PRECEDING) return 1;
           return 0;
         })
-        .map((el) => (el.id === "lab" ? "lab" : el.id === "cheat-sheet" ? "cheat" : "tryit"));
+        .map((el) => el.id);
     });
-    expect(order).toEqual(["cheat", "tryit", "lab"]);
+    expect(order).toEqual(["learn", "example", "lab", "quiz"]);
   });
 
-  test("SQL TryIt editor edit → Run loads the lab and returns rows", async ({ page }) => {
+  test("SQL Example Load fills the single #lab editor and Run returns rows", async ({ page }) => {
     test.setTimeout(90_000);
     await page.goto(SQL_SELECT);
 
-    const tryit = page.locator(".tryit").first();
-    const editor = tryit.getByLabel("Try it editor");
-    await expect(editor).toBeVisible();
+    const example = page.locator("#example");
+    await expect(example.locator("textarea")).toHaveCount(0);
+    await example.getByRole("button", { name: "Run in local lab" }).click();
+
+    const lab = page.locator("#lab");
+    await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
+    const editor = lab.getByLabel("SQL to run");
     await expect(editor).toHaveValue(/LIMIT 5/i);
     await editor.click();
     await editor.evaluate((el) => {
@@ -63,12 +65,7 @@ test.describe("Practice UX — layout, editor Run, Python lab", () => {
     });
     await page.keyboard.type("2");
     await expect(editor).toHaveValue(/LIMIT 2/i);
-
-    await tryit.getByRole("button", { name: "Run in local lab" }).click();
-
-    const lab = page.locator("#lab");
-    await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
-    await expect(lab.getByLabel("SQL to run")).toHaveValue(/LIMIT 2/i);
+    await lab.getByRole("button", { name: "Run SQL sample" }).click();
     const table = lab.getByRole("table", { name: "Query result" });
     await expect(table).toBeVisible({ timeout: 45_000 });
     await expect(table.locator("tbody tr").first()).toBeVisible();
@@ -100,12 +97,16 @@ test.describe("Practice UX — layout, editor Run, Python lab", () => {
     expect(lesson?.completed).not.toBe(true);
   });
 
-  test("Python TryIt Run syncs the editor into the lab", async ({ page }) => {
+  test("Python Example Load fills the single #lab editor", async ({ page }) => {
     test.setTimeout(120_000);
     await page.goto(PY_NONE);
 
-    const tryit = page.locator(".tryit").first();
-    const editor = tryit.getByLabel("Try it editor");
+    const example = page.locator("#example");
+    await expect(example.locator("textarea")).toHaveCount(0);
+    await example.getByRole("button", { name: "Run in local lab" }).click();
+
+    const lab = page.locator("#lab");
+    const editor = lab.getByLabel("Python to run");
     await expect(editor).toBeVisible();
     await editor.click();
     await editor.evaluate((el) => {
@@ -115,10 +116,7 @@ test.describe("Practice UX — layout, editor Run, Python lab", () => {
     });
     await editor.pressSequentially('\nprint("aurora-lab-ok")', { delay: 15 });
     await expect(editor).toHaveValue(/aurora-lab-ok/);
-    await tryit.getByRole("button", { name: "Run in local lab" }).click();
-
-    const lab = page.locator("#lab");
-    await expect(lab.getByLabel("Python to run")).toHaveValue(/aurora-lab-ok/);
+    await lab.getByRole("button", { name: "Run Python sample" }).click();
     const result = lab.getByLabel("Python result");
     await expect(result).toBeVisible({ timeout: 90_000 });
     await expect(result).toContainText("aurora-lab-ok");

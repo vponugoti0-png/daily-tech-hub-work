@@ -44,7 +44,7 @@ test.describe("W0–W4 training waves", () => {
     await expect(page.locator(".tryit").first()).toBeVisible();
     await expect(page.locator("#lab").getByRole("heading", { name: "Local practice lab" })).toBeVisible();
     await expect(page.getByText(/INNER vs LEFT vs ANTI/i).first()).toBeVisible();
-    await expect(page.getByText(/ANTI-join missing customers/i).first()).toBeVisible();
+    await expect(page.getByTestId("lesson-reference").getByText(/ANTI-join missing customers/i)).toBeVisible();
     const back = page.getByRole("link", { name: /Back to SQL for Analytics Engineering/i });
     await expect(back).toBeVisible();
     await back.click();
@@ -55,7 +55,7 @@ test.describe("W0–W4 training waves", () => {
     await page.goto(W1_DBX);
     await expectLessonChrome(page, /Workspace & cluster basics/i);
     await expect(page.getByText(/job cluster/i).first()).toBeVisible();
-    await expect(page.getByText(/day0-job-policy/i).first()).toBeVisible();
+    await expect(page.getByTestId("lesson-reference").getByText(/day0-job-policy/i)).toBeVisible();
   });
 
   test("W1 Snowflake day-0 lesson shows TryIt and quiz", async ({ page }) => {

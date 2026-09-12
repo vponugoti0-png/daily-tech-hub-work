@@ -63,22 +63,18 @@ test.describe("Wave B1 — AI Local practice", () => {
     expect(lesson?.completed).not.toBe(true);
   });
 
-  test("TryIt Run loads the editor into Local practice", async ({ page }) => {
+  test("Example Load fills Local practice without a second textarea", async ({ page }) => {
     await page.goto(PE_L1);
 
-    const tryit = page.locator(".tryit").first();
-    await expect(tryit.getByText(/Local practice below/i)).toBeVisible();
-    const editor = tryit.getByLabel("Try it editor");
-    await expect(editor).toBeVisible();
-    await editor.fill(
-      "Goal: Rewrite optimize this query.\nContext: Snowflake silver.orders, junior DE.\nConstraints: no secrets, Snowflake SQL only.\nOutput format: four-line prompt I can paste into a ticket.",
-    );
-    await tryit.getByRole("button", { name: "Run in local practice" }).click();
+    const example = page.locator("#example");
+    await expect(example.getByText(/Local practice below/i).first()).toBeVisible();
+    await expect(example.locator("textarea")).toHaveCount(0);
+    await example.getByRole("button", { name: "Run in local practice" }).click();
 
     const lab = page.locator("#lab");
-    await expect(lab.getByLabel("Prompt to check")).toHaveValue(/Goal: Rewrite/i);
+    await expect(lab.getByLabel("Prompt to check")).toHaveValue(/Goal:/i);
     await expect(lab.getByTestId("ai-rubric")).toBeVisible();
-    await expect(tryit.getByRole("button", { name: /^Copy$/i })).toBeVisible();
+    await expect(example.getByRole("button", { name: /^Copy$/i })).toBeVisible();
   });
 
   test("AI-for-DE agents lesson hosts Local practice; no Coming soon", async ({ page }) => {

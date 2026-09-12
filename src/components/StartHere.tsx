@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { Compass, Sparkles, Table2 } from "lucide-react";
+import { Compass, Table2 } from "lucide-react";
 import { JargonChips, JargonTip } from "@/components/JargonTip";
 import { FIRST_LESSON_HREF, PATHS_HREF } from "@/lib/learner-paths";
 
+/** Two doors only — PE lives on the Learn hub as an elective, not a home CTA. */
 const CHOICES = [
   {
     href: FIRST_LESSON_HREF,
@@ -19,14 +20,6 @@ const CHOICES = [
     icon: Compass,
     accent: "text-[var(--sky)] border-[var(--sky)]/35 hover:border-[var(--sky)]/60",
     chip: "Experienced",
-  },
-  {
-    href: "/training/prompt-engineering/pe-ask-better-questions",
-    title: "Prompt Engineering",
-    blurb: "Ask better questions — an L0 elective, not the DE front door.",
-    icon: Sparkles,
-    accent: "text-[var(--sun)] border-[var(--sun)]/35 hover:border-[var(--sun)]/60",
-    chip: "Elective",
   },
 ] as const;
 
@@ -55,7 +48,7 @@ export function StartHere() {
           </p>
         </div>
       </div>
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2" data-testid="start-here-doors">
         {CHOICES.map((c) => {
           const Icon = c.icon;
           return (

@@ -34,7 +34,7 @@ test.describe("Databricks local practice lab v1", () => {
     await expect(lab.getByRole("heading", { name: "Local practice lab" })).toBeVisible();
     await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
     await expect(page.locator(".tryit").first()).toBeVisible();
-    await expect(page.getByText(/day0-job-policy/i).first()).toBeVisible();
+    await expect(page.getByTestId("lesson-reference").getByText(/day0-job-policy/i)).toBeVisible();
 
     await lab.getByRole("button", { name: "Run SQL sample" }).click();
 
