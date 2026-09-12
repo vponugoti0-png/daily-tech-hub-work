@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getLessonsByTrack } from "@/lib/content";
 import { getTrackMeta, TRACK_IDS } from "@/lib/tracks";
-import { DATABRICKS_LAB_ENTRY_SLUG } from "@/lib/lab/samples";
+import { labEntrySlug } from "@/lib/lab/samples";
 import { LessonCard } from "@/components/LessonCard";
 import { TrackProgressBar } from "@/components/training/ProgressBar";
 import { ArrowLeft } from "lucide-react";
@@ -71,9 +71,9 @@ export default async function TrackPage({
             <Link href={`/training/${track}/${lessons[0].slug}`} className="btn-primary">
               Start / continue →
             </Link>
-            {track === "databricks" ? (
+            {labEntrySlug(track) ? (
               <Link
-                href={`/training/databricks/${DATABRICKS_LAB_ENTRY_SLUG}#lab`}
+                href={`/training/${track}/${labEntrySlug(track)}#lab`}
                 className="btn-ghost"
               >
                 Practice · local lab →

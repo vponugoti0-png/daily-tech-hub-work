@@ -82,7 +82,7 @@ npm run seed:demo   # prints credentials
 | Snowflake | 7 | Architecture, Time Travel, Streams/Tasks, Dynamic Tables, cost, RBAC, Snowpark |
 | Git (bonus) | 3 | Rebase, hygiene, bisect |
 
-Lessons include objectives, try-it shells, a **Databricks local practice lab** (DuckDB-WASM in-browser SQL samples — not a live workspace), quizzes, outlines (mobile disclosure), and progress (localStorage + SQLite when signed in).
+Lessons include objectives, try-it shells, **Databricks + Snowflake local practice labs** (DuckDB-WASM in-browser SQL samples — not live workspaces), quizzes, outlines (mobile disclosure), and progress (localStorage + SQLite when signed in).
 
 ### Shortcuts
 

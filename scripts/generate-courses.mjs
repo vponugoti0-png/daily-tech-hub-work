@@ -1233,6 +1233,13 @@ Draft a policy: which workloads use Jobs clusters vs SQL warehouses.
         "Size warehouses for workload types",
         "Organize databases/schemas for medallion-like layers",
       ],
+      cheatSheet: [
+        {
+          label: "Account map",
+          code: "SELECT database, schema, object_name, object_type\nFROM sf_account_objects\nORDER BY database, schema, object_name;",
+          note: "Run this in the local practice lab — not a live Snowflake account.",
+        },
+      ],
       quiz: [
         {
           question: "Virtual warehouses primarily provide…",
@@ -1353,6 +1360,13 @@ CREATE TASK load_orders WAREHOUSE = etl_wh SCHEDULE = '5 MINUTE' AS
         "Declare Dynamic Tables with lag targets",
         "Understand incremental vs full refresh",
         "Monitor freshness",
+      ],
+      cheatSheet: [
+        {
+          label: "Daily mart grain",
+          code: "SELECT o.order_date, c.region, COUNT(*) AS orders, ROUND(SUM(o.amount), 2) AS revenue\nFROM sf_orders o\nJOIN sf_customers c ON c.customer_id = o.customer_id\nGROUP BY o.order_date, c.region\nORDER BY o.order_date, c.region;",
+          note: "Mart-shaped SELECT you can run in the local practice lab.",
+        },
       ],
       quiz: [
         {

@@ -87,8 +87,9 @@ export function LocalPracticeLab({ track, slug }: { track: string; slug: string 
 
       <div className="space-y-3 px-3 py-3">
         <p className="text-sm text-[var(--muted)]">
-          Not a live Databricks workspace. SQL samples run locally in your browser — no cloud
-          credentials, no shell.
+          {track === "snowflake"
+            ? "Not a live Snowflake account. SQL samples run locally in your browser — no cloud credentials, no shell."
+            : "Not a live Databricks workspace. SQL samples run locally in your browser — no cloud credentials, no shell."}
         </p>
 
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
