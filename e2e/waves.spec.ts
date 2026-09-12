@@ -65,7 +65,7 @@ test.describe("W0–W4 training waves", () => {
     await page.goto(W1_DBX);
     await expectLessonChrome(page, /Workspace & cluster basics/i);
     await expect(page.getByText(/job cluster/i).first()).toBeVisible();
-    await expect(page.getByText(/day0-job-policy/i)).toBeVisible();
+    await expect(page.getByText(/day0-job-policy/i).first()).toBeVisible();
   });
 
   test("W1 Snowflake day-0 lesson shows TryIt and quiz", async ({ page }) => {
