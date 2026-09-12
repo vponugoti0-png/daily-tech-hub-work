@@ -3,7 +3,8 @@
 **Audience:** Product, UX, Frontend, Backend, Security, Content, QA  
 **Date:** 2026-09-12  
 **Status:** Product + user review. **Not stamped.**  
-**Scope of this PR:** this document (and a pointer from [`docs/improvements-and-training.md`](./improvements-and-training.md)). No app code.
+**Scope of this PR:** this document (and a pointer from [`docs/improvements-and-training.md`](./improvements-and-training.md)). No app code.  
+**Addendum:** §7 and §11 specify a **W3Schools Tryit-shaped** practice desk — in-line with seeded databases, not a second chrome. §8 is Backend (keep sessions / progress; no new Tryit APIs).
 
 ---
 
@@ -25,11 +26,11 @@ Tactical inventories in [`docs/training-paths.md`](./training-paths.md) and [`do
 4. [Information architecture](#4-information-architecture)
 5. [Career paths](#5-career-paths)
 6. [Course model](#6-course-model)
-7. [Unified Practice Editor](#7-unified-practice-editor)
+7. [Unified Practice Editor](#7-unified-practice-editor) — [Tryit shell](#71-one-shell-tryit-shaped) · [in line with the DB](#73-practice-in-line-with-the-database-mandate)
 8. [Backend — auth, progress, sandboxes](#8-backend--auth-progress-sandboxes)
 9. [UI cleanup backlog](#9-ui-cleanup-backlog)
 10. [Phased rollout](#10-phased-rollout)
-11. [Competitive review](#11-competitive-review)
+11. [Competitive review](#11-competitive-review) — [Tryit teardown](#113-w3schools-tryit-ux-teardown-what-feel-similar-means) · [copy vs not](#114-what-to-copy-vs-what-not-to-copy-explicit)
 12. [Risks](#12-risks)
 13. [Open questions for Product / UX](#13-open-questions-for-product--ux)
 14. [Acceptance of this doc](#14-acceptance-of-this-doc)
@@ -74,7 +75,7 @@ Result: the learner sees Lesson 13 as “SELECT, filters, NULLs” and Lesson 01
 | Git Play Lab | `GitPlayLab` | In-memory git engine + graph | Levels, CLI, goal tree |
 | PE / AI / FDE | TryItBox + StepCards | Clipboard | “Paste into Claude / ticket” |
 
-A lesson can show **cheat-sheet cards**, then **up to four TryItBoxes**, then a **lab**, then the **markdown body**, then a **quiz**. The Learn → Practice loop is inverted: chrome first, teaching text last. Different tracks advertise different honesty labels (“Local practice lab”, “Play Lab”, “Copy to practice”) which is correct — and still feels like four apps.
+A lesson can show **cheat-sheet cards**, then **up to four TryItBoxes**, then a **lab**, then the **markdown body**, then a **quiz**. The Learn → Practice loop is inverted: chrome first, teaching text last. Different tracks advertise different honesty labels (“Local practice lab”, “Play Lab”, “Copy to practice”) which is correct — and still feels like four apps. Worse: many SQL / Databricks / Snowflake **depth** lessons have no lab at all (copy-to-warehouse only). Practice is not *in line with the database* — it is a bolted-on widget on a subset of slugs. The target is the W3Schools Tryit feeling: **one editor, one Run, one result table, schema beside you, reset when you break it** — on **every** DB lesson, against seeded tables. See §7.3 and §11.3.
 
 ### 2.5 Shortcuts sit beside Training with no contract
 
@@ -166,7 +167,7 @@ Canonical scroll order after Phase 2:
 1. Title, level, duration, path crumb (`Zero→Hero · L1 SQL · 3/12`)
 2. **Learn** — markdown teaching (move *above* the widgets)
 3. **Example** — one worked snippet (today’s first TryIt / cheat-sheet entry)
-4. **Practice** — Unified Practice Editor (`#lab`)
+4. **Practice** — Unified Practice Editor (`#lab`) — Tryit-shaped, **in line with the seeded DB** on every SQL / DBX / SF lesson (§7.3)
 5. **Hint / Tests** — hint ladder; Check when B2 exists (omit until then — no “Coming soon”)
 6. **Project** — only if the lesson is a builder/capstone; else next-lesson CTA
 7. **Quiz + Complete**
@@ -332,54 +333,145 @@ Current (`TrainingLesson` in `src/lib/types.ts`): `slug`, `track`, `title`, `des
 
 ## 7. Unified Practice Editor
 
-### 7.1 One shell
+**North-star feel:** W3Schools SQL Tryit — *edit the statement, hit Run, see a table, peek the sample DB, restore when you wreck it* — but on the **same lesson page**, against **Aurora’s seeded DE databases**, with Aurora Play Lab chrome. Not a new-tab Tryit. Not a second “Local practice lab” card under a pile of TryItBoxes.
+
+### 7.1 One shell (Tryit-shaped)
+
+Desktop (SQL / DBX / SF — this is the default mental model):
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  Problem (prompt + dialect badge + Restore)                 │
-├────────────────────────────┬────────────────────────────────┤
-│  Editor                    │  Results (table / stdout /     │
-│  (textarea v1; Monaco later│   graph / checklist)           │
-│   is P2, not a Phase 1 req)│  Hints (collapsed)             │
-└────────────────────────────┴────────────────────────────────┘
++------------------------------------------------------------------+
+| Problem (2-4 lines)  dialect badge   [Restore DB]  [Hint]        |
++---------------------------+--------------------------------------+
+| Your database (schema)    | SQL Statement (editable)    [ Run ]  |
+|  tables / views           |                                      |
+|  columns + types          | Result                               |
+|  (click to peek columns)  |  table / row count / error / empty   |
++---------------------------+--------------------------------------+
+  Prev lesson                              Next lesson (#lab)
 ```
 
-Mobile: stack **Problem → Editor → Run → Results → Hints**. 44px Run. Same tokens as Aurora Play Lab. Honest subtitle per dialect (see below).
+That is the W3Schools SQL Tryit map, folded **into** the lesson instead of `trysql.asp` in a new window:
 
-This replaces the *visual* split between TryItBox “Run into lab” and LocalPracticeLab / GitPlayLab / checklist. Internally, adapters still call DuckDB, Pyodide, the git engine, or a checklist reducer. **One layout component.** Lesson pages mount it at `#lab`. `/practice` mounts the same component with a dialect picker.
+| W3Schools SQL Tryit | Aurora Unified Editor |
+|---------------------|------------------------|
+| “SQL Statement” textarea | Same — one editor, one statement (or a short script) |
+| **Run SQL »** | **Run** — the only primary action. 44px. Coral. |
+| Result table (or “Click Run SQL…”) | Result pane. Honest empty state **before** first run. |
+| “Your Database” table list | Schema sidebar from `schemaForTrack` / seeds |
+| **Restore Database** | **Restore sample DB** (already exists on DuckDB labs) |
+| Tutorial ❮ Previous / Next ❯ | Lesson prev/next, landing on `#lab` when the neighbor has a lab |
+| Filename-preloaded statement | Lesson sample pack (one default + optional extras) |
 
-### 7.2 Dialects (v1 adapters)
+HTML Tryit (two-pane code | iframe, orientation toggle, Spaces upsell) is the **sibling** pattern for Python: editor | stdout. Do not clone the Spaces CTA, ad rail, or “Get your own SQL server.”
 
-| Dialect | Label (honest) | Runtime | Source of problems |
-|---------|----------------|---------|-------------------|
-| `sql` | Local SQL lab · DuckDB (not your warehouse) | DuckDB-WASM | SQL exercise + catalog samples |
-| `sql-dbx` | DBX-flavored SQL · local DuckDB (not a cluster) | DuckDB-WASM | Existing DBX samples; Spark-ish keywords mapped or rejected honestly |
-| `sql-sf` | Snowflake-flavored SQL · local DuckDB (not a warehouse) | DuckDB-WASM | Existing SF samples; Cortex/Snowpark stay copy-only |
-| `python` | Local Python lab · Pyodide (not a cloud kernel) | Pyodide | Exercise-path samples |
-| `git` | Git Play Lab · in-browser graph (not GitHub) | Existing engine | `levels.ts` |
-| `checklist` | Checklist practice · copy/check (not a live model) | Client state | PE / AI / FDE items |
+Mobile: stack **Problem → Schema (collapsed) → Editor → Run → Results**. Same tokens. Textarea v1; Monaco is P2, not a Phase 1 requirement.
 
-TryItBox becomes the **Example** (or a “Load into Practice” button). It should not remain a second editor.
+This **replaces** TryItBox-as-second-editor + LocalPracticeLab + (for git) a different frame. One layout component. Lesson mounts it at `#lab`. `/practice` mounts the same component with a dialect picker. **Load into Practice** on an Example card may fill the editor; it must not open a second textarea.
 
-### 7.3 In-browser vs future VM / cloud (held)
+### 7.2 The W3Schools loop we are stealing
+
+Public Tryit / SQL Tryit behavior we treat as the contract ([SQL Tryit](https://www.w3schools.com/sql/trysql.asp?filename=trysql_editor), [SQL Editor page](https://www.w3schools.com/SQL/sql_editor.asp), [HTML Tryit](https://www.w3schools.com/tryit/tryit.asp?filename=tryhtml_default), [SQL SELECT chapter](https://www.w3schools.com/sql/sql_select.asp), [SQL Exercises index](https://www.w3schools.com/sql/sql_exercises.asp)):
+
+1. **Problem / text is short and above the fold of the editor.** W3Schools puts the *why* on the tutorial page (“SELECT picks columns… Demo Database: here are five Customer rows”) and the *do* in Tryit. Aurora keeps both on one page, but the editor must still look like the *do*: a preloaded statement that already runs, plus a one-line task (“Return paid `aurora_orders` newest first”).
+2. **Editable code is the center.** Not a read-only snippet with Copy as the hero. The learner changes a WHERE and hits Run.
+3. **One Run control.** Instant. Result replaces the empty pane. Errors are in the result pane, not a toast across the header.
+4. **Results are a table** (SQL) or a result window (HTML/Python). Row count visible. “No rows” is a valid result, not a failure of the product.
+5. **The database is visible.** W3Schools: Customers, Orders, Products… on the right. Aurora: `aurora_orders`, `bronze.orders`, `analytics.paid_orders` — **the same names the lesson text uses**.
+6. **Reset is first-class.** After an UPDATE/DELETE (or a confused session), Restore Database returns the seed. Aurora already has this on DuckDB; it must sit next to Run, not in a footnote.
+7. **Next / prev exercises.** W3Schools tutorial pages wear ❮ Previous / Next ❯ at top and bottom; each chapter’s “Try it Yourself” opens a *preloaded* Tryit for that topic. Aurora: prev/next **lessons** (already on the page) plus, inside a lesson, next/prev **samples** (today’s `<select>` of lab samples). Dense: finish Run, hit Next sample, then Next lesson. Do not invent a parallel “exercise site” like W3Schools’ fill-in-the-blank [SQL Exercises](https://www.w3schools.com/sql/sql_exercises.asp) — that is a quiz product. Our quiz stays the quiz.
+8. **Empty state before first run.** W3Schools: “Click Run SQL to execute the SQL statement above.” Copy that honesty. Do not auto-run on load (surprise CPU + WASM boot). Optional: a faint “Press Run to query the sample DB” in the result pane.
+
+Pass/fail: W3Schools Tryit does **not** grade you — it shows the table. Their *Exercises* product grades fill-in-the-blanks. Aurora v1 matches **Tryit** (run → see). Clear pass/fail is **B2 Check** when stamped — omit until then. Until B2, “clear” means: the result table either matches the problem’s implied shape or it doesn’t, and the hint names the grain/filter — not a green XP badge.
+
+### 7.3 Practice in line with the database (mandate)
+
+**Definition:** every SQL, Databricks, and Snowflake **lesson** ships the Unified Editor on the same page, pointed at the **seeded sample DB for that dialect**, using the same table/view names the markdown teaches. Practice is not a hub CTA, not a different layout, not “open the lab on lesson 13.”
+
+| Today (`main`) | Target |
+|----------------|--------|
+| Lab allowlists: SQL ~9/21 slugs, DBX ~14/21, SF ~13/21 (`src/lib/lab/samples.ts`) | **Every** slug on those three tracks mounts `#lab` |
+| TryItBox (copy or dispatch) **plus** LocalPracticeLab | **One** Tryit-shaped editor |
+| Depth lessons (windows, SCD, Autoloader, COPY, Streams, Cortex…) = copy-to-warehouse | Prefer a **seeded stand-in query** that teaches the shape; copy-only only when DuckDB cannot represent the idea at all (see §7.5) |
+| Catalogs/views/metrics live on `*-catalog-views-metrics` plus some day-0 labs | Those objects are **always in the sidebar** for that dialect, so any lesson can `SELECT` them |
+
+**In line with the DB** also means the lesson text shows a **demo slice** (W3Schools “Demo Database” table of five Customer rows). Phase 2 content: one small markdown table of seed rows next to the problem, then Run against the real seed. Do not invent a second fake dataset in prose.
+
+Python **where it fits:** exercise-path lessons already have Pyodide. Keep the same shell (problem | editor | Run | stdout). “Schema” = names in the sample (`orders`, `row`, `path`). Depth Python (contracts, packaging, Spark-testing) stays copy-to-repo unless we later seed a tiny in-memory table the script can print — not a Phase 1 build. Git / PE / FDE are not “in line with the DB”; they keep their adapters and must not grow a fake SQL pane.
+
+### 7.4 Dialects (v1 adapters)
+
+| Dialect | Label (honest) | Runtime | Seeded world | Tryit mapping |
+|---------|----------------|---------|--------------|---------------|
+| `sql` | Local SQL lab · DuckDB (not your warehouse) | DuckDB-WASM | `aurora_*` + `aurora.*` views + `metrics.*` | Classic Tryit: SELECT/DML against one sample shop |
+| `sql-dbx` | DBX-flavored SQL · local DuckDB (not a cluster) | DuckDB-WASM | `bronze` / `silver` / `gold` + `workspace_objects` + `metrics.orders_daily` | Same loop; Spark-ish names (`bronze.orders`, LIMIT). Reject or no-op cluster verbs honestly |
+| `sql-sf` | Snowflake-flavored SQL · local DuckDB (not a warehouse) | DuckDB-WASM | `sf_*` + `analytics.*` + `sf_account_objects` / `sf_warehouses` + `metrics.sf_daily_revenue` | Same loop; warehouse object names. Cortex / Snowpark / COPY stay stand-in or copy (§7.5) |
+| `python` | Local Python lab · Pyodide (not a cloud kernel) | Pyodide | In-memory rows / stdlib files | HTML-Tryit sibling: editor \| stdout |
+| `git` | Git Play Lab · in-browser graph (not GitHub) | Existing engine | Goal tree | Not a SQL Tryit |
+| `checklist` | Checklist practice · copy/check (not a live model) | Client state | PE / AI / FDE items | Not a SQL Tryit |
+
+TryItBox becomes the **Example** (“Load into Practice”) or disappears when the editor already has that statement.
+
+**Flavor, not a second engine.** DBX and SF are **vocab + seed overlays** on DuckDB. We do not emulate Spark or a warehouse. If the learner types `COPY INTO` or `STREAM`, the result pane says that in plain English and offers the closest SELECT stand-in — never a fake success.
+
+### 7.5 Seeded databases we already have (use them)
+
+The schema sidebar already mirrors `src/lib/lab/seed.ts` via `src/lib/lab/schema.ts`. Phase 1–2 must **surface this as “Your database”** (W3Schools words, Aurora names) and stop treating catalogs/views/metrics as a bonus lesson only.
+
+| Dialect | Tables / views already seeded (non-exhaustive) | Use in Tryit |
+|---------|-----------------------------------------------|--------------|
+| SQL | `aurora_orders`, `aurora_customers`, `aurora_order_items`, `aurora_products`; schema `aurora.orders`, view `aurora.paid_orders`; `metrics.aurora_region_revenue`; `lab_catalog_objects` | L1 SELECT → joins → catalog lesson. Every SQL depth lesson (windows, DQ, incrementals) runs **here**, not against a blank editor. |
+| Databricks | `bronze_orders` / `silver_orders` / `gold_daily_orders`; `bronze.orders`, `silver.orders`, view `silver.ok_orders`, `gold.orders_daily`; `workspace_objects`; `metrics.orders_daily` | Exercise path + lakehouse + Unity-shaped names. Autoloader / Jobs / DLT lessons get a **SELECT-shaped stand-in** on bronze/silver (e.g. “this is the grain Autoloader would land”) — not a live Autoloader. |
+| Snowflake | `sf_orders`, `sf_customers`, `sf_orders_history` (version column as Time Travel stand-in); `sf_account_objects`, `sf_warehouses`; `analytics.orders`, view `analytics.paid_orders`; `metrics.sf_daily_revenue` | Day-0 objects + SELECT path. COPY / Streams / Dynamic Tables / Cortex: stand-in SELECT or copy-to-trial — **no** pretend `SNOWFLAKE.CORTEX` result. |
+
+`lab_catalog_objects` is shared. The catalog/views/metrics lessons stay as *teaching* those objects; they are not the only place the objects exist.
+
+**Copy-only exceptions (narrow):** Snowpark Python, live Cortex, real COPY into a stage, real Autoloader file-arrival, DLT pipeline deploy, liquid clustering maintenance. Those keep Copy + an optional **read-only** demo query on the seed (“this would be the gold table after the job”). Do not show an empty editor that cannot run. Do not show “Coming soon lab.”
+
+### 7.6 Next / prev / reset
+
+| Control | Behavior |
+|---------|----------|
+| **Run** | Execute current editor text. SQL → table. Python → stdout. Git → graph. |
+| **Restore sample DB** | Re-seed DuckDB. Clear result. Keep editor text (W3Schools restores data, not the statement). Python: “Reset sample” reloads the starter script. Git: existing reset. |
+| **Reset statement** | Secondary. Reload the active sample’s starter SQL/Python (W3Schools has no exact twin; we add it so “I deleted the SELECT” is recoverable). |
+| **Next / prev sample** | Cycle `samplesForLesson` (replace the `<select>`-only UI with explicit Next exercise / Prev). |
+| **Next / prev lesson** | Existing lesson nav. If the neighbor has a lab, href includes `#lab` so the Tryit stays in the eyeline. |
+
+Do not add W3Schools-style **Show Answer** on the Tryit itself in Phase 1 (that is their Exercises product). Hint ladder stays. B2 Check later.
+
+### 7.7 In-browser vs future VM / cloud (held)
 
 | Stay in-browser (this plan) | Held — Wave B / later | Never (unless a new stamped doc) |
 |-----------------------------|------------------------|----------------------------------|
-| DuckDB-WASM SQL | B2 Check / asserts | Live Databricks / Snowflake login |
+| DuckDB-WASM SQL (the Tryit engine) | B2 Check / asserts (pass/fail on top of Tryit) | Live Databricks / Snowflake login |
 | Pyodide Python (stdlib, existing guards) | B3 Git VM (Railway sidecar) | Paid tutor, user-pasted API keys |
 | Git graph + CLI sim | — | Arbitrary cloud IDE |
 | Checklist / copy | — | Collaboration notebooks |
 | B1 AI Local rubric (shipped #42; kill-switch `NEXT_PUBLIC_AI_LAB=0`) | — | Server-side LLM proxy |
 
-Phase 1 Unified Editor **must not** widen CSP, add CDNs, or spawn a VM. Same-origin seeds (`src/lib/lab/seed.ts`) stay.
+Phase 1 Unified Editor **must not** widen CSP, add CDNs, or spawn a VM. Same-origin seeds stay. DuckDB-WASM is our answer to W3Schools’ dead WebSQL path — **writable** in every modern browser, no “light read-only Access DB” surprise.
 
-### 7.4 Shared behaviors
+### 7.8 Shared behaviors
 
-- **Restore sample DB / reset repo / reset checklist** — one control, adapter-specific.
-- **Schema / file / graph sidebar** — SQL: tables/columns (already P1-shaped). Python: available names. Git: goal tree. Checklist: items.
-- **Hint after N failed runs** — keep.  
-- **Progress:** successful Run writes `stepIndex` only (current contract). Complete = quiz / Complete button.  
-- **No “Coming soon”** for Tests or VM. Omit until flagged.
+- **Restore / reset** — §7.6. One Restore next to Run.
+- **Schema sidebar** — always on for `sql` / `sql-dbx` / `sql-sf`. Click table → columns + types. Optional later: “sample 5 rows” (Mode/W3Schools demo table). Phase 1: names + types are enough.
+- **Hint after N failed runs** — keep.
+- **Progress:** successful Run writes `stepIndex` only (current contract). Complete = quiz / Complete button.
+- **No “Coming soon”** for Tests, VM, or “real warehouse.” Omit until flagged.
+- **One chrome.** If a lesson has a lab, it does not also grow a second TryItBox editor. Example card may **Load** into `#lab`.
+
+### 7.9 Gap vs `main` (so Phase 2 can ticket it)
+
+Current `LocalPracticeLab` already has Run, Restore, schema sidebar, result table, hint, honest engine labels — the **pieces** of SQL Tryit. It fails the W3Schools feeling because:
+
+1. It sits **under** cheat-sheets + multiple TryItBoxes + then the article.  
+2. Many DB lessons never mount it.  
+3. Sample switching is a dense `<select>`, not next/prev exercises.  
+4. Empty-state / “this is your database” copy is quieter than W3Schools’ blunt chrome.  
+5. TryItBox is still a second editor.
+
+Phase 1 = one shell that *looks* like Tryit on lessons that already have labs. Phase 2 = every remaining SQL/DBX/SF slug gets a sample against the existing seed (stand-in where needed). No new runtime.
 
 ---
 
@@ -458,13 +550,14 @@ Not in the UX list (§13). Defaults until stamp:
 
 | ID | Item | Notes |
 |----|------|-------|
-| P1-1 | **Unified Editor shell** | §7. Same layout on lesson and `/practice`. |
+| P1-1 | **Unified Editor shell** | §7. W3Schools SQL Tryit layout on lesson and `/practice`. One Run, schema, Restore, empty state. |
 | P1-2 | **Path crumbs** | `Zero→Hero · L1 · 3/8` on lesson + track. |
 | P1-3 | **Display numbers** | Show path/catalog numbers from schema, not filename `13`. |
 | P1-4 | **Shortcuts as Reference** | Lesson rail + track “Reference” link. `/shortcuts` remains. |
 | P1-5 | **Search** | Grouping already exists (lessons / news / shortcuts / releases). Add path + practice weighting; keep 44px submit. Optional ⌘K later (P2). |
 | P1-6 | **StartHere** | Two doors: Zero→Hero and Skip-ahead. Shortcuts is not a door. |
 | P1-7 | **Dashboard** | Path % first; track % second. META essay goes away. |
+| P1-8 | **In-line DB (existing labs)** | Lessons that already have DuckDB/Pyodide: drop the second TryItBox editor; Example = Load into `#lab`. |
 
 ### P2 — polish (after IA feels calm)
 
@@ -472,7 +565,7 @@ Not in the UX list (§13). Defaults until stamp:
 |----|------|-------|
 | P2-1 | **Dark mode nits** | Theme toggle stays. Audit coral-on-canvas contrast, code blocks, lab tables. Do not add a third theme. |
 | P2-2 | **a11y** | Focus order through Editor (problem → textarea → Run → results). `aria-live` on results/errors (lab already has some). Skip-link to `#lab`. Reduce motion on TrackScene. |
-| P2-3 | **Mobile lab** | Editor above results; sticky Run. |
+| P2-3 | **Mobile lab** | Editor above results; sticky Run. W3Schools “change orientation” as stack vs split. |
 | P2-4 | **Monaco / syntax highlight** | Optional. Textarea is enough for Phase 1. |
 | P2-5 | **Chart cell** | Explicitly later. DataLab-shaped, not a differentiator. |
 | P2-6 | **Command palette search** | Only if `/search` stays the no-JS source of truth. |
@@ -487,7 +580,7 @@ Out of this backlog: new tracks, B2/B3 (B1 already on main), XP/leaderboards, ma
 Phase 0  Docs / IA freeze          ← you are here
     ↓  Product + user stamp §14
 Phase 1  IA + nav + Unified Editor shell
-Phase 2  Content reorder (pathOrder, lesson loop)
+Phase 2  Content reorder + in-line Tryit on every DB lesson
 Phase 3  Paths complete + Aurora cert overlay
 ```
 
@@ -500,7 +593,7 @@ Phase 3  Paths complete + Aurora cert overlay
 ### Phase 1 — IA + nav + unified editor shell
 
 - Implement §4 nav and Learn hub.  
-- Mount one Practice layout; wire existing DuckDB / Pyodide / Git / checklist adapters underneath.  
+- Mount one **Tryit-shaped** Practice layout (problem \| editor \| Run \| results \| schema \| Restore); wire existing DuckDB / Pyodide / Git / checklist adapters underneath. No new labs on depth slugs yet.  
 - Add `/paths` stub with Zero→Hero outline + skip-ahead questions (can point at **existing slugs**).  
 - Redirects: none required if we keep `/training` as Learn. Add `/practice` and `/paths` as new.  
 - **No** filename renames. **No** new lessons. **No** B2/B3. B1 already on `main` is OK.
@@ -509,6 +602,7 @@ Phase 3  Paths complete + Aurora cert overlay
 
 - Path manifest + frontmatter backfill.  
 - Lesson page loop: Learn → Example → Practice → …  
+- **Every remaining SQL / Databricks / Snowflake slug** mounts the Tryit editor against the existing seed (stand-in SELECT where COPY/Autoloader/Cortex cannot run). This is the “in line with the DB” close-out.  
 - Optional file renames with stem/slug redirects.  
 - Retire negative `order`.  
 - Still no AWS/interview/dbt tracks unless Q8–Q10 say so **and** a separate content PR is scoped.
@@ -532,13 +626,13 @@ if (PR adds features or training content) and (this doc is not stamped):
 
 ## 11. Competitive review
 
-Public sources, high-level. **No scraped curriculum.** We copy *interaction patterns*, not lesson text.
+Public sources, high-level. **No scraped curriculum.** We copy *interaction patterns*, not lesson text. W3Schools Tryit is the **practice-desk** reference; the others stay path / pedagogy / vendor context.
 
 ### 11.1 What each product is (cited)
 
 | Product | What we looked at | Sources |
 |---------|-------------------|---------|
-| **W3Schools Tryit / SQL Tryit** | Split page: SQL statement → Run SQL → result table; sample DB; Restore Database; schema list. Historically in-browser WebSQL; Chrome removed WebSQL, so many browsers now get a **read-only** “light” editor (server Access DB). The *mental model* remains the industry default for “try SQL in the page.” | [SQL Tryit Editor](https://www.w3schools.com/sql/trysql.asp?filename=trysql_editor), [SQL Editor](https://www.w3schools.com/SQL/sql_editor.asp), [WebSQL removal reports](https://stackoverflow.com/questions/77461398/w3schools-com-features-dont-work-in-latest-chrome-version) |
+| **W3Schools Tryit / SQL Tryit** | Two related UIs. **HTML Tryit:** full-bleed workspace, toolbar **Run**, left = code, right = result iframe, draggable gutter, orientation/theme, keyboard Run (`Ctrl+Alt+R`). **SQL Tryit:** “SQL Statement” → **Run SQL »** → result table; **Your Database** list; **Restore Database**; empty state before first run; each tutorial topic preloads a statement (`trysql_select`, `trysql_delete`, …). Tutorial chapters add a **Demo Database** sample-row table + ❮ Previous / Next ❯ + “Try it Yourself.” Separate **SQL Exercises** product = MCQ / fill-in-the-blank + Show Answer (not Tryit). Historically in-browser WebSQL; Chrome removed WebSQL, so many browsers now get a **read-only** “light” editor (server Access DB). | [SQL Tryit Editor](https://www.w3schools.com/sql/trysql.asp?filename=trysql_editor), [SQL Editor](https://www.w3schools.com/SQL/sql_editor.asp), [HTML Tryit](https://www.w3schools.com/tryit/tryit.asp?filename=tryhtml_default), [Tryit overview](https://www.w3schools.com/tryit/?previewmode=true), [SQL SELECT + Demo Database](https://www.w3schools.com/sql/sql_select.asp), [SQL Exercises](https://www.w3schools.com/sql/sql_exercises.asp), [WebSQL removal reports](https://stackoverflow.com/questions/77461398/w3schools-com-features-dont-work-in-latest-chrome-version) |
 | **DataCamp / DataLab** | Career tracks + in-browser notebook (Python / SQL / R). Exercise loop: instruction → cell → Run → check / hint / XP. Schema browser, curated datasets, AI assist. Free DataLab: 3 workbooks + 15 AI prompts; Premium ~$7–13/user/mo billed annually (unlimited workbooks/AI, more RAM/CPU). Courses themselves are heavily gated. | [DataLab](https://www.datacamp.com/datalab), [DataLab pricing](https://www.datacamp.com/datalab/pricing), [DataCamp pricing](https://www.datacamp.com/pricing?period=yearly&tab=workspace) |
 | **Mode SQL Tutorial** (ThoughtSpot-hosted) | Browser tutorial aimed at **analysts** (Excel → SQL), not DE. Lessons include an in-page SQL editor; practice problems with “see the answer.” Schema-as-username mental model (`tutorial.table`). Separate Mode product has a serious schema browser (search, pin, sample 100 rows). | [SQL Tutorial intro](https://sqlschool.modeanalytics.com/), [TOC](https://sqlschool.modeanalytics.com/toc/), [Mode querying / schema browser](https://mode.com/help/articles/querying-data/) |
 | **Codecademy** | Short interactive steps, immediate feedback, projects + quizzes, AI Learning Assistant. Learn SQL: 4 lessons / 5 projects / 4 quizzes, ~5h, completion cert on Plus/Pro. Guided “change this line” before open notebooks. Generalist CS + careers, not lakehouse DE. | [Learn SQL](https://www.codecademy.com/learn/learn-sql), [Learn Python 3](https://www.codecademy.com/learn/learn-python-3) |
@@ -550,17 +644,74 @@ Public sources, high-level. **No scraped curriculum.** We copy *interaction patt
 
 | Product | Copy | Avoid | How Aurora differs |
 |---------|------|-------|--------------------|
-| **W3Schools Tryit** | Edit → Run → table. Restore DB. Schema list. Empty result before first run. One obvious Run control. | Generic `Customers` 101. WebSQL dead-end (we already chose DuckDB-WASM — keep it). Light/read-only surprise. Ad / upsell chrome. | DE grain, paid/pending orders, bronze/silver/gold seeds — not Northwind-for-tourists. **Free local labs that still write.** |
-| **DataCamp** | Instruction → run → hint → check. Career **paths** (not a flat course grid). Curated datasets. Schema browser. | Paywalls, XP gamification as the product, cloud IDE cost, AI tutor as default. Notebook-everything. | **Free forever**, guest progress, lakehouse/warehouse vocabulary, honest local runtime. No DataLab clone. |
-| **Mode SQL Tutorial** | Lesson and editor on **one page**. Analyst-plain language. “See the answer” after trying. | Analyst-only scope (no MERGE/DQ/ETL). Username-schema confusion for DE. Product-led BI funnel. | We teach **loads and contracts**, not only SELECT for charts. Same-page editor is the Mode lesson. |
+| **W3Schools Tryit** | Instant **Run**. Problem text + editable code + results pane. Visible sample DB. Restore/reset. Prev/next. Dense, preloaded exercises. Empty state before first run. One primary button. | Ads, Spaces / “Get your own SQL server” upsell. Shallow `Customers` / Alfreds Futterkiste 101 as the *curriculum*. WebSQL → silent read-only downgrade. Fill-in-the-blank Exercises as a second product. New-tab Tryit that leaves the lesson. Auto-run. XP. | **DE seeds** (`aurora_orders`, bronze/silver/gold, `analytics.*`, metric tables) — not tourist Northwind. **In-line** on the lesson (Mode’s page union Tryit’s loop). DuckDB-WASM stays **writable**. See §11.3–§11.4 and §7. |
+| **DataCamp** | Instruction → run → hint → check. Career **paths**. Curated datasets. Schema browser. | Paywalls, XP as the product, cloud IDE cost, AI tutor as default. Notebook-everything. | **Free forever**, guest progress, lakehouse/warehouse vocabulary, honest local runtime. No DataLab clone. |
+| **Mode SQL Tutorial** | Lesson and editor on **one page**. Analyst-plain language. “See the answer” after trying. | Analyst-only scope (no MERGE/DQ/ETL). Username-schema confusion for DE. Product-led BI funnel. | We teach **loads and contracts**, not only SELECT for charts. Same-page editor is the Mode lesson; Tryit density is the W3Schools lesson. |
 | **Codecademy** | Tiny steps. Immediate feedback. Projects as first-class, not an appendix. Two doors (new vs experienced) on career paths. | Generic CS catalog gravity. Completion-cert paywall. AI assistant as a crutch before the learner runs code. | DE-focused path. Projects = marts and ETL builders we already have. AI track is elective, not the spine. |
 | **LearnGitBranching** | Graph + CLI, levels, goal tree, client-only. Honesty that it is a sim. | Becoming *only* a git game. Shipping a real VM to “catch up” without a stamp (B3 is held). | Git is a **bonus skill** on a DE path (dbt/SQL branching, data diffs), not the product. |
-| **Databricks Academy** | Demo + Lab pairing. Role path (Data Engineer). Capstone-shaped jobs. | Account/compute requirement. Public paywall on the real path. Vendor cert cosplay. Workspace screenshots as the only lab. | **No login to practice Spark-flavored SQL.** We say “not a cluster.” Link out for official certs. |
-| **Snowflake University** | Badge sequence with proof-of-work. Warehouse → engineering ladder. Short workshops. | Requiring a trial account + DORA to learn SELECT. Marketplace/native-apps distraction for L1. Impersonating SnowPro. | Local DuckDB for L1–L4 mechanics; copy-to-trial for Streams/Tasks/DT that DuckDB cannot honor. Badges, if any, are Aurora path certs. |
+| **Databricks Academy** | Demo + Lab pairing. Role path (Data Engineer). Capstone-shaped jobs. | Account/compute requirement. Public paywall on the real path. Vendor cert cosplay. Workspace screenshots as the only lab. | **No login to practice Spark-flavored SQL.** Tryit against `bronze.orders`, not a cluster. Link out for official certs. |
+| **Snowflake University** | Badge sequence with proof-of-work. Warehouse → engineering ladder. Short workshops. | Requiring a trial account + DORA to learn SELECT. Marketplace/native-apps distraction for L1. Impersonating SnowPro. | Local DuckDB Tryit for L1–L4 mechanics; copy-to-trial for Streams/Tasks/DT that DuckDB cannot honor. Badges, if any, are Aurora path certs. |
 
-### 11.3 Positioning line
+### 11.3 W3Schools Tryit UX teardown (what “feel similar” means)
 
-**Aurora is the free, DE-first school with local labs.** Peers are either generalist and paid (DataCamp, Codecademy), vendor and account-gated (Academy, Uni), analyst-SQL (Mode), or single-mechanic toys (W3Schools, LearnGitBranching). We steal the Tryit loop and the path, and we refuse the paywall and the fake cloud.
+W3Schools split **teaching** and **doing** across two URLs. The SELECT chapter ([sql_select.asp](https://www.w3schools.com/sql/sql_select.asp)) is short: syntax, a **Demo Database** HTML table of `Customers` rows, then “Try it Yourself.” The Tryit ([trysql.asp](https://www.w3schools.com/sql/trysql.asp?filename=trysql_editor)) is almost *only* doing: statement, Run, result, database list, Restore.
+
+Aurora will **not** split URLs (that is how we grew TryItBox + Lab). We steal the *doing* chrome and keep Mode’s one-page habit.
+
+**Layout contract (SQL / DB tracks):**
+
+```
+problem / short text
+    |  editable SQL
+    |  Run
+    |  results pane (table)
+schema / sample tables  (Your database)
+reset (Restore sample DB)
+next / prev  (samples, then lessons)
+```
+
+That is the whole product feeling. If a learner cannot do those six things without scrolling past four other widgets, we failed.
+
+**HTML Tryit extras we may borrow later (P2):** orientation (stack vs side-by-side), keyboard Run, gutter resize. **Not** Phase 1.
+
+**SQL Exercises extras we do not borrow:** a second site of blanks and “Show Answer,” login-to-track-points, certificate upsell. Our quiz already covers check-understanding. B2 covers programmatic pass/fail.
+
+**Density:** W3Schools wins because every topic has a preloaded statement that *already works*, and the next topic is one click. Aurora should feel the same on `sql-select-filter-nulls` → `sql-dml-write-path` → … and on DBX/SF twins — not “go back to Training and find the lab card.”
+
+### 11.4 What to copy vs what not to copy (explicit)
+
+**Copy (do these):**
+
+| Pattern | Why it works | Aurora adaptation |
+|---------|--------------|-------------------|
+| Instant Run | The loop is muscle memory | One coral **Run**; result pane updates in place |
+| Problem \| code \| results | Learner never wonders where to look | §7.1 shell on the lesson, not a new tab |
+| Visible sample DB | You cannot query what you cannot see | Sidebar = seeded tables/views for that dialect, including catalogs/views/metrics |
+| Restore / reset | Fearless DML | Restore sample DB next to Run; optional Reset statement |
+| Prev / next | Density, “one more” | Next sample + next lesson `#lab` |
+| Preloaded working SQL | First Run succeeds | Default sample per lesson is valid against the seed |
+| Empty state | No mystery data | “Press Run to query the sample DB” |
+| Demo rows in the text | W3Schools Demo Database | Phase 2: a 5-row markdown slice of `aurora_orders` / `bronze.orders` / `sf_orders` |
+| Clear result (table or error) | Pass/fail-shaped without XP | Table + row count; B2 Check later for asserts |
+| Writable local DB | Play, don’t spectate | DuckDB-WASM — never the WebSQL light-mode trap |
+
+**Do not copy:**
+
+| Anti-pattern | Why it fails us |
+|--------------|-----------------|
+| Ads, Spaces, “Get your own SQL server,” Spaces icon in the Tryit toolbar | We are not an upsell funnel |
+| Shallow `Customers` / `Alfreds Futterkiste` as the *curriculum* | Fine as a joke seed; our grain is orders, promos, bronze/silver/gold, DQ |
+| Tutorial 101 that never reaches MERGE, incrementals, or marts | That is why DE learners bounce from W3Schools |
+| Silent read-only fallback | If WASM fails, say so + Copy. Do not pretend a server Access DB. |
+| New-tab Tryit | That *is* our current split chrome. Kill it. |
+| Fill-in-the-blank Exercises site + Show Answer as the practice desk | Quiz ≠ Tryit |
+| Auto-run on page load | WASM cost + surprise |
+| XP / points / “W3Schooler” progress theater | Guest `stepIndex` + quiz is enough |
+| Claiming Spark/Snowflake fidelity we do not have | Honest dialect badges |
+
+### 11.5 Positioning line
+
+**Aurora is the free, DE-first school with a W3Schools-simple Tryit against a real-feeling DE database.** Peers are either generalist and paid (DataCamp, Codecademy), vendor and account-gated (Academy, Uni), analyst-SQL (Mode), or single-mechanic toys (W3Schools’ shallow catalog, LearnGitBranching). We steal the Tryit loop and the path, we keep practice **in line with the seeded DB**, and we refuse the paywall, the ads, and the fake cloud.
 
 ---
 
@@ -578,6 +729,8 @@ Public sources, high-level. **No scraped curriculum.** We copy *interaction patt
 | **Vendor cert confusion** | Marketing says “cert path” next to Snowflake/DBX logos. | Aurora path cert ≠ SnowPro / Databricks Certified. Link out. |
 | **Skip-ahead shame** | Placement feels like an exam. | Six yes/not-yet lines. No score. |
 | **Wave B temptation** | Unified Editor PR “just adds Check + AI.” | Editor shell first. B1 is already on `main` (#42). B2/B3 stay separate stamped PRs. |
+| **Tryit without the DB** | Pretty editor on a page with no seed / copy-only depth lessons | §7.3 mandate. Phase 1 restyles existing labs; Phase 2 wires every SQL/DBX/SF slug. |
+| **W3Schools clone relapse** | Generic Customers 101, ads-adjacent density, new-tab Tryit | §11.4 do-not-copy list. DE seeds only. In-line only. |
 
 ---
 
@@ -602,7 +755,10 @@ Stamp answers in §14 or a short follow-up comment. Until then, the **bold** lin
 15. **Wave B vs Phase 1:** may B2 start in parallel after this stamp? **Default: no. Editor shell ships first.** B1 already on `main` is OK.  
 16. **Display numbers on track cards** during Phase 1 (before `pathOrder` exists)? **Default: hide numbers; show “Beginner path” / “Depth.”**  
 17. **FDE required for Hero?** **Default: no — L6 elective.**  
-18. **Rename Training → Learn in the UI only, keep `/training`?** **Default: yes.**
+18. **Rename Training → Learn in the UI only, keep `/training`?** **Default: yes.**  
+19. **Every SQL / DBX / SF lesson gets a Tryit lab (Phase 2)?** Including stand-ins for COPY / Autoloader / Cortex? **Default: yes** — copy-only only for the narrow list in §7.5.  
+20. **Auto-run the default sample on lab mount?** **Default: no** (W3Schools empty state; WASM cost).  
+21. **W3Schools “Your database” wording vs “Sample schema”?** **Default: “Your database”** + honest subtitle (“local DuckDB seed, not a warehouse”).
 
 ---
 
@@ -614,7 +770,7 @@ Product + user stamp required before Phase 1 work is scheduled.
 |------|------|---------------------|
 | **User** | Halt features; this plan matches the “messy” feeling; Zero→Hero is the north star | |
 | **Product** | JTBD order; nav defaults Q1–Q4; merge gate | |
-| **UX** | Four-item nav; lesson loop; Editor wireframe (can be a later sketch) | |
+| **UX** | Four-item nav; lesson loop; **Tryit-shaped** Editor (problem \| code \| Run \| results \| schema \| restore) | |
 | **Frontend** | Feasible without CSP/runtime change in Phase 1 | |
 | **Content** | Willing to backfill path fields in Phase 2; no new tracks until then | |
 
@@ -630,7 +786,7 @@ Product + user stamp required before Phase 1 work is scheduled.
 | Spine | `CERT_PATH` + META overlay + `orderNote` | Zero→Hero levels L0–L7 + skip-ahead |
 | First lesson | PE “Ask better questions” | Path L0/L1 (stamp Q4) |
 | Lesson numbers | Filename 13–20 + `order: -7` vs 01–12 | `pathOrder` / `catalogOrder`; slugs stable |
-| Practice | TryIt + DuckDB lab + Pyodide + Git Play + copy | One Editor, six dialects |
+| Practice | TryIt + DuckDB lab + Pyodide + Git Play + copy | One **Tryit-shaped** Editor; every DB lesson in line with the seed |
 | Backend | Auth/progress as today; Wave B held as a block | Keep sessions / CSRF / progress; B1 on `main` OK; B2/B3 held; no new Tryit APIs (§8) |
 | Shortcuts | Header peer | Reference rail + `/shortcuts` |
 | News / Releases | Header peers | Today digest + permalinks |
