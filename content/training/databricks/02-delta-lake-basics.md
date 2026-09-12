@@ -14,9 +14,14 @@ objectives:
 updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Merge"
-    code: "MERGE INTO target t USING src s ON t.id = s.id WHEN MATCHED THEN UPDATE SET * WHEN NOT MATCHED THEN INSERT *"
+    code: "MERGE INTO target t USING src s ON t.id = s.id\nWHEN MATCHED THEN UPDATE SET *\nWHEN NOT MATCHED THEN INSERT *"
+    note: "Account syntax. The local lab has an upsert-shaped SELECT stand-in."
   - label: "Time travel"
     code: "SELECT * FROM t TIMESTAMP AS OF '2026-09-01'"
+    note: "Read a prior version for audit/rollback. Copy into a workspace."
+  - label: "Upsert-shaped join (local lab)"
+    code: "SELECT\n  COALESCE(u.order_id, t.order_id) AS order_id,\n  COALESCE(u.status, t.status) AS status,\n  COALESCE(u.amount, t.amount) AS amount\nFROM silver_orders t\nFULL OUTER JOIN bronze_orders u ON t.order_id = u.order_id\nORDER BY order_id;"
+    note: "DuckDB stand-in for MERGE. Run it in the local practice lab."
 quiz:
   - question: "Delta Time Travel helps you…"
     options:

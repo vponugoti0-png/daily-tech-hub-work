@@ -84,17 +84,17 @@ test.describe("SQL local practice lab + exercise path", () => {
     await page.locator('a[href="/training/sql/sql-select-filter-nulls"]').first().click();
     await expect(page).toHaveURL(/\/training\/sql\/sql-select-filter-nulls/);
     await expect(page.locator("#learn")).toHaveText(/SELECT, filters, NULLs, and LIMIT/i);
-    const tryItLab = page.getByRole("link", { name: /Open local practice lab/i }).first();
-    await expect(tryItLab).toBeVisible();
+    const tryItRun = page.getByRole("button", { name: /Run in local lab/i }).first();
+    await expect(tryItRun).toBeVisible();
     const how = page.getByRole("link", { name: /How to practice/i }).first();
     await expect(how).toHaveAttribute("href", "#lab");
     await how.click();
     await expect(page.locator("#lab").getByRole("heading", { name: "Local practice lab" })).toBeVisible();
-    await tryItLab.click();
+    await tryItRun.click();
     await expect(page.locator("#lab").getByRole("heading", { name: "Local practice lab" })).toBeVisible();
   });
 
-  test("does not add a top-level Lab nav or a Python-track lab", async ({ page }) => {
+  test("does not add a top-level Lab nav; older Python lessons stay copy-only", async ({ page }) => {
     await page.goto("/");
     const nav = page.getByRole("navigation", { name: "Primary" });
     await expect(nav.getByRole("link", { name: /^Lab$/i })).toHaveCount(0);
@@ -104,7 +104,7 @@ test.describe("SQL local practice lab + exercise path", () => {
     const tryit = page.locator(".tryit").first();
     await expect(tryit).toBeVisible();
     await expect(page.getByText(/Coming soon/i)).toHaveCount(0);
-    await expect(tryit.getByRole("link", { name: /Open local practice lab/i })).toHaveCount(0);
+    await expect(tryit.getByRole("button", { name: /Run in local lab/i })).toHaveCount(0);
     await expect(tryit.getByRole("button", { name: /Run SQL sample|Run sample/i })).toHaveCount(0);
     const copy = tryit.getByRole("button", { name: /Copy to practice/i });
     await expect(copy).toBeVisible();

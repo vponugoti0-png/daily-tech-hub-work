@@ -14,10 +14,14 @@ objectives:
 updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Assert columns"
-    code: "missing = set(req) - set(df.columns)"
-    note: "Fail loud"
+    code: "REQUIRED = (\"order_id\", \"amount\", \"status\")\nmissing = set(REQUIRED) - set(df.columns)\nif missing:\n    raise ValueError(f\"missing columns: {sorted(missing)}\")"
+    note: "Fail loud at the boundary. Copy into a notebook — this lesson is not a lab host."
   - label: "Latest dedupe"
-    code: "df.sort_values('ts').drop_duplicates('id', keep='last')"
+    code: "df.sort_values(\"updated_at\").drop_duplicates(\"order_id\", keep=\"last\")"
+    note: "Same grain as warehouse silver: one row per natural key."
+  - label: "Unmatched keys"
+    code: "unmatched = left.merge(right, on=\"user_id\", how=\"left\", indicator=True)\nmissing = unmatched[unmatched[\"_merge\"] == \"left_only\"]"
+    note: "Do not drop unmatched ids silently. Quarantine or count them."
 quiz:
   - question: "Why prefer pure transform functions over notebook cells with I/O mixed in?"
     options:

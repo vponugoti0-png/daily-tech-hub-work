@@ -1,6 +1,7 @@
 export const DATABRICKS_LAB_ENTRY_SLUG = "dbx-workspace-cluster-basics";
 export const SNOWFLAKE_LAB_ENTRY_SLUG = "sf-day0-objects";
 export const SQL_LAB_ENTRY_SLUG = "sql-select-filter-nulls";
+export const PYTHON_LAB_ENTRY_SLUG = "python-none-dicts-rows";
 
 export const DATABRICKS_LAB_SLUGS = [
   "dbx-workspace-cluster-basics",
@@ -47,9 +48,20 @@ export const SQL_LAB_SLUGS = [
   "sql-catalog-views-metrics",
 ] as const;
 
+export const PYTHON_LAB_SLUGS = [
+  "python-none-dicts-rows",
+  "python-functions-pure-transforms",
+  "python-pathlib-extracts",
+  "python-exceptions-retries",
+  "python-datetimes-watermarks",
+  "python-comprehensions-chunks",
+  "python-logging-not-print",
+] as const;
+
 export type DatabricksLabSlug = (typeof DATABRICKS_LAB_SLUGS)[number];
 export type SnowflakeLabSlug = (typeof SNOWFLAKE_LAB_SLUGS)[number];
 export type SqlLabSlug = (typeof SQL_LAB_SLUGS)[number];
+export type PythonLabSlug = (typeof PYTHON_LAB_SLUGS)[number];
 
 /** stepIndex written after a successful local lab run (does not complete the lesson). */
 export const LAB_STEP_INDEX = 1;
@@ -57,8 +69,14 @@ export const LAB_STEP_INDEX = 1;
 export interface LabSample {
   id: string;
   label: string;
-  sql: string;
+  sql?: string;
+  /** Python (or other) source. SQL samples use `sql`. */
+  code?: string;
   note?: string;
+}
+
+export function sampleSource(sample: LabSample): string {
+  return sample.code ?? sample.sql ?? "";
 }
 
 export function isDatabricksLabLesson(track: string, slug: string): boolean {
@@ -73,11 +91,16 @@ export function isSqlLabLesson(track: string, slug: string): boolean {
   return track === "sql" && (SQL_LAB_SLUGS as readonly string[]).includes(slug);
 }
 
+export function isPythonLabLesson(track: string, slug: string): boolean {
+  return track === "python" && (PYTHON_LAB_SLUGS as readonly string[]).includes(slug);
+}
+
 export function isLabLesson(track: string, slug: string): boolean {
   return (
     isDatabricksLabLesson(track, slug) ||
     isSnowflakeLabLesson(track, slug) ||
-    isSqlLabLesson(track, slug)
+    isSqlLabLesson(track, slug) ||
+    isPythonLabLesson(track, slug)
   );
 }
 
@@ -85,6 +108,7 @@ export function labEntrySlug(track: string): string | undefined {
   if (track === "databricks") return DATABRICKS_LAB_ENTRY_SLUG;
   if (track === "snowflake") return SNOWFLAKE_LAB_ENTRY_SLUG;
   if (track === "sql") return SQL_LAB_ENTRY_SLUG;
+  if (track === "python") return PYTHON_LAB_ENTRY_SLUG;
   return undefined;
 }
 
@@ -681,7 +705,175 @@ const BY_LESSON: Record<DatabricksLabSlug | SnowflakeLabSlug | SqlLabSlug, strin
   "sql-catalog-views-metrics": ["lab-catalogs", "lab-schemas", "lab-views", "aurora-paid-view", "aurora-metric-view"],
 };
 
+const PYTHON_SAMPLES: LabSample[] = [
+  {
+    id: "py-unknown-promos",
+    label: "Count unknown promos",
+    code: `rows = [
+    {"order_id": 1, "promo_code": "FALL26"},
+    {"order_id": 2, "promo_code": None},
+]
+unknown = sum(1 for r in rows if r["promo_code"] is None)
+print(unknown)`,
+    note: "is None, not == None. Truthiness (if not promo) also treats '' as unknown.",
+  },
+  {
+    id: "py-assert-row",
+    label: "Row dict + required keys",
+    code: `REQUIRED = ("order_id", "status", "amount")
+
+def assert_row(row: dict) -> dict:
+    missing = [k for k in REQUIRED if k not in row]
+    if missing:
+        raise ValueError(f"missing keys: {missing}")
+    return row
+
+row = {"order_id": 1001, "status": "paid", "amount": 42.5, "promo_code": None}
+print(assert_row(row))`,
+    note: "promo_code may be None. order_id may not be absent.",
+  },
+  {
+    id: "py-paid-only",
+    label: "Pure status filter",
+    code: `def paid_only(rows: list[dict]) -> list[dict]:
+    return [r for r in rows if r.get("status") == "paid"]
+
+raw = [{"order_id": 1, "status": "paid"}, {"order_id": 2, "status": "pending"}]
+print(paid_only(raw))`,
+    note: "Same input → same output. No file, no SQL, no global.",
+  },
+  {
+    id: "py-no-mutate",
+    label: "Do not mutate the caller",
+    code: `def with_event_date(rows: list[dict], key="order_date") -> list[dict]:
+    return [{**r, "event_date": r[key]} for r in rows]
+
+raw = [{"order_id": 1, "order_date": "2026-09-12"}]
+print(with_event_date(raw))
+print("caller unchanged", raw)`,
+    note: "In-place updates make retries and tests lie. Return a new list of dicts.",
+  },
+  {
+    id: "py-landing-glob",
+    label: "Landing glob (seeded VFS)",
+    code: `from pathlib import Path
+
+LANDING = Path("/data/landing/orders")
+
+def list_order_files(day: str) -> list[Path]:
+    folder = LANDING / day
+    return sorted(folder.glob("*.json"))
+
+def assert_orders_stem(path: Path) -> str:
+    prefix, _, day = path.stem.partition("_")
+    if prefix != "orders" or len(day) != 10:
+        raise ValueError(f"unexpected landing name: {path.name}")
+    return day
+
+for path in list_order_files("2026-09-12"):
+    try:
+        print(path.name, "->", assert_orders_stem(path))
+    except ValueError as exc:
+        print(path.name, "rejected:", exc)`,
+    note: "This lab seeds /data/landing/orders. glob('*.json') also picks up notes.json — reject the stem.",
+  },
+  {
+    id: "py-loud-transform",
+    label: "Fail loud on a missing key",
+    code: `def transform_orders(rows: list[dict]) -> list[dict]:
+    out = []
+    for row in rows:
+        if "order_id" not in row:
+            raise ValueError(f"row missing order_id: {row!r}")
+        out.append(row)
+    return out
+
+print(transform_orders([{"order_id": 1, "amount": 10}]))`,
+    note: "An empty list looks like a successful empty window. Raise on contract breaks.",
+  },
+  {
+    id: "py-watermark",
+    label: "UTC half-open window",
+    code: `from datetime import datetime, timedelta, timezone
+
+def next_window(watermark: datetime, hours=24) -> tuple[datetime, datetime]:
+    if watermark.tzinfo is None:
+        raise ValueError("watermark must be timezone-aware")
+    return watermark, watermark + timedelta(hours=hours)
+
+wm = datetime(2026, 9, 12, tzinfo=timezone.utc)
+print(next_window(wm))`,
+    note: "Naive datetimes are a foot-gun across DST. [start, end) so the next run starts at end.",
+  },
+  {
+    id: "py-project-filter",
+    label: "Project + filter",
+    code: `rows = [
+    {"order_id": 1, "status": "paid", "amount": 10},
+    {"order_id": 2, "status": "pending", "amount": 99},
+]
+paid = [
+    {"order_id": r["order_id"], "amount": r["amount"]}
+    for r in rows
+    if r["status"] == "paid"
+]
+print(paid)`,
+    note: "One row in, one row out. A nested comprehension over items×orders is a fan-out.",
+  },
+  {
+    id: "py-chunk-ids",
+    label: "Chunk then yield",
+    code: `def extract_chunks(rows, size=2):
+    offset = 0
+    while offset < len(rows):
+        batch = rows[offset : offset + size]
+        yield batch
+        offset += len(batch)
+
+rows = [{"order_id": n} for n in range(1, 6)]
+for chunk in extract_chunks(rows):
+    print([r["order_id"] for r in chunk])`,
+    note: "yield keeps RAM flat. list(extract_chunks(...)) undoes the point.",
+  },
+  {
+    id: "py-job-log",
+    label: "Job-shaped logger",
+    code: `import logging
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s %(message)s")
+log = logging.getLogger("aurora.orders_etl")
+
+def run(start: str, end: str, extract, transform, load) -> dict:
+    raw = extract(start, end)
+    clean = transform(raw)
+    metrics = {"start": start, "end": end, "rows_in": len(raw), "rows_out": len(clean)}
+    log.info("transform_ok %s", metrics)
+    load(clean)
+    log.info("load_ok %s", metrics)
+    return metrics
+
+print(run("2026-09-01", "2026-09-02", lambda *_: [{"order_id": 1}], lambda rows: rows, lambda *_: None))`,
+    note: "INFO is a metric. Do not log the full row payload or a DSN.",
+  },
+];
+
+const PYTHON_BY_LESSON: Record<PythonLabSlug, string[]> = {
+  "python-none-dicts-rows": ["py-unknown-promos", "py-assert-row", "py-paid-only"],
+  "python-functions-pure-transforms": ["py-paid-only", "py-no-mutate", "py-assert-row"],
+  "python-pathlib-extracts": ["py-landing-glob", "py-assert-row"],
+  "python-exceptions-retries": ["py-loud-transform", "py-assert-row", "py-unknown-promos"],
+  "python-datetimes-watermarks": ["py-watermark", "py-project-filter"],
+  "python-comprehensions-chunks": ["py-project-filter", "py-chunk-ids", "py-paid-only"],
+  "python-logging-not-print": ["py-job-log", "py-paid-only"],
+};
+
 export function samplesForLesson(slug: string): LabSample[] {
+  const pythonIds = (PYTHON_BY_LESSON as Record<string, string[] | undefined>)[slug];
+  if (pythonIds) {
+    return pythonIds
+      .map((id) => PYTHON_SAMPLES.find((s) => s.id === id))
+      .filter((s): s is LabSample => Boolean(s));
+  }
   const ids = (BY_LESSON as Record<string, string[] | undefined>)[slug] ?? [
     "medallion-counts",
     "gold-revenue",

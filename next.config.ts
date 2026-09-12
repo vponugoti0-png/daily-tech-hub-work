@@ -36,8 +36,11 @@ const oauthOriginList = [...oauthBrowserOrigins].join(" ");
 // 'unsafe-inline' stays: Next.js App Router hydration + the theme FOUC script in
 // layout.tsx. A nonce/proxy.ts CSP would force dynamic rendering of every page.
 // 'unsafe-eval' is only for next/react dev (HMR / stack reconstruction).
-// wasm-unsafe-eval: DuckDB-WASM compile for the Databricks local practice lab.
+// wasm-unsafe-eval: DuckDB-WASM + Pyodide compile for local practice labs.
 // Safer than widening script-src with full unsafe-eval in production.
+// Python assets are copied to /public/pyodide (same-origin). No CDN host is
+// required. If Security later prefers jsDelivr, add https://cdn.jsdelivr.net
+// to script-src and connect-src — see the practice PR body.
 const scriptSrc = isDev
   ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'"
   : "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'";

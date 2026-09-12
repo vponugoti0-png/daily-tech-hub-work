@@ -15,9 +15,14 @@ objectives:
 updatedAt: "2026-09-11"
 cheatSheet:
   - label: "Latest per key"
-    code: "ROW_NUMBER() OVER (PARTITION BY id ORDER BY ts DESC)"
+    code: "SELECT order_id, customer_id, order_date, amount,\n  ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date DESC) AS rn\nFROM aurora_orders;"
+    note: "Keep rn = 1 for the current row. Copy into a warehouse — this lesson is not a lab host."
   - label: "Prev value"
-    code: "LAG(status) OVER (PARTITION BY id ORDER BY ts)"
+    code: "SELECT order_id, status, amount,\n  LAG(status) OVER (PARTITION BY customer_id ORDER BY order_date) AS prev_status\nFROM aurora_orders;"
+    note: "LAG is change detection. A join to the previous load is usually worse."
+  - label: "Running revenue"
+    code: "SELECT order_date, amount,\n  SUM(amount) OVER (PARTITION BY customer_id ORDER BY order_date) AS running_amount\nFROM aurora_orders\nWHERE status = 'paid';"
+    note: "Windows do not explode grain the way a self-join can."
 quiz:
   - question: "ROW_NUMBER vs RANK when ties share the same ORDER BY value?"
     options:

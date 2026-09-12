@@ -15,7 +15,7 @@ updatedAt: "2026-09-12"
 cheatSheet:
   - label: "Project + filter"
     code: "rows = [\n    {\"order_id\": 1, \"status\": \"paid\", \"amount\": 10},\n    {\"order_id\": 2, \"status\": \"pending\", \"amount\": 99},\n]\npaid = [\n    {\"order_id\": r[\"order_id\"], \"amount\": r[\"amount\"]}\n    for r in rows\n    if r[\"status\"] == \"paid\"\n]\nprint(paid)"
-    note: "One row in, one row out. Copy into a REPL — no Python lab. A nested comprehension over items×orders is a fan-out."
+    note: "One row in, one row out. Run this in the local practice lab. A nested comprehension over items×orders is a fan-out."
   - label: "Chunk generator"
     code: "def extract_chunks(read_chunk, start: str, end: str, size=50_000):\n    offset = 0\n    while True:\n        batch = read_chunk(start, end, offset, size)\n        if not batch:\n            return\n        yield batch\n        offset += len(batch)\n\n# for chunk in extract_chunks(...): transform(chunk)"
     note: "yield keeps RAM flat. list(extract_chunks(...)) undoes the point. Same idea as pandas chunksize / Spark partitions."
@@ -51,7 +51,7 @@ quiz:
 
 Comprehensions are **small** transforms. Generators are **large** extracts. Mixing them — `[row for chunk in extract() for row in chunk]` — is how RAM comes back.
 
-**Copy the examples.** No Python runtime lab.
+**Edit and Run** in the local practice lab — not a live cloud kernel.
 
 ## One grain per comprehension
 

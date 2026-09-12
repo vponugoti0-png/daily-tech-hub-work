@@ -16,6 +16,12 @@ cheatSheet:
   - label: "Account map"
     code: "SELECT database, schema, object_name, object_type\nFROM sf_account_objects\nORDER BY database, schema, object_name;"
     note: "Run this in the local practice lab — not a live Snowflake account."
+  - label: "Virtual warehouses"
+    code: "SELECT name, size, auto_suspend_sec, status\nFROM sf_warehouses\nORDER BY name;"
+    note: "Warehouses are compute. Auto-suspend stops credit burn when idle."
+  - label: "SAMPLE orders × customers"
+    code: "SELECT o.order_id, c.region, o.order_date, o.amount\nFROM sf_orders o\nJOIN sf_customers c ON c.customer_id = o.customer_id\nORDER BY o.order_date, o.order_id;"
+    note: "Tiny SAMPLE-style join. Storage and the warehouse are separate."
 quiz:
   - question: "Virtual warehouses primarily provide…"
     options:

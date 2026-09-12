@@ -21,7 +21,7 @@ cheatSheet:
     note: "Same latest-per-order_id rule as the SQL / warehouse silver grain."
   - label: "run() — orchestrator door"
     code: "def run(start: str, end: str, dry_run: bool = False) -> dict:\n    raw = extract_orders(read_sql, start, end)\n    clean = transform_orders(raw)\n    metrics = {\"rows_in\": len(raw), \"rows_out\": len(clean), \"start\": start, \"end\": end}\n    if dry_run:\n        return {**metrics, \"status\": \"dry_run\"}\n    write_staging_then_publish(clean, start, end)\n    return {**metrics, \"status\": \"ok\"}"
-    note: "Copy into your repo. Live Run is not wired for Python (team hold — no DuckDB Python lab)."
+    note: "Copy into your repo. This builder is copy-to-practice — the in-browser Python lab is on the exercise-path lessons."
 quiz:
   - question: "Where should file/SQL I/O live in this ETL job?"
     options:
@@ -51,7 +51,7 @@ quiz:
 
 This is the **Python ETL builder** — one job that stitches pieces you already met: [DataFrame contracts](/training/python/python-dataframe-contracts), [idempotent writers](/training/python/python-idempotent-writers), and [orchestration hooks](/training/python/python-orchestration-hooks). Shared story: **Orders → late events → daily revenue mart**.
 
-There is **no in-browser Python runtime** on Aurora (team hold). Copy the samples into a repo or notebook. Warehouse SQL still owns the mart; this package owns **extract + rules + the job door**.
+This builder is **copy-to-repo** (pandas / warehouse I/O). Small stdlib examples run in the local Python lab on the [exercise-path lessons](/training/python/python-none-dicts-rows#lab). Warehouse SQL still owns the mart; this package owns **extract + rules + the job door**.
 
 ## Shape
 

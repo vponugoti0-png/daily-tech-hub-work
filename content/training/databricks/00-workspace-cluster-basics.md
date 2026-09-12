@@ -19,6 +19,9 @@ cheatSheet:
   - label: "Sample cluster policy stub"
     code: "{\n  \"name\": \"day0-job-policy\",\n  \"definition\": {\n    \"spark_version\": { \"type\": \"fixed\", \"value\": \"15.4.x-scala2.12\" },\n    \"node_type_id\": { \"type\": \"allowlist\", \"values\": [\"i3.xlarge\"] },\n    \"autotermination_minutes\": { \"type\": \"range\", \"maxValue\": 60 }\n  }\n}"
     note: "Policy JSON is a stub to read, not a live apply."
+  - label: "Catalog objects (local lab)"
+    code: "SELECT catalog, schema, table_name, layer\nFROM workspace_objects\nORDER BY layer, table_name;"
+    note: "Three-level names live in Unity Catalog. Run this in the local practice lab — not a live workspace."
 quiz:
   - question: "Scheduled production pipelines should primarily run on…"
     options:

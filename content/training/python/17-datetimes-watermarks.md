@@ -15,7 +15,7 @@ updatedAt: "2026-09-12"
 cheatSheet:
   - label: "UTC parse + half-open window"
     code: "from datetime import datetime, timedelta, timezone\n\ndef next_window(watermark: datetime, hours=24) -> tuple[datetime, datetime]:\n    if watermark.tzinfo is None:\n        raise ValueError(\"watermark must be timezone-aware\")\n    start = watermark\n    end = watermark + timedelta(hours=hours)\n    return start, end\n\nwm = datetime(2026, 9, 12, tzinfo=timezone.utc)\nprint(next_window(wm))"
-    note: "Naive datetimes are a foot-gun across DST. Copy into a REPL — no Python lab on this site."
+    note: "Naive datetimes are a foot-gun across DST. Run this in the local practice lab on this page."
   - label: "Filter rows in Python (small samples)"
     code: "def in_window(rows, start, end, key=\"updated_at\"):\n    out = []\n    for r in rows:\n        ts = r[key]\n        if ts.tzinfo is None:\n            raise ValueError(\"row timestamp is naive\")\n        if start <= ts < end:\n            out.append(r)\n    return out"
     note: "Production should push this filter to SQL/Spark. The Python shape documents the grain."
@@ -51,7 +51,7 @@ quiz:
 
 Watermarks are how incrementals **resume**. They are datetimes, not filenames you hope are sorted.
 
-**Copy the examples.** No Python runtime lab.
+**Edit and Run** in the local practice lab — not a live cloud kernel.
 
 ## Aware UTC
 

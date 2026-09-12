@@ -14,9 +14,14 @@ objectives:
 updatedAt: "2026-09-11"
 cheatSheet:
   - label: "TypedDict"
-    code: "class Event(TypedDict): event_id: str; ts: datetime"
+    code: "from datetime import datetime\nfrom typing import TypedDict, NotRequired\n\nclass OrderRow(TypedDict):\n    order_id: int\n    status: str\n    amount: float\n    promo_code: NotRequired[str | None]"
+    note: "Document the row contract. Copy into a repo — this lesson is not a lab host."
   - label: "Protocol"
-    code: "class FrameLike(Protocol): columns: Sequence[str]"
+    code: "from typing import Protocol, Sequence\n\nclass FrameLike(Protocol):\n    columns: Sequence[str]"
+    note: "Duck-typed DataFrame APIs stay testable without importing Spark."
+  - label: "Required keys helper"
+    code: "def missing_keys(row: dict, required: tuple[str, ...]) -> list[str]:\n    return [k for k in required if k not in row]"
+    note: "Static types catch drift in CI. Runtime still checks the landing."
 quiz:
   - question: "TypedDict is best used for…"
     options:
