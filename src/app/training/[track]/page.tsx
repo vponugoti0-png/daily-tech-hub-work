@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getLessonsByTrack } from "@/lib/content";
 import { getTrackMeta, TRACK_IDS } from "@/lib/tracks";
-import { labEntrySlug } from "@/lib/lab/samples";
+import { labEntrySlug, practiceLabCtaLabel } from "@/lib/lab/samples";
 import { LessonCard } from "@/components/LessonCard";
 import { TrackProgressBar } from "@/components/training/ProgressBar";
 import { JargonChips } from "@/components/JargonTip";
@@ -77,7 +77,11 @@ export default async function TrackPage({
                 href={`/training/${track}/${labEntrySlug(track)}#lab`}
                 className="btn-ghost"
               >
-                {track === "git" ? "Practice · Git Play Lab →" : "Practice · local lab →"}
+                {track === "git"
+                  ? "Practice · Git Play Lab →"
+                  : track === "prompt-engineering" || track === "ai-data-eng"
+                    ? `${practiceLabCtaLabel(track)} →`
+                    : "Practice · local lab →"}
               </Link>
             ) : null}
           </div>

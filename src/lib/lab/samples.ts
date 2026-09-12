@@ -1,3 +1,13 @@
+import { aiLabCtaLabel, aiLabEntrySlug, isAiLabLesson } from "./ai-lab";
+
+export {
+  isAiLabEnabled,
+  isAiLabLesson,
+  isAiLabSlug,
+  aiLabEntrySlug,
+  aiLabCtaLabel,
+} from "./ai-lab";
+
 export const DATABRICKS_LAB_ENTRY_SLUG = "dbx-workspace-cluster-basics";
 export const SNOWFLAKE_LAB_ENTRY_SLUG = "sf-day0-objects";
 export const SQL_LAB_ENTRY_SLUG = "sql-select-filter-nulls";
@@ -118,9 +128,9 @@ export function isLabLesson(track: string, slug: string): boolean {
   );
 }
 
-/** DuckDB SQL labs or the in-browser Git Play Lab (outline / deriveSteps). */
+/** DuckDB / Pyodide labs, Git Play Lab, or AI Local practice (outline / deriveSteps). */
 export function isPracticeLesson(track: string, slug: string): boolean {
-  return isLabLesson(track, slug) || isGitPlayLesson(track, slug);
+  return isLabLesson(track, slug) || isGitPlayLesson(track, slug) || isAiLabLesson(track, slug);
 }
 
 export function labEntrySlug(track: string): string | undefined {
@@ -129,7 +139,7 @@ export function labEntrySlug(track: string): string | undefined {
   if (track === "sql") return SQL_LAB_ENTRY_SLUG;
   if (track === "python") return PYTHON_LAB_ENTRY_SLUG;
   if (track === "git") return GIT_LAB_ENTRY_SLUG;
-  return undefined;
+  return aiLabEntrySlug(track);
 }
 
 /** In-page Practice CTA (not a header nav item). */
@@ -144,7 +154,7 @@ export function practiceLabCtaLabel(track: string): string | undefined {
   if (track === "snowflake") return "Practice · Snowflake lab";
   if (track === "python") return "Practice · Python lab";
   if (track === "git") return "Practice · Git Play Lab";
-  return undefined;
+  return aiLabCtaLabel(track);
 }
 
 const SHARED: LabSample[] = [
