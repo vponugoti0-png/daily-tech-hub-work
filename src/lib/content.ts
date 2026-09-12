@@ -55,9 +55,15 @@ export function getShortcutBySlug(slug: string): ShortcutItem | undefined {
   return getAllShortcuts().find((s) => s.slug === slug);
 }
 
-function deriveSteps(content: string, hasQuiz: boolean, hasLab: boolean): LessonStep[] {
+function deriveSteps(
+  content: string,
+  hasQuiz: boolean,
+  hasLab: boolean,
+  hasExample: boolean,
+): LessonStep[] {
   const steps: LessonStep[] = [{ id: "learn", title: "Learn" }];
-  if (hasLab) steps.push({ id: "lab", title: "Practice lab" });
+  if (hasExample) steps.push({ id: "example", title: "Example" });
+  if (hasLab) steps.push({ id: "lab", title: "Practice" });
   if (/## Exercises/i.test(content)) {
     steps.push({ id: "exercises", title: "Exercises" });
   }
@@ -76,6 +82,7 @@ export function getAllLessons(): TrainingLesson[] {
       const raw = fs.readFileSync(path.join(dir, file), "utf8");
       const { data, content } = matter(raw);
       const quiz = (data.quiz as QuizQuestion[] | undefined) ?? undefined;
+      const cheatSheet = (data.cheatSheet as CheatSheetEntry[] | undefined) ?? undefined;
       const body = content.trim();
       lessons.push({
         slug: String(data.slug),
@@ -89,7 +96,7 @@ export function getAllLessons(): TrainingLesson[] {
         objectives: (data.objectives || []) as string[],
         content: body,
         exercises: (data.exercises as Exercise[] | undefined) ?? [],
-        cheatSheet: (data.cheatSheet as CheatSheetEntry[] | undefined) ?? undefined,
+        cheatSheet,
         quiz,
         steps:
           (data.steps as LessonStep[] | undefined) ??
@@ -97,6 +104,7 @@ export function getAllLessons(): TrainingLesson[] {
             body,
             Boolean(quiz?.length),
             isPracticeLesson(String(data.track), String(data.slug)),
+            Boolean(cheatSheet?.some((e) => e.code?.trim())),
           ),
         updatedAt: String(data.updatedAt),
       });

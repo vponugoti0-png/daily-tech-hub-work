@@ -10,14 +10,21 @@ import { ArrowLeft, Clock, ListChecks } from "lucide-react";
 import { CourseOutline } from "@/components/training/CourseOutline";
 import { Quiz } from "@/components/training/Quiz";
 import { CompleteButton } from "@/components/training/CompleteButton";
-import { CopyButton } from "@/components/CopyButton";
-import { TryItBox } from "@/components/training/TryItBox";
 import { StepCards } from "@/components/training/StepCards";
 import { LocalPracticeLab } from "@/components/training/LocalPracticeLab";
 import { AiLocalPractice } from "@/components/training/AiLocalPractice";
 import { GitPlayLab } from "@/components/training/git/GitPlayLab";
 import { JargonChips } from "@/components/JargonTip";
+import { ExampleSection } from "@/components/training/ExampleSection";
+import { LessonPathCrumb } from "@/components/training/LessonPathCrumb";
+import { LessonReferenceRail } from "@/components/training/LessonReferenceRail";
 import { isAiLabLesson, isGitPlayLesson, isLabLesson } from "@/lib/lab/samples";
+import {
+  pathCrumbForLesson,
+  shortcutPackForTrack,
+  splitLessonExamples,
+  tryItDialectForTrack,
+} from "@/lib/lesson-chrome";
 
 export function generateStaticParams() {
   return getAllLessons().map((l) => ({ track: l.track, slug: l.slug }));
@@ -55,22 +62,12 @@ export default async function LessonPage({
   const showAiLab = isAiLabLesson(lesson.track, lesson.slug);
   const showPractice = showLab || showGitLab || showAiLab;
   const showStarterJargon = idx === 0 || (lesson.level === "beginner" && lesson.order <= 1);
-  const tryItLimit = 5;
-  const tryItEntries = (lesson.cheatSheet ?? []).filter((e) => e.code).slice(0, tryItLimit);
-  const tryItDialect =
-    lesson.track === "sql"
-      ? "ANSI SQL"
-      : lesson.track === "snowflake"
-        ? "Snowflake SQL"
-        : lesson.track === "databricks"
-          ? "Spark SQL / PySpark"
-          : lesson.track === "python"
-            ? "Python"
-            : lesson.track === "git"
-              ? "Git"
-              : lesson.track === "forward-deployed"
-                ? "FDE checklist"
-                : "AI chat";
+  const { example, extraExamples, leftover } = splitLessonExamples(lesson.cheatSheet);
+  const tryItDialect = tryItDialectForTrack(lesson.track);
+  const labHref = showPractice ? "#lab" : undefined;
+  const labKind = showGitLab ? "git" : showAiLab ? "ai" : showLab ? "sql" : undefined;
+  const pathCrumb = pathCrumbForLesson(lesson.track, lesson.slug);
+  const shortcutPack = shortcutPackForTrack(lesson.track);
 
   return (
     <div className="flex flex-col gap-4 lg:flex-row lg:gap-8">
@@ -84,6 +81,8 @@ export default async function LessonPage({
           <ArrowLeft className="h-4 w-4" /> Back to {trackTitle}
         </Link>
 
+        {pathCrumb ? <LessonPathCrumb crumb={pathCrumb} /> : null}
+
         <div className="mb-4 flex flex-wrap items-center gap-2">
           <SoftBadge>{trackTitle}</SoftBadge>
           <SoftBadge className="capitalize">{lesson.level}</SoftBadge>
@@ -93,149 +92,102 @@ export default async function LessonPage({
           <span className="text-xs text-[var(--muted)]">Updated {formatDate(lesson.updatedAt)}</span>
         </div>
 
-        <h1
-          id="learn"
-          className="scroll-mt-24 font-display text-3xl font-bold tracking-tight text-[var(--ink-fg)] sm:text-4xl"
-        >
-          {lesson.title}
-        </h1>
-        <p className="mt-3 text-base text-[var(--muted)]">{lesson.description}</p>
+        <section id="learn" data-testid="lesson-learn" className="scroll-mt-24">
+          <h1 className="font-display text-3xl font-bold tracking-tight text-[var(--ink-fg)] sm:text-4xl">
+            {lesson.title}
+          </h1>
+          <p className="mt-3 text-base text-[var(--muted)]">{lesson.description}</p>
 
-        {showStarterJargon ? (
-          <div className="plain-english-panel mt-6">
-            <JargonChips />
+          {showStarterJargon ? (
+            <div className="plain-english-panel mt-6">
+              <JargonChips />
+            </div>
+          ) : null}
+
+          <div className="mt-4 flex flex-wrap gap-1.5">
+            {lesson.topics.map((t) => (
+              <TopicBadge key={t} topic={t} />
+            ))}
           </div>
-        ) : null}
 
-        <div className="mt-4 flex flex-wrap gap-1.5">
-          {lesson.topics.map((t) => (
-            <TopicBadge key={t} topic={t} />
-          ))}
-        </div>
+          {lesson.objectives.length ? (
+            <div className="mt-8 rounded-2xl border border-[var(--violet)]/30 bg-[var(--violet)]/10 p-5">
+              <h2 className="mb-3 flex items-center gap-2 font-display text-sm font-bold uppercase tracking-wider text-[var(--violet)]">
+                <ListChecks className="h-4 w-4" /> Objectives
+              </h2>
+              <ul className="space-y-2 text-sm text-[var(--ink-fg)]">
+                {lesson.objectives.map((o) => (
+                  <li key={o} className="flex gap-2">
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--coral)]" />
+                    {o}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
 
-        {lesson.objectives.length ? (
-          <div className="mt-8 rounded-2xl border border-[var(--violet)]/30 bg-[var(--violet)]/10 p-5">
-            <h2 className="mb-3 flex items-center gap-2 font-display text-sm font-bold uppercase tracking-wider text-[var(--violet)]">
-              <ListChecks className="h-4 w-4" /> Objectives
-            </h2>
-            <ul className="space-y-2 text-sm text-[var(--ink-fg)]">
-              {lesson.objectives.map((o) => (
-                <li key={o} className="flex gap-2">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--coral)]" />
-                  {o}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
-
-        <StepCards
-          steps={
-            showLab || showGitLab || showAiLab
-              ? [
-                  {
-                    title: "Cheat sheet",
-                    body: "Scan the cards — title, code, tip, then Copy.",
-                  },
-                  {
-                    title: "Try it",
-                    body: showGitLab
-                      ? "Edit the sample, then Run it in Git Play Lab."
-                      : showAiLab
-                        ? "Edit the sample, then Run it in Local practice — or Copy into your own AI tool."
-                        : lesson.track === "python"
-                          ? "Edit the sample, then Run it in the local (Pyodide) lab."
-                          : "Edit the sample, then Run it in the local (DuckDB) lab.",
-                  },
-                  {
-                    title: showAiLab ? "Local practice" : "Local lab",
-                    body: showGitLab
-                      ? "Practice on this page — in-browser graph + CLI, not a VM or GitHub."
-                      : showAiLab
-                        ? "Check your prompt on this page — not a live Claude or GPT account."
-                        : "Practice on this page — not a live cloud workspace or warehouse.",
-                  },
-                ]
-              : isAiTrack
+          <StepCards
+            steps={
+              showPractice
                 ? [
-                    { title: "Cheat sheet", body: "Scan the cards — title, code, tip, then Copy." },
-                    { title: "Try it", body: "Edit if you want, then Copy into your AI tool." },
+                    { title: "Learn", body: "Read the teaching text — then try the example." },
+                    {
+                      title: "Example",
+                      body: "One worked statement. Extra samples hide behind More examples.",
+                    },
+                    {
+                      title: "Practice",
+                      body: showGitLab
+                        ? "Load the example into Git Play Lab and run it on this page."
+                        : showAiLab
+                          ? "Load the example into Local practice — or Copy into your own AI tool."
+                          : lesson.track === "python"
+                            ? "Load the example into the local (Pyodide) lab and Run."
+                            : "Load the example into the local (DuckDB) lab and Run.",
+                    },
                     { title: "Quiz", body: "Check understanding, then mark the checkpoint." },
                   ]
-                : isFdeTrack
-                  ? [
-                      { title: "Cheat sheet", body: "Checklists you paste into a ticket." },
-                      { title: "Try it", body: "Edit if you want, then Copy into notes or a runbook." },
-                      { title: "Quiz", body: "Check understanding, then mark the checkpoint." },
-                    ]
-                  : [
-                      { title: "Cheat sheet", body: "Scan the cards — title, code, tip, then Copy." },
-                      {
-                        title: "Try it",
-                        body: "Edit if you want, then Copy into your warehouse, notebook, or repo.",
-                      },
-                      { title: "Quiz", body: "Check understanding, then mark the checkpoint." },
-                    ]
-          }
-        />
+                : [
+                    { title: "Learn", body: "Read the teaching text — then copy the example." },
+                    {
+                      title: "Example",
+                      body: "One worked snippet. Extra samples hide behind More examples.",
+                    },
+                    {
+                      title: "Copy",
+                      body: isAiTrack
+                        ? "Edit if you want, then Copy into your AI tool. No empty editor."
+                        : isFdeTrack
+                          ? "Edit if you want, then Copy into notes or a runbook. No empty editor."
+                          : "Edit if you want, then Copy into your warehouse, notebook, or repo. No empty editor.",
+                    },
+                    { title: "Quiz", body: "Check understanding, then mark the checkpoint." },
+                  ]
+            }
+          />
 
-        {lesson.cheatSheet?.length ? (
-          <div id="cheat-sheet" className="panel mt-8 scroll-mt-24 rounded-2xl p-5">
-            <h2 className="font-display text-sm font-bold uppercase tracking-wider text-[var(--sky)]">
-              Cheat sheet
-            </h2>
-            <ul className="mt-3 space-y-3">
-              {lesson.cheatSheet.map((e) => (
-                <li key={e.label} className="rounded-xl border border-[var(--ink-border)] bg-[var(--canvas)]/50 p-3">
-                  <p className="text-sm font-medium text-[var(--ink-fg)]">{e.label}</p>
-                  <pre className="mt-2 overflow-x-auto font-mono text-xs text-[var(--ink-fg)]">
-                    <code>{e.code}</code>
-                  </pre>
-                  {e.note ? <p className="mt-2 text-xs text-[var(--muted)]">{e.note}</p> : null}
-                  <div className="mt-2">
-                    <CopyButton text={e.code} />
-                  </div>
-                </li>
-              ))}
-            </ul>
+          <div className="mt-10" data-testid="lesson-markdown">
+            <Markdown source={lesson.content} />
           </div>
-        ) : null}
+        </section>
 
-        {tryItEntries.map((entry, i) => {
-          const code = entry.code.replace(/\\n/g, "\n");
-          const isSql = /SNOWFLAKE\.CORTEX/i.test(code);
-          const dialect = isSql ? "Snowflake SQL" : isAiTrack ? "AI chat" : tryItDialect;
-          const defaultHint = isAiTrack
-            ? isSql
-              ? "Copy into a Snowflake worksheet. Treat model output as untrusted. Not a live Cortex account."
-              : showAiLab
-                ? "Check it in Local practice below, or Copy into your own AI tool. Not a live Claude or GPT account."
-                : "Paste into Claude, Copilot Chat, or Grok — then iterate."
-            : isFdeTrack
-              ? "Copy into a ticket, runbook, or customer notes. No live cloud deploy on this page."
-              : showGitLab
-                ? "Run it in Git Play Lab below — in-browser graph only, no GitHub push."
-                : "Copy this example into your warehouse, notebook, or repo to practice.";
-          return (
-            <TryItBox
-              key={`${entry.label}-${i}`}
-              title={isAiTrack && i === 0 ? "Try this prompt" : i === 0 ? "Try it" : entry.label}
-              code={code}
-              dialect={dialect}
-              hint={entry.note ?? defaultHint}
-              labHref={showPractice ? "#lab" : undefined}
-              labKind={showGitLab ? "git" : showAiLab ? "ai" : showLab ? "sql" : undefined}
-            />
-          );
-        })}
+        {example ? (
+          <ExampleSection
+            example={example}
+            extras={extraExamples}
+            dialect={tryItDialect}
+            labHref={labHref}
+            labKind={labKind}
+            isAiTrack={isAiTrack}
+            isFdeTrack={isFdeTrack}
+            showGitLab={showGitLab}
+            showAiLab={showAiLab}
+          />
+        ) : null}
 
         {showGitLab ? <GitPlayLab track={lesson.track} slug={lesson.slug} /> : null}
         {showLab ? <LocalPracticeLab track={lesson.track} slug={lesson.slug} /> : null}
         {showAiLab ? <AiLocalPractice track={lesson.track} slug={lesson.slug} /> : null}
-
-        <div className="mt-10">
-          <Markdown source={lesson.content} />
-        </div>
 
         {lesson.quiz?.length ? (
           <Quiz questions={lesson.quiz} track={lesson.track} slug={lesson.slug} />
@@ -276,6 +228,8 @@ export default async function LessonPage({
             </Link>
           ) : null}
         </nav>
+
+        <LessonReferenceRail leftover={leftover} pack={shortcutPack} />
       </article>
     </div>
   );

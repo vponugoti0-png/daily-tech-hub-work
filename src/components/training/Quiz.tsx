@@ -48,7 +48,7 @@ export function Quiz({
   if (!questions.length) return null;
 
   return (
-    <section id="quiz" className="panel mt-10 scroll-mt-24 rounded-2xl p-5 sm:p-6">
+    <section id="quiz" data-testid="lesson-quiz" className="panel mt-10 scroll-mt-24 rounded-2xl p-5 sm:p-6">
       <h2 className="font-display text-lg font-bold text-[var(--ink-fg)]">Check your understanding</h2>
       <p className="mt-1 text-sm text-[var(--muted)]">Pick an answer for each question.</p>
       <div className="mt-5 space-y-6">

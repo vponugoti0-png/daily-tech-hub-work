@@ -1,18 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Play, Sparkles } from "lucide-react";
 import { CopyButton } from "@/components/CopyButton";
 import { TRYIT_RUN_EVENT, type TryItRunDetail } from "@/lib/lab/events";
 
-/** Editable try-it shell. Lab lessons Run into #lab; others Copy to the learner's tool. */
+/** Example / copy shell. Lab lessons load into #lab (no second textarea). */
 export function TryItBox({
-  title = "Try it",
+  title = "Example",
   code,
   hint,
   dialect,
   labHref,
   labKind,
+  variant,
 }: {
   title?: string;
   code: string;
@@ -21,22 +22,28 @@ export function TryItBox({
   /** In-lesson local lab (Databricks / Snowflake / SQL / Python / Git / AI). Not a top-level nav item. */
   labHref?: string;
   labKind?: "sql" | "git" | "ai";
+  /** `reference` = statement + Load/Copy. `editor` = copy-only textarea (no #lab). */
+  variant?: "editor" | "reference";
 }) {
   const gitLab = labKind === "git";
   const aiLab = labKind === "ai";
+  const reference = variant === "reference" || Boolean(labHref);
   const [draft, setDraft] = useState(code);
+  const [codeSnapshot, setCodeSnapshot] = useState(code);
   const [showHint, setShowHint] = useState(false);
   const editorRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
+  if (code !== codeSnapshot) {
+    setCodeSnapshot(code);
     setDraft(code);
-  }, [code]);
+  }
 
   function editorValue() {
+    if (reference) return code;
     return editorRef.current?.value ?? draft;
   }
 
-  function runInLab() {
+  function loadIntoLab() {
     const next = editorValue();
     setDraft(next);
     const detail: TryItRunDetail = { code: next };
@@ -72,16 +79,16 @@ export function TryItBox({
             <button
               type="button"
               className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--coral)]/40 bg-[var(--coral)]/15 px-2.5 py-1 text-xs font-bold text-[var(--ink-fg)]"
-              onClick={runInLab}
+              onClick={loadIntoLab}
               aria-label={
                 gitLab ? "Run in Git Play Lab" : aiLab ? "Run in local practice" : "Run in local lab"
               }
             >
               <Play className="h-3.5 w-3.5" aria-hidden />
-              Run
+              Load into Practice
             </button>
           ) : null}
-          <CopyButton text={editorValue()} label={labHref ? "Copy" : "Copy to practice"} />
+          <CopyButton text={reference ? code : draft} label={labHref ? "Copy" : "Copy to practice"} />
           {labHref ? (
             <a
               href={labHref}
@@ -102,17 +109,28 @@ export function TryItBox({
           )}
         </div>
       </div>
-      <label className="block px-3 pt-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--muted)]">
-        Editor
-        <textarea
-          ref={editorRef}
-          className="field mt-1 min-h-[140px] w-full resize-y font-mono text-[12px] leading-relaxed text-[var(--ink-fg)]"
-          value={draft}
-          spellCheck={false}
-          aria-label="Try it editor"
-          onChange={(e) => setDraft(e.target.value)}
-        />
-      </label>
+      {reference ? (
+        <div className="px-3 pt-3">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--muted)]">
+            Statement
+          </p>
+          <pre className="mt-1 overflow-x-auto rounded-xl border border-[var(--ink-border)] bg-[var(--canvas)]/60 p-3 font-mono text-[12px] leading-relaxed text-[var(--ink-fg)]">
+            <code>{code}</code>
+          </pre>
+        </div>
+      ) : (
+        <label className="block px-3 pt-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--muted)]">
+          Editor
+          <textarea
+            ref={editorRef}
+            className="field mt-1 min-h-[140px] w-full resize-y font-mono text-[12px] leading-relaxed text-[var(--ink-fg)]"
+            value={draft}
+            spellCheck={false}
+            aria-label="Try it editor"
+            onChange={(e) => setDraft(e.target.value)}
+          />
+        </label>
+      )}
       {showHint ? (
         <div className="border-t border-[var(--ink-border)] bg-[var(--panel-2)] px-3 py-2 text-xs text-[var(--muted)]">
           Copy this example and run it in your warehouse, notebook, repo, or AI chat.
@@ -122,14 +140,14 @@ export function TryItBox({
         <div className="border-t border-[var(--ink-border)] bg-[var(--panel-2)]/60 px-3 py-1.5 text-[11px] text-[var(--muted)]">
           {labHref ? (
             <>
-              Tip: edit the sample, then <strong className="text-[var(--ink-fg)]">Run</strong> loads
-              it into the{" "}
+              Tip: <strong className="text-[var(--ink-fg)]">Load into Practice</strong> fills the
+              single editor in the{" "}
               {gitLab
                 ? "Git Play Lab graph + CLI"
                 : aiLab
                   ? "Local practice checklist"
                   : "local practice lab"}{" "}
-              on this page.
+              on this page. No second textarea.
             </>
           ) : (
             <>
