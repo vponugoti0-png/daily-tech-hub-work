@@ -15,6 +15,12 @@ export default function TrainingPage() {
   const lessons = getAllLessons();
   const practiceLesson = getLesson("ai-data-eng", "ai-de-practice-agents");
   const capstoneChecklist = getLesson("sql", "sql-shared-capstone-checklist");
+  const etlBuilders = [
+    getLesson("python", "python-etl-pipeline-builder"),
+    getLesson("sql", "sql-staging-mart-etl"),
+    getLesson("databricks", "dbx-medallion-etl-builder"),
+    getLesson("snowflake", "sf-warehouse-etl-builder"),
+  ].filter((l): l is NonNullable<typeof l> => Boolean(l));
   return (
     <div className="space-y-10">
       <SectionHeader
@@ -39,6 +45,18 @@ export default function TrainingPage() {
           <li>
             <span className="font-semibold text-[var(--sun)]">Python · </span>
             {META_DE_OVERLAY.pythonOrder}
+          </li>
+          <li>
+            <span className="font-semibold text-[var(--coral)]">Databricks · </span>
+            {META_DE_OVERLAY.databricksOrder}
+          </li>
+          <li>
+            <span className="font-semibold text-[var(--sky)]">Snowflake · </span>
+            {META_DE_OVERLAY.snowflakeOrder}
+          </li>
+          <li>
+            <span className="font-semibold text-[var(--violet)]">ETL spine · </span>
+            {META_DE_OVERLAY.etlSpine}
           </li>
         </ul>
       </div>
@@ -82,6 +100,44 @@ export default function TrainingPage() {
           </div>
           <span className="btn-ghost shrink-0 self-start sm:self-center">Open checklist →</span>
         </Link>
+      ) : null}
+
+      {etlBuilders.length === 4 ? (
+        <section
+          aria-labelledby="etl-builders-heading"
+          className="panel rounded-3xl border-2 border-[var(--sun)]/35 p-5"
+        >
+          <p className="font-display text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--sun)]">
+            Build ETL · four tool tracks
+          </p>
+          <h2
+            id="etl-builders-heading"
+            className="mt-1 font-display text-xl font-bold text-[var(--ink-fg)]"
+          >
+            Extract → transform → load on each major track
+          </h2>
+          <p className="mt-1 max-w-3xl text-sm text-[var(--muted)]">
+            After W0–W4 and the Databricks / Snowflake Practice labs, build one ETL per tool.
+            Same Training routes — not a new nav item. Forward Deployed Engineer is a separate
+            card on this page (after the tool tracks, before Git).
+          </p>
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+            {etlBuilders.map((lesson) => (
+              <li key={`${lesson.track}-${lesson.slug}`}>
+                <Link
+                  href={`/training/${lesson.track}/${lesson.slug}`}
+                  className="glass-hover block rounded-2xl border border-[var(--ink-border)] px-4 py-3"
+                >
+                  <span className="font-display text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--sky)]">
+                    {lesson.track}
+                  </span>
+                  <span className="mt-1 block font-semibold text-[var(--ink-fg)]">{lesson.title}</span>
+                  <span className="mt-1 block text-xs text-[var(--muted)]">{lesson.description}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       ) : null}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

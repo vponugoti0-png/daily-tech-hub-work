@@ -643,5 +643,45 @@
     "source": "/training/snowflake/sf-databases-schemas-warehouses",
     "destination": "/training/snowflake/sf-day0-objects",
     "permanent": true
+  },
+  {
+    "source": "/training/python/12-etl-pipeline-builder",
+    "destination": "/training/python/python-etl-pipeline-builder",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/etl-pipeline-builder",
+    "destination": "/training/python/python-etl-pipeline-builder",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/12-staging-mart-etl",
+    "destination": "/training/sql/sql-staging-mart-etl",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/staging-mart-etl",
+    "destination": "/training/sql/sql-staging-mart-etl",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/12-medallion-etl-builder",
+    "destination": "/training/databricks/dbx-medallion-etl-builder",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/medallion-etl-builder",
+    "destination": "/training/databricks/dbx-medallion-etl-builder",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/12-warehouse-etl-builder",
+    "destination": "/training/snowflake/sf-warehouse-etl-builder",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/warehouse-etl-builder",
+    "destination": "/training/snowflake/sf-warehouse-etl-builder",
+    "permanent": true
   }
 ]

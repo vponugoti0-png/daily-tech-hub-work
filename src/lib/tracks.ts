@@ -25,41 +25,45 @@ export const TRACKS: TrackMeta[] = [
     id: "python",
     title: "Python for Data Engineers",
     blurb:
-      "ETL utilities, typing, testing, orchestration patterns, and PySpark-ready transforms. Recommended order: contracts → config/secrets → typing → testing → writers → orchestration → perf → packaging.",
+      "ETL utilities, typing, testing, orchestration patterns, and a Build ETL job that wires extract → transform → load. Recommended order: contracts → config/secrets → typing → testing → writers → orchestration → perf → packaging → Build ETL.",
     accent: "from-[#FFD166] to-[#FF6B4A]",
     difficulty: "Beginner → Advanced",
-    estimatedHours: 6.5,
+    estimatedHours: 7,
     orderNote:
-      "Recommended reading order (catalog numbers stay put): contracts → config/secrets → typing → testing → writers → orchestration → perf → packaging. Finish with the CLI + tests + package capstone.",
+      "Recommended reading order (catalog numbers stay put): contracts → config/secrets → typing → testing → writers → orchestration → perf → packaging → Build ETL. Finish with the CLI + tests + package capstone.",
   },
   {
     id: "sql",
     title: "SQL for Analytics Engineering",
     blurb:
-      "Joins recap, windows, incrementals, performance, modeling, and warehouse-ready patterns. Recommended order: CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured.",
+      "Joins recap, windows, incrementals, DQ gates, and a Build staging→mart ETL. Recommended order: CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL.",
     accent: "from-[#2EE59D] to-[#4CC9F0]",
     difficulty: "Beginner → Advanced",
-    estimatedHours: 8,
+    estimatedHours: 8.5,
     orderNote:
-      "Recommended reading order (catalog numbers stay put): CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured. Start with DE joins & set-logic recap if you want a true-zero warmup.",
+      "Recommended reading order (catalog numbers stay put): CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL. Start with DE joins & set-logic recap if you want a true-zero warmup.",
   },
   {
     id: "databricks",
     title: "Databricks (DBX)",
     blurb:
-      "Workspace day-0, lakehouse fundamentals, Delta Lake, Unity Catalog, jobs, Autoloader, and Spark SQL at scale.",
+      "Workspace day-0, lakehouse, Delta, Autoloader, and a Build medallion ETL (bronze→silver→gold). Practice SQL in the local lab on day-0 / lakehouse lessons.",
     accent: "from-[#FF6B4A] to-[#9B5CFF]",
     difficulty: "Beginner → Advanced",
-    estimatedHours: 9,
+    estimatedHours: 9.5,
+    orderNote:
+      "Recommended reading order (catalog numbers stay put): day-0 workspace → lakehouse → Delta → Autoloader → Build medallion ETL → Jobs / DLT → Job capstone. Local Practice lab lives on day-0 and lakehouse lessons.",
   },
   {
     id: "snowflake",
     title: "Snowflake",
     blurb:
-      "Databases & warehouses day-0, Time Travel, Dynamic Tables, Streams & Tasks, COPY/stages, governance, and cost control.",
+      "Day-0 objects, COPY/stages, Streams & Tasks, Dynamic Tables, and a Build warehouse ETL that wires them together. Practice SQL in the local lab on day-0 / architecture lessons.",
     accent: "from-[#4CC9F0] to-[#9B5CFF]",
     difficulty: "Beginner → Advanced",
-    estimatedHours: 8.5,
+    estimatedHours: 9,
+    orderNote:
+      "Recommended reading order (catalog numbers stay put): day-0 objects → architecture → COPY/stages → Streams & Tasks or Dynamic Tables → Build warehouse ETL → DT capstone. Local Practice lab lives on day-0 and architecture lessons.",
   },
   {
     id: "forward-deployed",
@@ -105,8 +109,14 @@ export const META_DE_OVERLAY = {
   eyebrow: "Meta DE path · optional overlay",
   title: "Suggested cert-style order (no new nav)",
   blurb:
-    "Use the tracks you already have. Suggested path: Prompt Engineering → AI for DE → Python → SQL → Snowflake → Databricks → Forward Deployed Engineer → Git. SQL and Python also have recommended reading orders on their track pages (different from catalog numbers).",
-  sqlOrder: "CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured",
+    "Use the tracks you already have. Overnight spine: W0 recommended-order overlay → W1–W4 waves → Practice labs (Databricks + Snowflake) → Build ETL on each tool track → Forward Deployed Engineer. Suggested cert-style order: Prompt Engineering → AI for DE → Python → SQL → Snowflake → Databricks → Forward Deployed Engineer → Git.",
+  sqlOrder:
+    "CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured → Build staging→mart ETL",
   pythonOrder:
-    "contracts → config/secrets → typing → testing → writers → orchestration → perf → packaging",
+    "contracts → config/secrets → typing → testing → writers → orchestration → perf → packaging → Build ETL",
+  databricksOrder:
+    "day-0 workspace → lakehouse → Delta → Autoloader → Build medallion ETL → Jobs / DLT → Job capstone",
+  snowflakeOrder:
+    "day-0 objects → architecture → COPY/stages → Streams & Tasks or Dynamic Tables → Build warehouse ETL → DT capstone",
+  etlSpine: "Build ETL · Python job → SQL staging→mart → DBX medallion → Snowflake COPY/Stream/DT",
 };

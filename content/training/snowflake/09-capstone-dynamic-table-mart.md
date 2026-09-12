@@ -38,7 +38,7 @@ quiz:
     explanation: "Land and clean first. The DT is the declarative gold step."
 ---
 
-Capstone for the Snowflake track. Shared story: **Orders → late events → daily revenue mart**. Pair with the [shared checklist](/training/sql/sql-shared-capstone-checklist).
+Capstone for the Snowflake track. Shared story: **Orders → late events → daily revenue mart**. The end-to-end COPY → Stream/Task → DT path is [Build warehouse ETL](/training/snowflake/sf-warehouse-etl-builder). Pair with the [shared checklist](/training/sql/sql-shared-capstone-checklist).
 
 ## Build the mart
 

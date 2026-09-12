@@ -38,7 +38,7 @@ quiz:
     explanation: "A wheel with pytest is how the CLI stays honest across Jobs."
 ---
 
-Optional Python capstone for the same story: **Orders → late events → daily revenue mart**. The warehouse SQL still owns the mart; this package owns **rules + the job door**.
+Optional Python capstone for the same story: **Orders → late events → daily revenue mart**. Assemble extract → transform → load first in [Build an ETL job](/training/python/python-etl-pipeline-builder). The warehouse SQL still owns the mart; this package owns **rules + the job door**.
 
 ## Layout
 

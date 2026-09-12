@@ -37,6 +37,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "python-performance-de",
     "python-packaging-de-libs",
     "python-capstone-cli-package",
+    "python-etl-pipeline-builder",
   ],
   sql: [
     "sql-joins-set-logic-recap",
@@ -51,6 +52,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "sql-shared-capstone-checklist",
     "sql-slowly-changing-dimensions",
     "sql-explain-plan-lab",
+    "sql-staging-mart-etl",
   ],
   databricks: [
     "dbx-workspace-cluster-basics",
@@ -65,6 +67,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "dbx-capstone-medallion-job",
     "dbx-dlt-pipelines",
     "dbx-liquid-clustering",
+    "dbx-medallion-etl-builder",
   ],
   snowflake: [
     "sf-day0-objects",
@@ -79,6 +82,7 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "sf-capstone-dynamic-table-mart",
     "sf-zero-copy-clone-dev",
     "sf-cortex-vs-snowpark",
+    "sf-warehouse-etl-builder",
   ],
   "forward-deployed": [
     "fde-what-an-fde-is",
