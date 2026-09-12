@@ -14,7 +14,8 @@ export type TrackId =
   | "snowflake"
   | "git"
   | "prompt-engineering"
-  | "ai-data-eng";
+  | "ai-data-eng"
+  | "forward-deployed";
 
 export type ContentKind = "news" | "training" | "release" | "shortcut";
 

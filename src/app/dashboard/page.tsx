@@ -80,6 +80,18 @@ const TRACK_SLUGS: Record<string, string[]> = {
     "sf-zero-copy-clone-dev",
     "sf-cortex-vs-snowpark",
   ],
+  "forward-deployed": [
+    "fde-what-an-fde-is",
+    "fde-discovery-shadowing",
+    "fde-smallest-valuable-deploy",
+    "fde-integrate-customer-env",
+    "fde-deploy-environments",
+    "fde-security-review",
+    "fde-observability-handoff",
+    "fde-ai-rag-evals",
+    "fde-stakeholder-demos",
+    "fde-capstone-engagement",
+  ],
   git: [
     "git-rebase-vs-merge",
     "git-commit-hygiene",
@@ -96,6 +108,7 @@ const TRACK_HUE: Record<string, string> = {
   sql: "var(--mint)",
   databricks: "var(--coral)",
   snowflake: "var(--sky)",
+  "forward-deployed": "var(--mint)",
   git: "var(--muted)",
 };
 

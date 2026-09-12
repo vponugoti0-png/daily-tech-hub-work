@@ -62,6 +62,16 @@ export const TRACKS: TrackMeta[] = [
     estimatedHours: 8.5,
   },
   {
+    id: "forward-deployed",
+    title: "Forward Deployed Engineer",
+    blurb:
+      "Customer-facing delivery for DE/AI platforms — discover, scope, integrate, deploy, secure, hand off.",
+    accent: "from-[#FF6B4A] to-[#2EE59D]",
+    difficulty: "Intermediate",
+    estimatedHours: 7.5,
+    badge: "New · Free",
+  },
+  {
     id: "git",
     title: "Git (bonus)",
     blurb: "Rebase, hygiene, bisect, dbt/SQL branching, and PR templates for data diffs.",
@@ -86,6 +96,7 @@ export const CERT_PATH: TrackId[] = [
   "sql",
   "snowflake",
   "databricks",
+  "forward-deployed",
   "git",
 ];
 
@@ -94,7 +105,7 @@ export const META_DE_OVERLAY = {
   eyebrow: "Meta DE path · optional overlay",
   title: "Suggested cert-style order (no new nav)",
   blurb:
-    "Use the tracks you already have. Suggested path: Prompt Engineering → AI for DE → Python → SQL → Snowflake → Databricks → Git. SQL and Python also have recommended reading orders on their track pages (different from catalog numbers).",
+    "Use the tracks you already have. Suggested path: Prompt Engineering → AI for DE → Python → SQL → Snowflake → Databricks → Forward Deployed Engineer → Git. SQL and Python also have recommended reading orders on their track pages (different from catalog numbers).",
   sqlOrder: "CTEs → Windows → DQ → Incremental → Perf → Dimensional → Semi-structured",
   pythonOrder:
     "contracts → config/secrets → typing → testing → writers → orchestration → perf → packaging",

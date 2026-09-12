@@ -63,7 +63,7 @@ npm run seed:demo   # prints credentials
 |------|-------|---------|
 | Today’s digest | `/` | Dense playful homepage + clear next action |
 | News | `/news` | Headline, source, summary, why it matters |
-| Training | `/training`… | Python · SQL · Databricks · Snowflake · Git · **Prompt Engineering** · **AI for DE** |
+| Training | `/training`… | Python · SQL · Databricks · Snowflake · **Forward Deployed Engineer** · Git · **Prompt Engineering** · **AI for DE** |
 | Progress | `/dashboard` | Cert-style track % (local + synced when logged in) |
 | Auth | `/login`, `/signup` | Free email/password + Google / Microsoft / X (Auth.js) |
 | Releases | `/releases` | What changed + why read now |
@@ -80,6 +80,7 @@ npm run seed:demo   # prints credentials
 | SQL | 7 | Windows, incrementals, perf, modeling, DQ, CTEs, semi-structured |
 | Databricks | 7 | Lakehouse, Delta, Spark SQL, Unity Catalog, Jobs, Streaming, warehouses |
 | Snowflake | 7 | Architecture, Time Travel, Streams/Tasks, Dynamic Tables, cost, RBAC, Snowpark |
+| Forward Deployed Engineer | 10 | Customer-facing DE/AI delivery: discover, scope, integrate, deploy, secure, hand off |
 | Git (bonus) | 3 | Rebase, hygiene, bisect |
 
 Lessons include objectives, try-it shells, **Databricks + Snowflake local practice labs** (DuckDB-WASM in-browser SQL samples — not live workspaces), quizzes, outlines (mobile disclosure), and progress (localStorage + SQLite when signed in).
@@ -139,7 +140,7 @@ content/
   news/items.json
   releases/items.json
   shortcuts/items.json
-  training/{python,sql,databricks,snowflake,git,prompt-engineering,ai-data-eng}/*.md
+  training/{python,sql,databricks,snowflake,forward-deployed,git,prompt-engineering,ai-data-eng}/*.md
 ```
 
 ```bash

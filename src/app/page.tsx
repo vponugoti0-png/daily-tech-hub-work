@@ -19,6 +19,7 @@ const FRIENDLY_BLURB: Record<string, string> = {
   sql: "Ask databases questions with SQL.",
   databricks: "Learn Databricks (DBX) lakehouse basics.",
   snowflake: "Explore Snowflake warehouses & tables.",
+  "forward-deployed": "Deliver DE/AI platforms in a customer warehouse.",
 };
 
 export default function HomePage() {

@@ -40,7 +40,7 @@ function siteUrl(): URL {
 }
 
 const description =
-  "Aurora — Daily Tech Hub for data engineers: prompt engineering, AI for DE, Snowflake, Databricks, Python, SQL, and Claude/Copilot/Grok shortcuts.";
+  "Aurora — Daily Tech Hub for data engineers: prompt engineering, AI for DE, Snowflake, Databricks, Python, SQL, Forward Deployed Engineer, and Claude/Copilot/Grok shortcuts.";
 
 export const metadata: Metadata = {
   metadataBase: siteUrl(),

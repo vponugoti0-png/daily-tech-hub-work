@@ -41,6 +41,7 @@
 - **100% free forever**, guest progress without signup
 - **Aurora Play Lab** brand (coral/mint/sky/sun) — playful, not cyan SaaS
 - **W0–W4 zero-to-hero content** across SQL / Databricks / Snowflake / Python / AI tracks (live)
+- **Forward Deployed Engineer track** (`/training/forward-deployed`, 10 lessons) — customer-facing DE/AI delivery; quizzes + copy cards; no new WASM lab or header nav
 - Honest chrome (“Coming soon · live Run” → Local practice lab) beats fake “cloud” claims
 - Shortcuts packs (Claude / Copilot / Grok) adjacent to lessons
 
@@ -77,6 +78,8 @@
 - Real Databricks / Snowflake cloud credentials in-browser
 - Paid AI tutor clone
 - Collaboration / multiplayer notebooks
+- FDE v1 live cloud deploy / CRM / paid cert (lessons + quizzes only)
+- FDE v1 DuckDB Practice Lab expansion (reuse DBX/SF labs; Python runtime still deferred)
 
 ---
 
@@ -102,6 +105,8 @@ W4 capstone lesson
 2. Snowflake  
 3. Core SQL  
 4. Python (deferred — different runtime)
+
+**FDE track (added):** Intermediate overlay after Databricks / Snowflake on the cert path. Discover → scope → integrate → deploy → secure → hand off, plus AI evals and a fictional Northwind capstone. Same guest progress model. Not a Practice Lab dialect.
 
 ---
 

@@ -8,7 +8,7 @@ import { TrainingFilters } from "@/components/training/TrainingFilters";
 export const metadata: Metadata = {
   title: "Training",
   description:
-    "Free interactive tracks: Prompt Engineering, AI for DE, Python, SQL, Databricks, Snowflake, Git.",
+    "Free interactive tracks: Prompt Engineering, AI for DE, Python, SQL, Databricks, Snowflake, Forward Deployed Engineer, Git.",
 };
 
 export default function TrainingPage() {
